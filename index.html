@@ -1,0 +1,67 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>Compta Vivélan</title><style>
+:root{--bg:#f5f7f4;--card:#fff;--tx:#15271b;--mut:#5f7367;--bd:#dde5dd;--good:#0a7d4f;--bad:#c0392b;--warn:#b8860b;--acc:#1d5c3d}
+@media(prefers-color-scheme:dark){:root{--bg:#101613;--card:#18211b;--tx:#e8f0e9;--mut:#8fa396;--bd:#26332a}}
+*{box-sizing:border-box}body{margin:0;font:15px/1.5 -apple-system,system-ui,sans-serif;background:var(--bg);color:var(--tx)}
+.wrap{max-width:1100px;margin:0 auto;padding:20px}
+#gate{display:flex;min-height:100vh;align-items:center;justify-content:center;flex-direction:column;gap:14px}
+#gate input{font-size:17px;padding:12px 16px;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);width:min(320px,80vw)}
+#gate button{font-size:16px;padding:12px 22px;border:0;border-radius:10px;background:var(--acc);color:#fff;font-weight:700;cursor:pointer}
+#err{color:var(--bad);min-height:1.2em}
+h1{font-size:22px;margin:8px 0 2px}.sub{color:var(--mut);font-size:13px;margin-bottom:18px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px}
+.tile{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px 16px}
+.tile .l{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);font-weight:700}
+.tile .v{font-size:26px;font-weight:800;margin-top:2px}.tile .s{font-size:12px;color:var(--mut)}
+.good{color:var(--good)}.bad{color:var(--bad)}.warn{color:var(--warn)}
+.tablewrap{overflow-x:auto;background:var(--card);border:1px solid var(--bd);border-radius:14px}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:820px}
+th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--bd);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}th{font-size:11px;text-transform:uppercase;color:var(--mut)}
+td.note{text-align:left;color:var(--mut);font-size:12px;max-width:260px;white-space:normal}
+.pill{padding:2px 8px;border-radius:999px;font-weight:700}
+.p-good{background:rgba(10,125,79,.14);color:var(--good)}.p-bad{background:rgba(192,57,43,.14);color:var(--bad)}.p-warn{background:rgba(184,134,11,.14);color:var(--warn)}.p-na{color:var(--mut)}
+.foot{color:var(--mut);font-size:12px;margin-top:16px}
+</style></head><body>
+<div id="gate"><h1>🔒 Compta Vivélan</h1><input id="pw" type="password" placeholder="Mot de passe" autofocus>
+<button onclick="unlock()">Ouvrir</button><div id="err"></div></div>
+<div class="wrap" id="app" style="display:none"></div>
+<script>
+const BLOB="{\"salt\":\"ruu5KvCw7Y7tmNdNqjhMFg==\",\"iv\":\"Qbqv5G5K007EqdWH\",\"data\":\"pL2P7e6agMuC9ML2aiREQvAbelKaGbZKUyZ3DEZ1oGt+sHRUMDV6XfZADD72bmoSAEZrucC2ycY763X7ikvsp/hYf+W1grBn3mlymKiIUchl5ob/bxPrzrH3bVAlgup33tEhvdEWzcrFUWZO8s+ar59+FJWkYdHMvP01k52JrUjPzlFDU/wu7a40Yl0PPrH97uk8hZPaCqkh7h+UKSZk+7XlfzGwEYB8dq1coPOsNe1y/rgMwFM6vZ4Fx8LyoWIpu0e59BZoS1WZnVRh7Knlk2I8RTntd1/dR8YAeSbIN86QY5bU1jBg6t6V3RUry8EFesI1fQKMXpZS/g0XOtkt5z7/HkteB7Lqw89chvKs526uUBxIMTGCSfb65RIq/FkBVpVOUzXtA3xI4+YzMK6EJM0jABaCP6hXPk4wq7MRI+vvHpbTSphd1ZguYP6DJhtsMrcHvnOtFLEaajBDaWJvpEltZJGwiz9jHefDAKbq4dU96WduK0wvfRtDXa4wwmquChQ4qg7e/zpb8ICFd5axswdhUBet8nqORGe4fQYqGfW9ZzXti+Jp9jSf+zagM5VI3u3wdVRatd36wlWr1bTAJMHNsEFCpXUGFYjpo/pv7uYfyObjPQ+d+ruWb4NAYWpw9I2qCyYwS/PJNKxihd9PWtHRR02id5CXAYz11SW0NfDNuCG2Ubttqr+tGU9LlVSv6fNUcSh8hITtT8HiF9FML7NwtNHT5tl3r7UEnHVP13mI+2+K7SMdGxN+dAibcqSXKLwFGJywfC/ZVL1PWNFxTmGLXNalqUMunat6YBtX04gAf+zpww6ZzST0R4UnFY0KdnUT3qm8qvMWcn5piOHr3nn+3nU7wqz9XHErm0AYn8gpfmL7P1CkU91kyWUra4Snu0vuWTqPYf9D46vubZqFLzo/A8vtjZqtp6Taxa21JHOdEkI1t9n0UsvhgyRexMPp19BYHlxDU0+PGMcPV64JNJGE18yvli/wMyMDdALmkRgcRmaISgG6mexSK6kaMObgi8xlnfFrQ98ZOj7eBQNYNF6D39AlCfY5irowY4ixaCxFcfrNaC5xEc8OQuvrZfA2NX8zKGqpkfMhxC9rn9gj3jZHkIf+a3QTy0+k6SKEc78XB7RcKg6gAAdDJ/FLbktUC6MFXPNKylp+wrJrKv+viegsZwh18jWT71afMJAyEQj0ZjtWb3Ulbj4KE+NBiOiNPQJaXpAvqZPsoeJq0FzgWMG1Y7YmqsIFC0Vl6jBZAklNujQpOA34HVY10fih0L8xYJNNDDUwpaiyiZvhOxSQS0kJRc3FSAV4D8n6oUiOef0hf2AnXUPDW72e+hecDGDwpQmbYC9EKXTBQovjSCnhnhgSYIwBrrNpX7tTjiu4JQc5rJg3wcBlmRF6stlXp65xJbNADJA5iH3uwF1WAS8OdTWpJGH9HMC11+sTX8zkCupkFqtkbWTGpYZtpvULwSTnoA5qNazxw2gNn/3/bh2Nbi+0QuVM9u4ggMyhKJ9cUUnzIIHueJtMOcQshtKzD9RRpcX4zUSg5wzYP1CvBVNmurExp/lzqrz+jNkQbH27ZjqL0LkokBjs9GxWFlBIDiqhiCPaJgAJvD3wB4fG/iCuGBwLhmpV6B6KIwSkdcfZoIaQfqRgskjY8O0I7bQSSqd0CzOybR2VglWnAkLQAkciWmbiudPMMr9VCZzwEHvQYl53vl3eQmyNnZcD3prCpcOIKOy9H++l8rO6Gi86lQxg24pMBUdCo1WrHi4mRbq1LhW5lHAB18I679mjT2dLAlS358sCOfgU/2mx38+4CCThJhOFuDlkDvYYFgW/RGurQ1qN6rHSJ4twPbp7sT1ZXGxV4r2Ui9Bdbs1lL92wyvR6r0GG3FW9s/oq6k95Xlpwq983xujZy/5y7z+INrVyRuoo8ERA5g/eIsOo5dCAbHL2BiDkvLW0xALbuXPeswUWE4RalTTB3JyoCqfkgqcypDKEI1aCgVztel7Ovfr7Jmk7Yrk2AUhN3+q06Vak6aRfSSsJR1R9AOvvVUuhusncVkigGCLsbSCVEhiTCwzJnp7m9Bct1Smpmr8bbIQjiSVDYzZWdXicFuvlecHjZz6R3hEIUmIc6rGnOrhzjRoWKog0J77obTbNsMSfbzj/tFdz6MyVcKSXlLWT0ePI7N/hXdnpWJlwxJ6L+JuoXEzUTjWj5WP390cGShsRDTCmPjB3JgEV9dZU32TlJfP5ZL0hiEKoFh7SP2/Z6LmQOALqckfEQeOXMnQ+rp+lCYPLGljPNFePC191FW+rkTN8WXteDz6uTUkxyIXp/GsKuha2ds04j7UG+ZZcSWPbEgFEUjJLebiicUUhziOTXjYZpO8Ee1w1G7phVZIKpuPjxCdAjhLjxpSMds3kHKUf8409WPql+OOwbVNPfC8LaShBtMFtfgrMy4KRb1zVR4OANfdy8z5f3Fk69yy2HNbQWkgA9p6Dm9EeDCZL/IvrLzQd4dQ77H6keCTZtBZqVpUMhLPCKz7q3F1oX9Rwazp93ck0LzKv26SMAwXm7x3KoPWJu4kHMC7jBehsDrJeZ7Kx4apGuv8ocevPLzFx9libT/XNF8aJS/nVw7b4w7fbLW0nFkKYjF6BgFkqc++ZPwsyMbonAAEEBs/wSr49tf6oMBXh8BfHNfGVXE66Zilv1so/XOBQgdnfbFzzvaGMt9ep+Zz97Y2lKXVgeZ8y2MsSIeHlRb0UjYTsu6KOQdOXfmuI6kAdbUdyLPG5aSTuiI0Qq61eA7PkAd5e/qZz7o16fb/b6nlSTW6gLo/91z/0wg4AZEsoYi7XBlFoW6etsegZJeWc3AWPtydLvKxaxhujNLNDxRq27WiPimDj9mGZ5J6PInnMwzU3EdXT4Ll+etUYWFPHKIxyEYVYet487f4bT/1y/GSxM9CnQXpUeqVs4HVEleRkptCcozjC410cmlEWHnOERMosv2Lbrp9o+8Z3ZM+Kyu1RTUTELlQQ76JJc7SgJPZuDgIGcWMDDeoPkGL3BjLyRvsPf+CyfMkGBnguMYfbjoliyqi2KmvaIgGPEGFKyLskjbmaVaR6BQEZPy46/xP9cZWIeOAlaU26/+RFdEakSUhykqLqv9qlFzdnuped5PGKA7vKfV7wJWY6/tl2KtE43W2z5XTecLy0MCiqyylyYJLQpLFQY+0f3k8g4a/VduACZwd4jT92RnXs0e1IqVldtELtP0+2ypSVJEnCpCrYcBZDT0r9gk+6CBlgk7/LCZZdFvgWz/bjf+2tLIQAj5kF9+s14xFKrj9mOL3ifQ8k4f9T99oXSeapxN81AF+uJ0K4Pl197Pu1B++cJarG+a7uZHCtPmirSRjLakFOsQ8CgjqyJmg479fcamD8+eBSlYqyMaekdL5mQhersaD7nOkm8fuPf18AeLwk2hEj5IQWES9I4apSHZzwYf0E/ATYQrHcpETuJEGfqIiTMOb00nsmXN1RxOWeHtUoCAxHk6f2RZvfgcs+hrwzBdJMNhPjp2RRtQJz1IPjiwplyqelQ5PhniKGRe5fSRUNtPhwgi7uWDkSl9YxqHNke2E6vyuIEoH26SFWYu6Bct0ObbJ1rtOM5H4WVX5mtTBLnPMKRJ2ypmasgOTMirEImgKqR4NE2YgDL7RBmFYI6Ta5NjfHjIZ6zDSfjq+j+J7G8dfAJ8s6emgEZ5RCpwXBQC5BijnkI5xNctclD+JQg7rbU3Rnwa66srB5wy9XlMx3KBelYLZeDQd3YU6bg5otPrdjysDVqMBBAU2oHHp9d+M9Qo6jYhDwOWLMzPiwkeXWKJojkmofXoNKxYu0+Bk1SbIPvpuJ6Hq/XRwas6bKZz6EyAAsIZ4397jtyxD5S3czwtvDSV8ldYL6K3LS08MEKhRdGKBBbmVKQxwosYKYyuSzfHt30RkHDwzU5Ox43Eb/0Xj6XY0fxpkEN9+SY0qYTSofzn0VWYXopesQaZAschfRGSwRQ7L6WaMEGsDjQ6GBQjyLtTibJFJ6WBlCz2M2tt10OQAbufyrKuJhtr8pHebaQe43Y4EPkaFbvDeyD7iQJHIgj/9cpCIuRAwNvC3r1pscMrzHh9BgrKCxI+vJbhwtdXoGF3XmHifuW70Bi6s+4xgkgnnMeI4c85Ymxb44hSKB4w80ibsKlj5XKO6z2uHH3cF1KwzIN5r0DC8OCWWWSOqqbgA8lJt4My/E23AkAUUKVUDBjIHWqliIQTnBTwLgQNgJOn7+SNNUd7vpg923eDNF2L4uO9m6oJ9GJPLODnz1ocYAXK6Gd5zUO9GAXREXxschGWswSslWFf60DReZJWj3NF7XE9j24dFvuIeN3Mr7xeSmbMRIEJygjq0Mvhtf8/KV+L4REXiayA/0pb42LPgDdfpui2IaAGgVWRBCvEyRLs2rP0QBrsBSfPaCt6Fi9IWt7dosxheHBbHtXG6M4IBeHB3/TeuRp9fNTbQZksstu5w60zZiQz8215Muh+kfPz1v5SjAXZs5lB23P0H0rqwAjc3i9rNRCGPym6sVDoyr1iVR1WoV02s92I61ahtGJVWDIMGDOJGgrK0xvIW6DZleDXSsyCOTxiqxAkKFnWndW9UbqetXBftH5c35SBmEEfKbGCpGX0xqGeCkdw1hpQncY9CvL7fglWKZSgSiQZywArztklpbzRswg3tzDdGaKI2ZwqXRaqUknqONkZdMRUPoFdZUp0OOgKeG0NEQYAJBC3Dg2bW3KilO3exm2bB8y3Q142SmHSYZjiol9P58zjbNA8btSDGXIFlgzIngx/ydgFZbSSn6NEEsCTlNGtl98eH5drrkEeRXBgfg4M4mVgyAGkB5hrDLmq5ImrL4Sejoh4JAGN5yrZokcZ358ICvIaikcxOT5ADZApn4ugk82ya/MmpJldu3n/sir0Jm/LB9rRwIdSEExehMzEbdKmEfXWOzYni9EUQQLaVugtR22Tpy+il/bx00qjJEik4SUuccLP39zNGFpz03QWRUSfojsP7poBAK0SQbMicgz/vN3VLBfbdZmyvMaj0XtzfwsOiUfT+mPIne+MbJxpYFE7eosZO12uZU2w2I6zV4wKwOgweiYzl8yx2dKIm4J33WOaHE2a9FkJblXRgHzKzsmDsbXPane1MhMCrSrP2wF0t5u4vYwk9np/h6L3aRpyywmGpprLm/BMycC5gKKQgjXMdKHHqXhN9Vb6NsA8MTwa3PbmhelKkkLtIC+4pb6LiOFy4gvLyFDx5ppM/GkvLR/CSnRbJH1RbikRGUD3NNF2G2g/x9LMJMF7aXr0KETp5YpABP4f6uORCZyxqJbW4iWIoPWcbpwjPFWvaSVfq1GPsZXLYUZdOonOZ2v8GJdaaG48/azy7XygugAU+yjdsvhDCvQJAxqJimihOM2Qc7melzXUH9h3dXCJkCc2bnoaI91e3F0Gjw2Ue3Kp4vxMRtFQ/Ou+xpSUHSqRKOMnKeiBFNcGEvK7BUYvWMO5s0/EkcroXt3rawgt7MR7kGV1jBhw==\"}";
+const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
+async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
+return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:250000,hash:'SHA-256'},km,{name:'AES-GCM',length:256},true,['decrypt']);}
+async function tryDecrypt(key){const blob=JSON.parse(BLOB);
+const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:b2u(blob.iv)},key,b2u(blob.data));
+return JSON.parse(new TextDecoder().decode(plain));}
+async function unlock(){const pw=document.getElementById('pw').value;const blob=JSON.parse(BLOB);
+try{const key=await deriveKey(pw,b2u(blob.salt));const data=await tryDecrypt(key);
+const raw=await crypto.subtle.exportKey('raw',key);
+localStorage.setItem('compta_key',JSON.stringify({k:btoa(String.fromCharCode(...new Uint8Array(raw))),exp:Date.now()+30*864e5}));
+render(data);}catch(e){document.getElementById('err').textContent='Mot de passe incorrect';}}
+document.getElementById('pw').addEventListener('keydown',e=>{if(e.key==='Enter')unlock()});
+(async()=>{try{const s=JSON.parse(localStorage.getItem('compta_key')||'null');
+if(s&&s.exp>Date.now()){const key=await crypto.subtle.importKey('raw',b2u(s.k),{name:'AES-GCM'},false,['decrypt']);
+render(await tryDecrypt(key));}}catch(e){localStorage.removeItem('compta_key');}})();
+const eur=(n)=>n==null?'—':n.toLocaleString('fr-FR',{maximumFractionDigits:0})+' €';
+function merPill(m,be){if(m==null)return'<span class="pill p-na">—</span>';
+const c=m>=be*1.15?'p-good':(m>=be?'p-warn':'p-bad');return'<span class="pill '+c+'">'+m.toFixed(2)+'</span>';}
+function render(d){document.getElementById('gate').style.display='none';const app=document.getElementById('app');app.style.display='block';
+const t=d.totals,be=d.params.be_roas;
+const missing=t.spendMissingDays?'<div class="sub">⚠️ '+t.spendMissingDays+' jour(s) sans spend Meta saisi — le profit total ignore ces jours.</div>':'';
+app.innerHTML='<h1>Compta Vivélan</h1><div class="sub">Généré le '+new Date(d.generatedAt).toLocaleString('fr-FR')+' · BE ROAS '+be+' · CAC max '+d.params.cac_break_even+' €</div>'
++'<div class="tiles">'
++'<div class="tile"><div class="l">CA net</div><div class="v">'+eur(t.revenue)+'</div><div class="s">'+t.orders+' commandes</div></div>'
++'<div class="tile"><div class="l">Spend Meta</div><div class="v">'+eur(t.spend)+'</div><div class="s">MER '+(t.mer??'—')+'</div></div>'
++'<div class="tile"><div class="l">Profit net</div><div class="v '+(t.net>0?'good':'bad')+'">'+eur(t.net)+'</div><div class="s">après COGS, frais, pub, outils</div></div>'
++'<div class="tile"><div class="l">CAC</div><div class="v">'+eur(t.cac)+'</div><div class="s">plafond '+d.params.cac_break_even+' €</div></div>'
++'<div class="tile"><div class="l">Charges fixes</div><div class="v">'+eur(t.fixedMonthly)+'</div><div class="s">par mois</div></div>'
++'</div>'+missing
++'<div class="tablewrap"><table><thead><tr><th>Date</th><th>Spend</th><th>Cmd</th><th>CA net</th><th>COGS</th><th>Frais</th><th>Profit</th><th>MER</th><th>MER 3j</th><th>CAC</th><th>Note</th></tr></thead><tbody>'
++d.days.map(x=>{const pc=x.net==null?'':(x.net>0?'good':'bad');
+return'<tr><td>'+x.date+'</td><td>'+(x.spend==null?'<span class="pill p-na">à saisir</span>':eur(x.spend))+'</td><td>'+x.orders+'</td><td>'+eur(x.netRevenue)+'</td><td>'+eur(x.cogs)+'</td><td>'+eur(x.fees)+'</td>'
++'<td class="'+pc+'"><b>'+(x.net==null?'—':eur(x.net))+'</b></td><td>'+merPill(x.mer,be)+'</td><td>'+merPill(x.mer3,be)+'</td><td>'+(x.cac==null?'—':eur(x.cac))+'</td><td class="note">'+x.note+'</td></tr>'}).join('')
++'</tbody></table></div>'
++'<div class="foot">Profit jour = CA − refunds − COGS ('+d.params.cogs_per_order_bundle+' €/cmd) − frais paiement − spend − charges fixes/30. Session mémorisée 30 jours.</div>';}
+</script></body></html>
