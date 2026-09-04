@@ -1,13 +1,161 @@
 <!doctype html><html lang="fr"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
 <title>A/B Tests Vivélan</title><style>
-:root{--bg:#f5f7f4;--card:#fff;--tx:#15271b;--mut:#5f7367;--bd:#dde5dd;--acc:#1d5c3d}
-@media(prefers-color-scheme:dark){:root{--bg:#101613;--card:#18211b;--tx:#e8f0e9;--mut:#8fa396;--bd:#26332a}}
-body{margin:0;font:15px/1.5 -apple-system,system-ui,sans-serif;background:var(--bg);color:var(--tx);
-display:flex;min-height:100vh;align-items:center;justify-content:center;padding:20px;text-align:center}
-a{color:var(--acc)}
-</style></head><body><div>
-<h1>🧪 A/B Tests</h1>
-<p style="color:var(--mut)">Premier build en attente — cette page sera remplacée par le dashboard chiffré.</p>
-<p><a href="../">← Accueil</a></p>
-</div></body></html>
+:root{--bg:#f5f7f4;--card:#fff;--tx:#15271b;--mut:#5f7367;--bd:#dde5dd;--good:#0a7d4f;--bad:#c0392b;--warn:#c07f00;--acc:#1d5c3d;--va:#8757c9;--vb:#0a7d4f}
+@media(prefers-color-scheme:dark){:root{--bg:#101613;--card:#18211b;--tx:#e8f0e9;--mut:#8fa396;--bd:#26332a;--warn:#e0a52a;--va:#a67ee8}}
+*{box-sizing:border-box}body{margin:0;font:15px/1.5 -apple-system,system-ui,sans-serif;background:var(--bg);color:var(--tx)}
+.wrap{max-width:1000px;margin:0 auto;padding:20px}
+#gate{display:flex;min-height:100vh;align-items:center;justify-content:center;flex-direction:column;gap:14px}
+#gate input{font-size:17px;padding:12px 16px;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);width:min(320px,80vw)}
+#gate button{font-size:16px;padding:12px 22px;border:0;border-radius:10px;background:var(--acc);color:#fff;font-weight:700;cursor:pointer}
+#err{color:var(--bad);min-height:1.2em}
+h1{font-size:22px;margin:8px 0 2px}.sub{color:var(--mut);font-size:13px;margin-bottom:16px}
+a.back{color:var(--acc);text-decoration:none;font-weight:700;font-size:14px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px 18px;margin-bottom:14px;cursor:pointer;transition:border-color .15s}
+.card:hover{border-color:var(--acc)}
+.card h2{margin:0 0 4px;font-size:17px}
+.meta{color:var(--mut);font-size:13px}
+.row{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.kv{font-size:13px}.kv b{font-size:15px}
+.pill{padding:2px 10px;border-radius:999px;font-weight:700;font-size:12px;display:inline-block}
+.p-good{background:rgba(10,125,79,.14);color:var(--good)}.p-bad{background:rgba(192,57,43,.14);color:var(--bad)}
+.p-warn{background:rgba(192,127,0,.16);color:var(--warn)}.p-na{background:rgba(127,127,127,.12);color:var(--mut)}
+.p-run{background:rgba(29,92,61,.14);color:var(--acc)}
+.bar{height:7px;border-radius:99px;background:var(--bd);margin-top:10px;overflow:hidden}
+.bar>div{height:100%;background:var(--acc);border-radius:99px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:14px 0}
+.tile{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:13px 15px}
+.tile .l{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);font-weight:700}
+.tile .v{font-size:23px;font-weight:800;margin-top:2px}.tile .s{font-size:12px;color:var(--mut)}
+.va{color:var(--va)}.vb{color:var(--vb)}.good{color:var(--good)}.bad{color:var(--bad)}
+.tablewrap{overflow-x:auto;background:var(--card);border:1px solid var(--bd);border-radius:14px;margin:14px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{padding:9px 12px;text-align:right;border-bottom:1px solid var(--bd);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{font-size:11px;text-transform:uppercase;color:var(--mut)}
+tr:last-child td{border-bottom:none}
+.box{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px 18px;margin:14px 0;font-size:14px;line-height:1.65}
+.box h3{margin:0 0 8px;font-size:15px}
+.formula{font-family:ui-monospace,Menlo,monospace;font-size:13px;background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:10px 12px;margin:8px 0;overflow-x:auto}
+.legend{display:flex;gap:18px;font-size:13px;margin-bottom:6px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+.foot{color:var(--mut);font-size:12px;margin-top:16px}
+h2.sec{font-size:16px;margin:22px 0 10px}
+</style></head><body>
+<div id="gate"><h1>🧪 A/B Tests Vivélan</h1><input id="pw" type="password" placeholder="Mot de passe" autofocus>
+<button onclick="unlock()">Ouvrir</button><div id="err"></div></div>
+<div class="wrap" id="app" style="display:none"></div>
+<script>
+const BLOB="{\"salt\":\"2bg7m1tks0LA/zx7qbxlXg==\",\"iv\":\"GgFRvYFH+ym8SUb/\",\"data\":\"mM+Ksx+2Oen6QgApszqi0eyWiYRvK9Afdepx9LtdJPuhv0urWO6L3pq/HG+INayCpEI+1d251sTaQnpiRy1pn9xCGBtrR73uOqcUWKd+t4xGuCH5ahUNU/SMrY8f1/V4ViDeT/FDFyLGelALKynTgJRETXix0AAovtzTTtmiWqJEMZAFWfR8GL8kOIh4uYPLrB9pUHIyjMjm/2CWePUNUryhteFvamA9zhiPYRjJV5HDZCRfhGgrZhTM7q8o6lAvHqFekk1Q71DYM6J5516Mac/WVpI/2IoE3WxXVYZunldhJM0lmLDO89P1qd9lZ392x1rA00pMD1k4CjstqUWc2lF8lFjcTA0ma+aJtz8EbY0WdQDxyyTUW2gbX2ptvo8q7VCm2hSGJgUJ2e9CX95d9F8kHvvbnzZKTIwkHojmj23iYLazwh6NAXJEVcL8Rpihz27JB8+8j+kzKvs1pZv7RLp8uz9zgtzZ17+AHPWLKpqlN1ihdWJtahyJJwrfmSzmFFYJ/EQ/Pyvfls0PcDoFP8TY2l1I7yR45ipxUF3TIbZBvzAMoToogiHkjh9jUxd8FqELfWACG5nzYNvLnRnYbKk4lDaUbe/BEYCRrDAsOyMIWdJBriKC1B4ldOcATORO1jIT6oXzUVt7RXwfAIE6/tU2ozsnGQLcsyccxpX3eSmG6gvV7PvxwZYjhhJVUeDKDFExQuBZXD0YYMcP4NQJNFgW0C1yYKi+CaTifbTMsbK0r/Qn+p0HI2i6qm44+33pr7aL1RXkuwJxjArz8UTQh3Vm+th88Swz7plkZDHB+X0PPt6MPeBraxG3aJGvKMIDC5lBqv0ips5d14w6QquHKELZMk0DN6wo5fow0Q4Mlw47yWmOhCNSX6Vmo5SBAqbBFggDVEayG6GhH/vY2LCtBvy57nPzHPKnTvBhzZTxjidlN3ZRO24M8FmZ1IIN8PKZfohTzxk+MotPAuiJadFhjaRzbn02k0s6FTRwpZl9DaXBRjJWzCKghQW4I1d9C/vr9dltOFGcM1rGDkPTkc3kCkBeblAaM5OXK4WwgSzMosyqWkFb/9yAJnZj41+QoEGCcQOTm8r0c6PvzWtn4400z4jTSpybtKa9gnUN5pwf6fir6pRQeMYuQp2pwPiNNvIS8CL0ftK3xscTF28RQWNDDe7J3oH59sYLp8rUxIVaeAXPrJnU447Q9JmdSo6pCusjSiDXBEIXvVCjPIhN5iHGvTR+kjflezE/vnDpxcRi61CZBKPnFPZhbzJPPq0WFkQCKA+OC+GUPtaGFpiTwMevK3OiOjGzEMoQPxv4GWF4kbBGAkXtkb/CkhegBQTEZaDmqEVQ4YyGNcMqfHcAMgQRzj3hEX6zELrtHgBzJHxCEzRoGu8cSOsECQD8gd9UEZILrXgy+6sFkgq0AokIBRdcOWyUK3Ngqqyw/4Wp5GeIRjk7UmWjSK2Fyi9TnC7phecPuVtEF8EYtZgz+jShJyNzEGlVgeXrWnzBbMQfpc7B9Sen2twmtQqPkbE4Jx9rV0/qtjwtI9OcLrm7PC+7WQEyVt2RDtDCgKwDNY8wCoC7mJV4a8K/lZ/ow2zhKOR4KsT82MdgqjBL58Wun5GYt/SO8ToPAvZLDLslzcoEwPmSXCkY+xSvUOk6mJ23mysrSLP+/fSW1UznMygmbV1wZFDo1h3ZSe1B\"}";
+const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
+async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
+return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:250000,hash:'SHA-256'},km,{name:'AES-GCM',length:256},true,['decrypt']);}
+async function tryDecrypt(key){const blob=JSON.parse(BLOB);
+const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:b2u(blob.iv)},key,b2u(blob.data));
+return JSON.parse(new TextDecoder().decode(plain));}
+async function unlock(){const pw=document.getElementById('pw').value;const blob=JSON.parse(BLOB);
+try{const key=await deriveKey(pw,b2u(blob.salt));const data=await tryDecrypt(key);
+localStorage.setItem('vl_pw',JSON.stringify({p:btoa(unescape(encodeURIComponent(pw))),exp:Date.now()+30*864e5}));
+boot(data);}catch(e){document.getElementById('err').textContent='Mot de passe incorrect';}}
+document.getElementById('pw').addEventListener('keydown',e=>{if(e.key==='Enter')unlock()});
+(async()=>{try{const w=JSON.parse(localStorage.getItem('vl_pw')||'null');
+if(w&&w.exp>Date.now()){const blob=JSON.parse(BLOB);const pw=decodeURIComponent(escape(atob(w.p)));
+const key=await deriveKey(pw,b2u(blob.salt));boot(await tryDecrypt(key));}}catch(e){}})();
+let DATA=null;
+const esc=(s)=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const eur=(n,d=0)=>n==null||isNaN(n)?'—':n.toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d})+' €';
+const pc=(n,d=1)=>n==null?'—':(n*100).toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d})+' %';
+const frDate=(iso)=>{if(!iso)return'—';const[y,m,d]=iso.split('-').map(Number);
+return d+'/'+String(m).padStart(2,'0')+(y!==new Date().getFullYear()?'/'+y:'');};
+function sigPill(p){if(p==null)return'<span class="pill p-na">trop tôt</span>';
+if(p<0.05)return'<span class="pill p-good">significatif · p='+p.toFixed(3)+'</span>';
+if(p<0.15)return'<span class="pill p-warn">tendance · p='+p.toFixed(3)+'</span>';
+return'<span class="pill p-na">pas de différence · p='+p.toFixed(2)+'</span>';}
+function statutPill(t){return t.statut==='en_cours'?'<span class="pill p-run">EN COURS · J'+t.data.joursEcoules+'</span>'
+:'<span class="pill p-na">TERMINÉ · '+frDate(t.debut)+' → '+frDate(t.fin)+'</span>';}
+function deltaTxt(a,b,inv){if(a==null||b==null||!a)return'—';const d=(b-a)/a*100;
+const s=(d>0?'+':'')+d.toLocaleString('fr-FR',{maximumFractionDigits:1})+' %';
+const good=inv?d<0:d>0;return'<span class="'+(Math.abs(d)<1?'':(good?'good':'bad'))+'">'+s+' B vs A</span>';}
+function boot(data){DATA=data;document.getElementById('gate').style.display='none';
+document.getElementById('app').style.display='block';route();}
+window.addEventListener('hashchange',()=>{if(DATA)route()});
+function route(){const id=location.hash.slice(1);
+const t=DATA.tests.find(x=>x.id===id);
+document.getElementById('app').innerHTML=t?detail(t):liste();window.scrollTo(0,0);}
+function carte(t){const V=t.data.V,st=t.data.stats;
+const conv=V.A.orders+V.B.orders,prog=Math.min(100,Math.round(conv/(t.cibleConversions||500)*100));
+return'<div class="card" onclick="location.hash=\''+t.id+'\'">'
++'<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline"><h2>'+esc(t.nom)+'</h2>'+statutPill(t)+'</div>'
++'<div class="meta">'+esc(t.page)+' · lancé le '+frDate(t.debut)+(t.verdict?' · <b>'+esc(t.verdict)+'</b>':'')+'</div>'
++'<div class="row">'
++'<span class="kv">Exposés <b>'+(V.A.expo+V.B.expo).toLocaleString('fr-FR')+'</b></span>'
++'<span class="kv">Commandes <b class="va">A '+V.A.orders+'</b> · <b class="vb">B '+V.B.orders+'</b></span>'
++'<span class="kv">PPV '+deltaTxt(V.A.ppv,V.B.ppv)+'</span>'
++sigPill(st.ordersBinom?st.ordersBinom.p:null)+'</div>'
++'<div class="bar"><div style="width:'+prog+'%"></div></div>'
++'<div class="meta" style="margin-top:4px">'+conv+' / '+(t.cibleConversions||500)+' conversions cible ('+prog+' %)</div></div>';}
+function liste(){const enCours=DATA.tests.filter(t=>t.statut==='en_cours'),finis=DATA.tests.filter(t=>t.statut!=='en_cours');
+return'<h1>🧪 A/B Tests</h1><div class="sub">Généré le '+new Date(DATA.generatedAt).toLocaleString('fr-FR')+' · <a class="back" href="../">← Accueil</a></div>'
++(enCours.length?'<h2 class="sec">En cours</h2>'+enCours.map(carte).join(''):'')
++(finis.length?'<h2 class="sec">Terminés</h2>'+finis.map(carte).join(''):'')
++(!DATA.tests.length?'<div class="box">Aucun test dans le registre.</div>':'')
++'<div class="foot">Un test = une entrée dans data/ab-tests.json (repo vivelan-compta). La décision se prend au PPV (protocole CRO), la significativité sur la répartition des commandes.</div>';}
+function funnelRow(label,a,b,baseA,baseB){const ra=baseA?a/baseA:null,rb=baseB?b/baseB:null;
+return'<tr><td>'+label+'</td><td class="va"><b>'+a.toLocaleString('fr-FR')+'</b>'+(ra!=null?' <span class="meta">('+pc(ra)+')</span>':'')+'</td>'
++'<td class="vb"><b>'+b.toLocaleString('fr-FR')+'</b>'+(rb!=null?' <span class="meta">('+pc(rb)+')</span>':'')+'</td>'
++'<td>'+deltaTxt(ra,rb)+'</td></tr>';}
+function chart(t){const tl=t.data.timeline;if(tl.length<2)return'';
+const W=900,H=230,Lp=44,Rp=10,Tp=12,Bp=30;
+const max=Math.max(...tl.flatMap(d=>[d.expoA,d.expoB]),1);
+const X=i=>Lp+(W-Lp-Rp)*(i+0.5)/tl.length,bw=Math.max(3,Math.min(16,(W-Lp-Rp)/tl.length*0.32));
+const Y=v=>Tp+(H-Tp-Bp)*(1-v/max);
+let g='';for(let k=0;k<=3;k++){const v=max*k/3,y=Y(v);
+g+='<line x1="'+Lp+'" y1="'+y+'" x2="'+(W-Rp)+'" y2="'+y+'" stroke="var(--bd)"/><text x="'+(Lp-6)+'" y="'+(y+4)+'" text-anchor="end" font-size="11" fill="var(--mut)">'+Math.round(v)+'</text>';}
+const step=Math.max(1,Math.ceil(tl.length/10));
+tl.forEach((d,i)=>{if(i%step===0||i===tl.length-1){const p=d.d.split('-');
+g+='<text x="'+X(i).toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle" font-size="11" fill="var(--mut)">'+(+p[2])+'/'+(+p[1])+'</text>';}
+g+='<rect x="'+(X(i)-bw-1).toFixed(1)+'" y="'+Y(d.expoA).toFixed(1)+'" width="'+bw+'" height="'+Math.max(1,(H-Bp)-Y(d.expoA)).toFixed(1)+'" rx="2" fill="var(--va)"><title>'+d.d+' — A : '+d.expoA+' exposés, '+d.ordA+' cmd</title></rect>'
++'<rect x="'+(X(i)+1).toFixed(1)+'" y="'+Y(d.expoB).toFixed(1)+'" width="'+bw+'" height="'+Math.max(1,(H-Bp)-Y(d.expoB)).toFixed(1)+'" rx="2" fill="var(--vb)"><title>'+d.d+' — B : '+d.expoB+' exposés, '+d.ordB+' cmd</title></rect>';});
+return'<div class="box"><h3>Exposés par jour</h3><div class="legend"><span><span class="dot" style="background:var(--va)"></span>Variante A</span><span><span class="dot" style="background:var(--vb)"></span>Variante B</span></div>'
++'<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block">'+g+'</svg></div>';}
+function detail(t){const V=t.data.V,st=t.data.stats,ob=st.ordersBinom,ct=st.cvrTest;
+const conv=V.A.orders+V.B.orders;
+let verdict;
+if(t.verdict)verdict='<b>Verdict acté : '+esc(t.verdict)+'</b>';
+else if(!ob)verdict='Trop tôt pour conclure ('+conv+' conversions — la lecture statistique démarre à ~10).';
+else if(ob.p<0.05)verdict='<b class="'+(V.B.orders>V.A.orders?'good':'bad')+'">'+(V.B.orders>V.A.orders?'B devant':'A devant')+'</b> sur la répartition des commandes (p='+ob.p.toFixed(3)+' &lt; 0,05). Croiser avec le PPV avant de trancher.';
+else verdict='Pas de différence significative sur les commandes à ce stade (p='+ob.p.toFixed(2)+'). On continue jusqu\'à ~'+(t.cibleConversions||500)+' conversions ou 2 semaines.';
+return'<a class="back" href="#">← Tous les tests</a><h1>'+esc(t.nom)+'</h1>'
++'<div class="sub">'+esc(t.page)+' · '+statutPill(t)+' · généré le '+new Date(DATA.generatedAt).toLocaleString('fr-FR')+'</div>'
++'<div class="box"><h3>Hypothèse</h3>'+esc(t.hypothese)
++'<div style="margin-top:10px"><span class="pill" style="background:rgba(135,87,201,.14);color:var(--va)">A</span> '+esc(t.variantes.A)
++'<br><span class="pill" style="background:rgba(10,125,79,.14);color:var(--vb)">B</span> '+esc(t.variantes.B)+'</div>'
++(t.notes?'<div class="meta" style="margin-top:8px">'+esc(t.notes)+'</div>':'')+'</div>'
++'<div class="box" style="border-color:var(--acc)"><h3>Où on en est</h3>'+verdict+'</div>'
++'<div class="tiles">'
++'<div class="tile"><div class="l">Commandes</div><div class="v"><span class="va">'+V.A.orders+'</span> · <span class="vb">'+V.B.orders+'</span></div><div class="s">'+sigPill(ob?ob.p:null)+'</div></div>'
++'<div class="tile"><div class="l">PPV (profit/visiteur ≈ CA/visiteur)</div><div class="v"><span class="va">'+eur(V.A.ppv,2)+'</span> · <span class="vb">'+eur(V.B.ppv,2)+'</span></div><div class="s">'+deltaTxt(V.A.ppv,V.B.ppv)+'</div></div>'
++'<div class="tile"><div class="l">CVR (achat / exposé)</div><div class="v"><span class="va">'+pc(V.A.cvr)+'</span> · <span class="vb">'+pc(V.B.cvr)+'</span></div><div class="s">'+(ct?sigPill(ct.p):'<span class="pill p-na">trop tôt</span>')+'</div></div>'
++'<div class="tile"><div class="l">AOV</div><div class="v"><span class="va">'+eur(V.A.aov)+'</span> · <span class="vb">'+eur(V.B.aov)+'</span></div><div class="s">'+deltaTxt(V.A.aov,V.B.aov)+'</div></div>'
++'<div class="tile"><div class="l">CA</div><div class="v"><span class="va">'+eur(V.A.revenue)+'</span> · <span class="vb">'+eur(V.B.revenue)+'</span></div><div class="s">encaissé (transactions SUCCESS)</div></div>'
++'</div>'
++'<div class="tablewrap"><table><thead><tr><th>Étape (visiteurs distincts)</th><th>A</th><th>B</th><th>Δ relatif</th></tr></thead><tbody>'
++funnelRow('Exposés (vue PDP)',V.A.expo,V.B.expo,null,null)
++funnelRow('Ajout panier',V.A.atc,V.B.atc,V.A.expo,V.B.expo)
++funnelRow('Checkout démarré',V.A.co,V.B.co,V.A.expo,V.B.expo)
++funnelRow('Achat (pixel)',V.A.achatPixel,V.B.achatPixel,V.A.expo,V.B.expo)
++funnelRow('Commandes (Shopify — décision)',V.A.orders,V.B.orders,V.A.expo,V.B.expo)
++'</tbody></table></div>'
++chart(t)
++'<div class="box"><h3>La validation statistique, concrètement</h3>'
++'<p style="margin:6px 0"><b>1. Répartition des commandes (le juge de paix).</b> L\'assignation étant 50/50 persistée, sous H₀ (aucun effet) chaque commande a autant de chances de venir de A que de B. On teste l\'écart observé contre ce 50/50 :</p>'
++'<div class="formula">z = (|nA − n/2| − 0,5) / (√n / 2)   ← correction de continuité'+(ob?'  =  (|'+V.A.orders+' − '+(ob.n/2)+'| − 0,5) / '+(Math.sqrt(ob.n)/2).toFixed(2)+'  =  '+Math.abs(ob.z):'')+'<br>p-value (bilatérale) = 2 × (1 − Φ(|z|))'+(ob?'  =  '+ob.p.toFixed(4):'')+'</div>'
++'<p style="margin:6px 0"><b>2. CVR avec les dénominateurs du pixel</b> (test de deux proportions, variance poolée) :</p>'
++'<div class="formula">z = (pB − pA) / √( p̂(1−p̂) × (1/nA + 1/nB) )'+(ct?'  =  '+ct.z+'  →  p = '+ct.p.toFixed(4):'  (en attente de données)')+'</div>'
++(V.A.wilson&&V.B.wilson?'<p style="margin:6px 0">Intervalles de confiance à 95 % (Wilson) — s\'ils se chevauchent largement, prudence : CVR A ['+pc(V.A.wilson[0])+' ; '+pc(V.A.wilson[1])+'] · CVR B ['+pc(V.B.wilson[0])+' ; '+pc(V.B.wilson[1])+']</p>':'')
++'<p style="margin:6px 0"><b>Les seuils :</b> p &lt; 0,05 = significatif (moins de 5 % de chances que l\'écart soit du hasard) · 0,05–0,15 = tendance, on laisse tourner · au-delà = pas de différence détectable.</p>'
++'<p style="margin:6px 0"><b>Honnêteté sur la puissance :</b> avec ~'+(t.cibleConversions||500)+' conversions on détecte de façon fiable (80 % de puissance) un effet relatif ≥ ~25-30 %. Détecter 15-20 % demanderait 1 000 à 1 600 conversions. Si rien ne sort au terme du test : soit il n\'y a pas d\'effet, soit il est trop petit pour être vu à cette taille — dans les deux cas la variante ne paie pas assez pour prolonger, on choisit par simplicité.</p>'
++'<p style="margin:6px 0;color:var(--mut)">La décision finale se prend au <b>PPV</b> (CA par visiteur exposé), pas au CVR seul : un CVR gagnant avec un AOV qui s\'effondre est un faux gagnant. Refunds ignorés (règle compta du 29/08).</p></div>'
++'<div class="foot">Sources : funnel = pixel Shopify → Worker Cloudflare → D1 (visiteurs distincts) · commandes &amp; CA = API Shopify (property _vl_ab, transactions SUCCESS). Générer une mise à jour : demander à l\'agent ou lancer scripts/publish.sh.</div>';}
+</script></body></html>
