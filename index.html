@@ -16,6 +16,9 @@
 .tile .ico{width:46px;height:46px;border-radius:12px;background:var(--grn-bg);color:var(--grn);display:flex;align-items:center;justify-content:center;font-weight:700}
 .tile .t{font-family:'Lora',serif;font-weight:600;font-size:21px;color:var(--ink);margin-bottom:6px}
 .tile .d{font-size:14.5px;line-height:1.5;color:var(--mut);text-wrap:pretty}
+.tile.off{opacity:.55;cursor:default}
+.tile.off:hover{transform:none;box-shadow:none;border-color:var(--bd)}
+.soon{font-family:'Figtree',sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--faint);background:var(--panel);padding:3px 9px;border-radius:999px;vertical-align:middle;margin-left:8px}
 </style>
 </head>
 <body>
@@ -41,14 +44,14 @@
         <div class="ico serif" style="font-size:22px">€</div>
         <div><div class="t">Compta</div><div class="d">Revenus, dépenses et marges du mois, en un coup d'œil.</div></div>
       </a>
-      <a class="tile" href="ads/">
+      <div class="tile off">
         <div class="ico" style="align-items:flex-end;gap:4px;padding-bottom:11px">
           <span style="display:block;width:5px;height:10px;border-radius:2px;background:var(--grn);opacity:.45"></span>
           <span style="display:block;width:5px;height:18px;border-radius:2px;background:var(--grn);opacity:.7"></span>
           <span style="display:block;width:5px;height:14px;border-radius:2px;background:var(--grn)"></span>
         </div>
-        <div><div class="t">Analyse ads</div><div class="d">Performance des campagnes et des créas, ROAS par canal.</div></div>
-      </a>
+        <div><div class="t">Analyse ads <span class="soon">Bientôt</span></div><div class="d">Performance des campagnes et des créas, ROAS par canal.</div></div>
+      </div>
       <a class="tile" href="ab/">
         <div class="ico" style="font-size:14px;letter-spacing:.5px">A/B</div>
         <div><div class="t">A/B tests</div><div class="d">Tests en cours, résultats et décisions à prendre.</div></div>
