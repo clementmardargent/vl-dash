@@ -23,10 +23,13 @@ a.back{color:var(--acc);text-decoration:none;font-weight:700;font-size:14px}
 .p-run{background:rgba(29,92,61,.14);color:var(--acc)}
 .bar{height:7px;border-radius:99px;background:var(--bd);margin-top:10px;overflow:hidden}
 .bar>div{height:100%;background:var(--acc);border-radius:99px}
-.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:14px 0}
-.tile{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:13px 15px}
-.tile .l{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);font-weight:700}
-.tile .v{font-size:23px;font-weight:800;margin-top:2px}.tile .s{font-size:12px;color:var(--mut)}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(225px,1fr));gap:14px;margin:14px 0}
+.mcard{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:15px 16px 10px}
+.mcard .l{font-size:13.5px;font-weight:700}
+.mcard .d{font-size:25px;font-weight:800;margin:3px 0 2px}
+.mcard .d.up{color:var(--good)}.mcard .d.dn{color:var(--bad)}.mcard .d.eq{color:var(--mut)}
+.mcard .s{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.4px;min-height:2.4em}
+.bf-a{fill:var(--va)}.bf-b{fill:var(--vb)}
 .va{color:var(--va)}.vb{color:var(--vb)}.good{color:var(--good)}.bad{color:var(--bad)}
 .tablewrap{overflow-x:auto;background:var(--card);border:1px solid var(--bd);border-radius:14px;margin:14px 0}
 table{border-collapse:collapse;width:100%;font-size:13.5px}
@@ -47,7 +50,7 @@ h2.sec{font-size:16px;margin:22px 0 10px}
 <button onclick="unlock()">Ouvrir</button><div id="err"></div></div>
 <div class="wrap" id="app" style="display:none"></div>
 <script>
-const BLOB="{\"salt\":\"2bg7m1tks0LA/zx7qbxlXg==\",\"iv\":\"GgFRvYFH+ym8SUb/\",\"data\":\"mM+Ksx+2Oen6QgApszqi0eyWiYRvK9Afdepx9LtdJPuhv0urWO6L3pq/HG+INayCpEI+1d251sTaQnpiRy1pn9xCGBtrR73uOqcUWKd+t4xGuCH5ahUNU/SMrY8f1/V4ViDeT/FDFyLGelALKynTgJRETXix0AAovtzTTtmiWqJEMZAFWfR8GL8kOIh4uYPLrB9pUHIyjMjm/2CWePUNUryhteFvamA9zhiPYRjJV5HDZCRfhGgrZhTM7q8o6lAvHqFekk1Q71DYM6J5516Mac/WVpI/2IoE3WxXVYZunldhJM0lmLDO89P1qd9lZ392x1rA00pMD1k4CjstqUWc2lF8lFjcTA0ma+aJtz8EbY0WdQDxyyTUW2gbX2ptvo8q7VCm2hSGJgUJ2e9CX95d9F8kHvvbnzZKTIwkHojmj23iYLazwh6NAXJEVcL8Rpihz27JB8+8j+kzKvs1pZv7RLp8uz9zgtzZ17+AHPWLKpqlN1ihdWJtahyJJwrfmSzmFFYJ/EQ/Pyvfls0PcDoFP8TY2l1I7yR45ipxUF3TIbZBvzAMoToogiHkjh9jUxd8FqELfWACG5nzYNvLnRnYbKk4lDaUbe/BEYCRrDAsOyMIWdJBriKC1B4ldOcATORO1jIT6oXzUVt7RXwfAIE6/tU2ozsnGQLcsyccxpX3eSmG6gvV7PvxwZYjhhJVUeDKDFExQuBZXD0YYMcP4NQJNFgW0C1yYKi+CaTifbTMsbK0r/Qn+p0HI2i6qm44+33pr7aL1RXkuwJxjArz8UTQh3Vm+th88Swz7plkZDHB+X0PPt6MPeBraxG3aJGvKMIDC5lBqv0ips5d14w6QquHKELZMk0DN6wo5fow0Q4Mlw47yWmOhCNSX6Vmo5SBAqbBFggDVEayG6GhH/vY2LCtBvy57nPzHPKnTvBhzZTxjidlN3ZRO24M8FmZ1IIN8PKZfohTzxk+MotPAuiJadFhjaRzbn02k0s6FTRwpZl9DaXBRjJWzCKghQW4I1d9C/vr9dltOFGcM1rGDkPTkc3kCkBeblAaM5OXK4WwgSzMosyqWkFb/9yAJnZj41+QoEGCcQOTm8r0c6PvzWtn4400z4jTSpybtKa9gnUN5pwf6fir6pRQeMYuQp2pwPiNNvIS8CL0ftK3xscTF28RQWNDDe7J3oH59sYLp8rUxIVaeAXPrJnU447Q9JmdSo6pCusjSiDXBEIXvVCjPIhN5iHGvTR+kjflezE/vnDpxcRi61CZBKPnFPZhbzJPPq0WFkQCKA+OC+GUPtaGFpiTwMevK3OiOjGzEMoQPxv4GWF4kbBGAkXtkb/CkhegBQTEZaDmqEVQ4YyGNcMqfHcAMgQRzj3hEX6zELrtHgBzJHxCEzRoGu8cSOsECQD8gd9UEZILrXgy+6sFkgq0AokIBRdcOWyUK3Ngqqyw/4Wp5GeIRjk7UmWjSK2Fyi9TnC7phecPuVtEF8EYtZgz+jShJyNzEGlVgeXrWnzBbMQfpc7B9Sen2twmtQqPkbE4Jx9rV0/qtjwtI9OcLrm7PC+7WQEyVt2RDtDCgKwDNY8wCoC7mJV4a8K/lZ/ow2zhKOR4KsT82MdgqjBL58Wun5GYt/SO8ToPAvZLDLslzcoEwPmSXCkY+xSvUOk6mJ23mysrSLP+/fSW1UznMygmbV1wZFDo1h3ZSe1B\"}";
+const BLOB="{\"salt\":\"wx83HndCpPdJfb5qCOeO+A==\",\"iv\":\"eyw5UIa2Zb3fH9mp\",\"data\":\"VGjWt45ssEyL9iALXcHKIxaExpb+l4lQVyyzuSQxQGAvqC2z4L9+PwIg1z/vgTy4YKOYNt5UQ5pgh0EjvhTLUe3dGJj4ABupp3z6UZNeCGAmDAaUL8MVeYol+wZMj25ihWHtgP/FFqd5oGTfyu8krxPACuo8LpUSmfoau8Lh5ncsldqvpLH95rpPvLcpRCA0YCeyLjXyPNUYsLtpQboS5swjWhjK9DtaCJMdfIYd1vSt/afwe9/DctMU9yQy1D0cv9/nJjXhdx2GruPh9ASm8OXLiTrgK4VVl6xz9sDbzKCdyYvpkERLNMkU/nc9rfQs0EJst0o6YAYCjLaKfhIBRllqcpHhHlWBI15sW5RPzrmH1s9ed3a1YvyhcsBuW2x0Kfse9Q87yxGdNnlGieFJJ4jKA5zgf0ZT7Xr7nLcLTlJnFxC8Mhs7EUv1DZCsTOvtLmTzKUIVdioTRozSZgjAdVeTkHlXXytjO+Li2qx1nzuQl89GnDa4nCVDuz9AOlX55uNcUxhejSVzOKHdJCVRpwJa4Grw6cy8kW+2WxB+nSe7RDehmoy44xE5f9vq5I8LRMI7q+c8FdqsAS5KpmAH31PkT6EwbkkMd61IiHv8i1tmhFNiqA5N0uxdQWzRvwCTTZQpoU1CstEa+7lm07OlI24IKvqwDzIS7oCjVoVD1Fpu28ClvkdMq0GVzgWQjsA5VNh+6fuN5Z7cbKsex4AUeUT54BAClzuZxGM9u9R9dWVsozYr6TXFd1ZF7k/Yn2vTS5ezIRnHexQQQkidBrDgauXsCvpt5Tk2qv8O4tiOIwLNDaLmuMaDQ5/fzhS52R8ePmfKGgiZybbcZvmc0mbPJKqmCp2K0G3MrY5Ln3l67mAEOCHR44NnK/qqrsiDDLB5qtb5IuE0qJ4MhkKU9Ict6SLnCOu0ego/oG5Qmgt8Abg1GtLzzVWBIm6Qza5rlmKUlxItmOCmtAQKtthDocFEf3XbpJT/1BT8tdAYaNorBsn30dLoNYcw3tgdxJv+5lOJKi1d6M05Y9UmVeVdUOnDlVFPqGzVBfO/gQJ/0VTzfJtQgjZ4tp8rPwNuHAY1OccuTXODHoouu5TxGv/zQlZk5yoCOVUtkavc1dQOJwlNUr6Img1gnNMgod9f+5nfvv9GrqbnJ8/H2C6HiCCOez3nGOrITU0ELCcR2VDFPf2L0qtym5jhmb/OSAWDuVjzLsvGpQgzb28cUKDLIB5RvcWbBcUPImwz8e5PHbrK3pfzEBgUBXXSuMT6mCAe70Z+FSqVaEBdKb/uSGiv3n3N8k6RdK9EwqNrL/Q0zEPJJggQTiFWpg7RLvSzq5bH661n0fLGyNxS3jGlDlzbWya2MlZrEkh3ppQP4sS2ZTNY0pAtqcc/RHPtyHchc0ftttSukiaoufqLYbJOgrw0YWBLM7RZ0rohgjsug4CgAkJT7t+TdJ87XJIjlIuhVCJznK6zKiJ/+Uh7yCYoSxclhJ2uqdhkCDQQAXvLmsQFZLLHv4U4G4JXhNtNpj/Y1/b7Z8OuuTmE0W57XV8bFETub2E7MkXV3w5FokFKECtMCmDHcauCzCjVnFd7/E0M8H1l+oBR+kLMEtA124JHLnqRQrJSAXTWUoCdi10AWBT6vuH5P3Qlu3p7KaaqQDnCzTNlNlU4mTf6RkTT9oqZABgTX40nQHFWGr1LigK0\"}";
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
 return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:250000,hash:'SHA-256'},km,{name:'AES-GCM',length:256},true,['decrypt']);}
@@ -101,6 +104,21 @@ return'<h1>🧪 A/B Tests</h1><div class="sub">Généré le '+new Date(DATA.gene
 +(finis.length?'<h2 class="sec">Terminés</h2>'+finis.map(carte).join(''):'')
 +(!DATA.tests.length?'<div class="box">Aucun test dans le registre.</div>':'')
 +'<div class="foot">Un test = une entrée dans data/ab-tests.json (repo vivelan-compta). La décision se prend au PPV (protocole CRO), la significativité sur la répartition des commandes.</div>';}
+function barsSVG(a,b,fmt){a=a||0;b=b||0;const max=Math.max(a,b)||1;
+const W=212,H=118,BW=58,x1=38,x2=118,base=H-17,top=16;
+const bar=(x,v,cls,lab)=>{const bh=Math.max(v>0?3:1,(base-top)*v/max),y=base-bh;
+return'<rect x="'+x+'" y="'+y.toFixed(1)+'" width="'+BW+'" height="'+bh.toFixed(1)+'" rx="3" class="bf-'+cls+'"/>'
++'<text x="'+(x+BW/2)+'" y="'+(y-5).toFixed(1)+'" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--tx)">'+fmt(v)+'</text>'
++'<text x="'+(x+BW/2)+'" y="'+(base+13)+'" text-anchor="middle" font-size="11" fill="var(--mut)">'+lab+'</text>';};
+return'<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block;margin-top:4px">'
++'<line x1="6" y1="'+base+'" x2="'+(W-6)+'" y2="'+base+'" stroke="var(--bd)"/>'
++bar(x1,a,'a','A')+bar(x2,b,'b','B')+'</svg>';}
+function metricCard(label,a,b,fmt,sub,muted){
+let d=null;if(a!=null&&b!=null&&a>0)d=(b-a)/a*100;
+const cls=muted||d==null||Math.abs(d)<0.5?'eq':(d>0?'up':'dn');
+const big=d==null?'—':(d>0?'↑ +':'↓ −')+Math.abs(d).toLocaleString('fr-FR',{maximumFractionDigits:Math.abs(d)>=10?1:2})+' %';
+return'<div class="mcard"><div class="l">'+label+'</div><div class="d '+cls+'">'+big+'</div>'
++'<div class="s">'+(sub||'')+'</div>'+barsSVG(a,b,fmt)+'</div>';}
 function funnelRow(label,a,b,baseA,baseB){const ra=baseA?a/baseA:null,rb=baseB?b/baseB:null;
 return'<tr><td>'+label+'</td><td class="va"><b>'+a.toLocaleString('fr-FR')+'</b>'+(ra!=null?' <span class="meta">('+pc(ra)+')</span>':'')+'</td>'
 +'<td class="vb"><b>'+b.toLocaleString('fr-FR')+'</b>'+(rb!=null?' <span class="meta">('+pc(rb)+')</span>':'')+'</td>'
@@ -133,13 +151,23 @@ return'<a class="back" href="#">← Tous les tests</a><h1>'+esc(t.nom)+'</h1>'
 +'<br><span class="pill" style="background:rgba(10,125,79,.14);color:var(--vb)">B</span> '+esc(t.variantes.B)+'</div>'
 +(t.notes?'<div class="meta" style="margin-top:8px">'+esc(t.notes)+'</div>':'')+'</div>'
 +'<div class="box" style="border-color:var(--acc)"><h3>Où on en est</h3>'+verdict+'</div>'
-+'<div class="tiles">'
-+'<div class="tile"><div class="l">Commandes</div><div class="v"><span class="va">'+V.A.orders+'</span> · <span class="vb">'+V.B.orders+'</span></div><div class="s">'+sigPill(ob?ob.p:null)+'</div></div>'
-+'<div class="tile"><div class="l">PPV (profit/visiteur ≈ CA/visiteur)</div><div class="v"><span class="va">'+eur(V.A.ppv,2)+'</span> · <span class="vb">'+eur(V.B.ppv,2)+'</span></div><div class="s">'+deltaTxt(V.A.ppv,V.B.ppv)+'</div></div>'
-+'<div class="tile"><div class="l">CVR (achat / exposé)</div><div class="v"><span class="va">'+pc(V.A.cvr)+'</span> · <span class="vb">'+pc(V.B.cvr)+'</span></div><div class="s">'+(ct?sigPill(ct.p):'<span class="pill p-na">trop tôt</span>')+'</div></div>'
-+'<div class="tile"><div class="l">AOV</div><div class="v"><span class="va">'+eur(V.A.aov)+'</span> · <span class="vb">'+eur(V.B.aov)+'</span></div><div class="s">'+deltaTxt(V.A.aov,V.B.aov)+'</div></div>'
-+'<div class="tile"><div class="l">CA</div><div class="v"><span class="va">'+eur(V.A.revenue)+'</span> · <span class="vb">'+eur(V.B.revenue)+'</span></div><div class="s">encaissé (transactions SUCCESS)</div></div>'
-+'</div>'
++(function(){
+const j=t.data.joursEcoules,trafM=(V.A.expo+V.B.expo)/j*30;
+const okEst=conv>=10;
+const dOrd=okEst&&V.A.cvr!=null&&V.B.cvr!=null?(V.B.cvr-V.A.cvr)*trafM:null;
+const dRev=okEst&&V.A.ppv!=null&&V.B.ppv!=null?(V.B.ppv-V.A.ppv)*trafM:null;
+const estTxt=(v,unit)=>v==null?'estimation dès 10 conversions':'EST. '+(v>0?'+':'−')+Math.abs(Math.round(v)).toLocaleString('fr-FR')+' '+unit+'/mois si B déployé';
+const rate=(x,e)=>e?x/e:null;
+const eur2=(v)=>eur(v,2);const int0=(v)=>Math.round(v).toLocaleString('fr-FR');
+const mut=!okEst; /* delta en gris tant que la lecture est « trop tôt » (conv < 10) */
+return'<div class="mgrid">'
++metricCard('Taux de conversion',V.A.cvr,V.B.cvr,pc,estTxt(dOrd,'commandes')+' · '+sigPill(ct?ct.p:null),mut)
++metricCard('CA par visiteur',V.A.ppv,V.B.ppv,eur2,estTxt(dRev,'€'),mut)
++metricCard('Commandes',V.A.orders,V.B.orders,int0,sigPill(ob?ob.p:null)+' · le juge de paix',mut)
++metricCard('Panier moyen',V.A.aov,V.B.aov,(v)=>eur(v,0),'AOV — commandes Shopify',mut)
++metricCard('Taux d\'ajout panier',rate(V.A.atc,V.A.expo),rate(V.B.atc,V.B.expo),pc,'ATC / exposés (pixel)')
++metricCard('Taux de checkout',rate(V.A.co,V.A.expo),rate(V.B.co,V.B.expo),pc,'checkouts démarrés / exposés')
++'</div>';})()
 +'<div class="tablewrap"><table><thead><tr><th>Étape (visiteurs distincts)</th><th>A</th><th>B</th><th>Δ relatif</th></tr></thead><tbody>'
 +funnelRow('Exposés (vue PDP)',V.A.expo,V.B.expo,null,null)
 +funnelRow('Ajout panier',V.A.atc,V.B.atc,V.A.expo,V.B.expo)
