@@ -1,189 +1,187 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
-<title>A/B Tests Vivélan</title><style>
-:root{--bg:#f5f7f4;--card:#fff;--tx:#15271b;--mut:#5f7367;--bd:#dde5dd;--good:#0a7d4f;--bad:#c0392b;--warn:#c07f00;--acc:#1d5c3d;--va:#8757c9;--vb:#0a7d4f}
-@media(prefers-color-scheme:dark){:root{--bg:#101613;--card:#18211b;--tx:#e8f0e9;--mut:#8fa396;--bd:#26332a;--warn:#e0a52a;--va:#a67ee8}}
-*{box-sizing:border-box}body{margin:0;font:15px/1.5 -apple-system,system-ui,sans-serif;background:var(--bg);color:var(--tx)}
-.wrap{max-width:1000px;margin:0 auto;padding:20px}
-#gate{display:flex;min-height:100vh;align-items:center;justify-content:center;flex-direction:column;gap:14px}
-#gate input{font-size:17px;padding:12px 16px;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);width:min(320px,80vw)}
-#gate button{font-size:16px;padding:12px 22px;border:0;border-radius:10px;background:var(--acc);color:#fff;font-weight:700;cursor:pointer}
-#err{color:var(--bad);min-height:1.2em}
-h1{font-size:22px;margin:8px 0 2px}.sub{color:var(--mut);font-size:13px;margin-bottom:16px}
-a.back{color:var(--acc);text-decoration:none;font-weight:700;font-size:14px}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px 18px;margin-bottom:14px;cursor:pointer;transition:border-color .15s}
-.card:hover{border-color:var(--acc)}
-.card h2{margin:0 0 4px;font-size:17px}
-.meta{color:var(--mut);font-size:13px}
-.row{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:10px}
-.kv{font-size:13px}.kv b{font-size:15px}
-.pill{padding:2px 10px;border-radius:999px;font-weight:700;font-size:12px;display:inline-block}
-.p-good{background:rgba(10,125,79,.14);color:var(--good)}.p-bad{background:rgba(192,57,43,.14);color:var(--bad)}
-.p-warn{background:rgba(192,127,0,.16);color:var(--warn)}.p-na{background:rgba(127,127,127,.12);color:var(--mut)}
-.p-run{background:rgba(29,92,61,.14);color:var(--acc)}
-.bar{height:7px;border-radius:99px;background:var(--bd);margin-top:10px;overflow:hidden}
-.bar>div{height:100%;background:var(--acc);border-radius:99px}
-.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(225px,1fr));gap:14px;margin:14px 0}
-.mcard{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:15px 16px 10px}
-.mcard .l{font-size:13.5px;font-weight:700}
-.mcard .d{font-size:25px;font-weight:800;margin:3px 0 2px}
-.mcard .d.up{color:var(--good)}.mcard .d.dn{color:var(--bad)}.mcard .d.eq{color:var(--mut)}
-.mcard .s{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.4px;min-height:2.4em}
-.bf-a{fill:var(--va)}.bf-b{fill:var(--vb)}
-.va{color:var(--va)}.vb{color:var(--vb)}.good{color:var(--good)}.bad{color:var(--bad)}
-.tablewrap{overflow-x:auto;background:var(--card);border:1px solid var(--bd);border-radius:14px;margin:14px 0}
-table{border-collapse:collapse;width:100%;font-size:13.5px}
-th,td{padding:9px 12px;text-align:right;border-bottom:1px solid var(--bd);white-space:nowrap}
-th:first-child,td:first-child{text-align:left}
-th{font-size:11px;text-transform:uppercase;color:var(--mut)}
-tr:last-child td{border-bottom:none}
-.box{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px 18px;margin:14px 0;font-size:14px;line-height:1.65}
-.box h3{margin:0 0 8px;font-size:15px}
-.formula{font-family:ui-monospace,Menlo,monospace;font-size:13px;background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:10px 12px;margin:8px 0;overflow-x:auto}
-.legend{display:flex;gap:18px;font-size:13px;margin-bottom:6px}
-.legend span{display:inline-flex;align-items:center;gap:6px}
-.dot{width:11px;height:11px;border-radius:3px;display:inline-block}
-.foot{color:var(--mut);font-size:12px;margin-top:16px}
-h2.sec{font-size:16px;margin:22px 0 10px}
-</style></head><body>
-<div id="gate"><h1>🧪 A/B Tests Vivélan</h1><input id="pw" type="password" placeholder="Mot de passe" autofocus>
-<button onclick="unlock()">Ouvrir</button><div id="err"></div></div>
-<div class="wrap" id="app" style="display:none"></div>
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Vivélan — A/B tests</title>
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,600&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/shared.css">
+<style>
+#filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px}
+#filters .chip{padding:6px 14px}
+#list{display:flex;flex-direction:column;gap:16px}
+.test-card{display:block;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:22px 24px;transition:box-shadow .18s,transform .18s,border-color .18s}
+.test-card:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(20,53,45,.10);border-color:rgba(23,86,74,.4)}
+.tc-head{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.tc-st{flex:none;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:4px 11px;border-radius:999px}
+.tc-meta{font-size:12.5px;color:var(--faint)}
+.tc-early{flex:none;font-size:11px;font-weight:700;letter-spacing:.5px;color:#6d7a74;background:#ece7da;padding:4px 10px;border-radius:999px}
+.tc-arrow{margin-left:auto;color:var(--grn);font-size:16px}
+.tc-title{font-family:'Lora',serif;font-weight:600;font-size:20px;color:var(--ink);margin-bottom:4px}
+.tc-hyp{font-size:13.5px;color:var(--mut);margin-bottom:16px;text-wrap:pretty}
+.tc-variants{display:flex;flex-direction:column;gap:8px}
+.v-row{display:flex;align-items:center;gap:14px;border:1px solid rgba(23,86,74,.1);border-radius:12px;padding:12px 16px;background:var(--card)}
+.v-badge{flex:none;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700}
+.v-name{flex:1;min-width:0;font-size:14px;font-weight:600;color:var(--ink)}
+.v-tag{font-weight:500;color:var(--faint)}
+.v-data{flex:none;display:flex;align-items:center;gap:12px}
+.v-track{width:150px;height:8px;border-radius:999px;background:#eee8da;overflow:hidden}
+.v-bar{height:100%;border-radius:999px}
+.v-ca{width:76px;text-align:right;font-size:14.5px;font-weight:700;font-variant-numeric:tabular-nums}
+.v-n{width:92px;text-align:right;font-size:12px;color:var(--faint);font-variant-numeric:tabular-nums}
+.tc-verdict{margin-top:14px}
+#empty{text-align:center;padding:48px 0;font-size:14px;color:var(--faint)}
+</style>
+</head>
+<body>
+<div class="vl-shell">
+<div class="vl-top"></div>
+<header class="vl-header">
+  <div class="brand">
+    <a href="../index.html" style="display:block"><img src="../assets/logo-vivelan.png" alt="Vivélan"></a>
+    <span class="vl-admin">Admin</span>
+  </div>
+  <div class="vl-hright"><div class="vl-avatar">V</div></div>
+</header>
+  <main class="vl-main" style="max-width:880px">
+    <div class="vl-crumb"><a href="../index.html">Tableau de bord</a> <span class="sep">/</span> <span class="here">A/B tests</span></div>
+    <h1 class="vl-h1">A/B tests</h1>
+    <p id="genline" style="margin:-14px 0 22px;font-size:12.5px;color:var(--faint)"></p>
+
+    <div id="filters">
+      <button class="chip sm" data-filter="Tous">Tous</button>
+      <button class="chip sm" data-filter="En cours">En cours</button>
+      <button class="chip sm" data-filter="Terminés">Terminés</button>
+      <button class="chip sm" data-filter="Prévus">Prévus</button>
+    </div>
+
+    <div id="list"></div>
+
+    <div id="empty" hidden>Aucun test dans cette vue.</div>
+  </main>
+<footer class="vl-footer"><span>Vivélan — espace interne</span><span>v2</span></footer>
+</div>
 <script>
-const BLOB="{\"salt\":\"rgBPibnfNr6F0BWNE9BUFg==\",\"iv\":\"aNL9EEr4OI0OJyac\",\"data\":\"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\"}";
+const BLOB="{\"salt\":\"UqtHxJU/6IkxGxD7Fl33Yg==\",\"iv\":\"n/sn3WsIhpGC3K6Q\",\"data\":\"EL2ZwG5JrEO6Yw7dpAyrEAp0aIYr1Ei61guQa0hMiwKSx9jLGcsZivapTZhiqGUanjxvI174Zswl0jc7hU8zVUrLbuboMD16z+3qmB08fVtH25rPFbycg2VPYAVQdZ00JEWwThXPN7chRALwFOdMJbnsfAswLnJtmq/MxjTAh3jdHlxd8W1QhMS9ggXIMmxV1W0VqenDfPzu9mJ+fOYxGTsEPrZFBcOvVQbNooXXgOAPpBPQlsrS6KlPn7OhMhnjeFAb27iUk4eeBDkD3ntoIzLMgRdaY17aIuEVlij13WOzELRRXI1qXnqACUpEzuYGRRjJnToppRD3yOQUM4AQF0hjM0UsoYsSaqfTiPyx7PdaozWb7AAgxDcNIN1lzqj4v9g6N+XVWayK1xt6TmQMPW5qqrzoJ6v2aemf2A/NITUkhttJyeCVX3XLWw9mx4zB/cKjTqj+zrD2lqblpfHnhZyEi05eSoO9BIy3ATr8PpZ3mFFolsT3E3hi/WRT65TadhAn3EbXN7qVoonUyTGYRda7wnJZWnNXO4FR9eqYo2HzvS5KrwLNETPt2d9FJ5Fp9Z7+zEo49XZR4Z+47vQyt0SahhBVnrGCO8ZVqzZ491K7g7LIX7tggkkywFpdvud1Z6QsfZNoE0P+AAImRam7Eq12Q81mObPQUkORDp1eA0vAabBEntvu3Owzywgb4bSrbaJXKfR9SziBefV2NXCbZQSGTTSusIofYguBRpJFa5dnYrYHhNInMdyVBthP+cC6PCWJphV9+gWaK3YtKLSm76dAYVYzK7Xc7mEEtMdVhCnTyH2lGgN5HzFkmDXR88hU8INoeuSJldjR27oExxb4plnJg7mNAD4cbbDEzWNDGLkphB9c423QWHuF3ivl0ujo+wxil0LvQ0X3KnKojeO3MQydwF9bgA96gHL+P+wV1E8RZX2cIkEt+3fZGIFxV61sLZ8T7ivUYbY1fNQWWdaBnZF6OtDoAYPUyETFtkO5bJFRmVNoudY5vG78p7FlOwSiHtJwJLXMbFZEN8c9UTeO0qqQDTyJL7NNVORQHFoTjwjssH6MXEJOe0rbrg/FcMP665ZUzy8o85iaZL2+Rb3JbJNr+8JhW9k6KbGH1EEe24W+2oGxJYfTa2kvId/0NZrG7qj6i9UUr8HR0kT77fUBnAlvFt+qifxxR1PJCdBYkg==\"}";
+
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
 return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:250000,hash:'SHA-256'},km,{name:'AES-GCM',length:256},true,['decrypt']);}
-async function tryDecrypt(key){const blob=JSON.parse(BLOB);
+async function tryDecrypt(pw){const blob=JSON.parse(BLOB);const key=await deriveKey(pw,b2u(blob.salt));
 const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:b2u(blob.iv)},key,b2u(blob.data));
 return JSON.parse(new TextDecoder().decode(plain));}
-async function unlock(){const pw=document.getElementById('pw').value;const blob=JSON.parse(BLOB);
-try{const key=await deriveKey(pw,b2u(blob.salt));const data=await tryDecrypt(key);
-localStorage.setItem('vl_pw',JSON.stringify({p:btoa(unescape(encodeURIComponent(pw))),exp:Date.now()+30*864e5}));
-boot(data);}catch(e){document.getElementById('err').textContent='Mot de passe incorrect';}}
-document.getElementById('pw').addEventListener('keydown',e=>{if(e.key==='Enter')unlock()});
+
+function boot(AB_DATA) {
+  var GRN = '#17564a', GRNBG = '#e3efe9', AMB = '#8a6a2f', AMBBG = '#f6ead2', MUT = '#9aa5a0';
+
+  var state = { filter: 'Tous' };
+
+  var tests = AB_DATA.tests;
+
+  var gd = new Date(AB_DATA.generatedAt);
+  document.getElementById('genline').textContent = 'Données réelles · générées le ' +
+    gd.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) + ' à ' +
+    gd.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+
+  var stStyles = {
+    run:  { txt: 'En cours', style: 'color:' + GRN + ';background:' + GRNBG + ';border:1px solid transparent' },
+    done: { txt: 'Terminé',  style: 'color:' + AMB + ';background:' + AMBBG + ';border:1px solid transparent' },
+    plan: { txt: 'Prévu',    style: 'color:' + MUT + ';background:transparent;border:1px dashed rgba(23,86,74,.3)' }
+  };
+
+  function fmtE(n) { return n.toLocaleString('fr-FR') + ' €'; }
+
+  function tooEarly(t) {
+    if (t.status === 'plan' || t.winner) return false;
+    var oa = (t.a && t.a.orders) || 0, ob = (t.b && t.b.orders) || 0;
+    return oa + ob < 10;
+  }
+
+  function variantHTML(k, v, other, t) {
+    var hasData = v && v.ca !== undefined;
+    var leads = hasData && other && other.ca !== undefined && !tooEarly(t) && v.ca > other.ca;
+    var isWinner = t.winner === k;
+    var maxCa = hasData ? Math.max(v.ca, (other && other.ca) || 0, 1) : 1;
+    var barPct = hasData ? Math.round(v.ca / maxCa * 100) : 0;
+    var barColor = leads ? GRN : '#b9c9c1';
+    var caColor = leads ? GRN : '#6d7a74';
+    var badgeBg = (leads || isWinner) ? GRN : '#eee8da';
+    var badgeFg = (leads || isWinner) ? '#fdf9ef' : '#6d7a74';
+    var rowStyle = isWinner
+      ? 'background:' + GRNBG + ';border-color:rgba(23,86,74,.3)'
+      : '';
+    var tag = isWinner ? '· déployée' : '';
+
+    var html = '<div class="v-row"' + (rowStyle ? ' style="' + rowStyle + '"' : '') + '>';
+    html += '<span class="v-badge" style="background:' + badgeBg + ';color:' + badgeFg + '">' + k + '</span>';
+    html += '<span class="v-name">' + v.name + '<span class="v-tag"> ' + tag + '</span></span>';
+    if (hasData) {
+      html += '<div class="v-data">';
+      html += '<div class="v-track"><div class="v-bar" style="background:' + barColor + ';width:' + barPct + '%"></div></div>';
+      html += '<span class="v-ca" style="color:' + caColor + '">' + fmtE(v.ca) + '</span>';
+      html += '<span class="v-n">' + (v.sessions || 0).toLocaleString('fr-FR') + ' sessions</span>';
+      html += '</div>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  function cardHTML(t) {
+    var st = stStyles[t.status];
+    var html = '<a class="test-card" href="analyse.html#' + t.id + '">';
+    html += '<div class="tc-head">';
+    html += '<span class="tc-st" style="' + st.style + '">' + st.txt + '</span>';
+    html += '<span class="tc-meta">' + t.meta + '</span>';
+    if (tooEarly(t)) html += '<span class="tc-early">trop tôt pour conclure</span>';
+    html += '<span class="tc-arrow">→</span>';
+    html += '</div>';
+    html += '<div class="tc-title">' + t.title + '</div>';
+    html += '<div class="tc-hyp">' + t.hyp + '</div>';
+    html += '<div class="tc-variants">' + variantHTML('A', t.a, t.b, t) + variantHTML('B', t.b, t.a, t) + '</div>';
+    if (t.verdict) {
+      html += '<div class="vl-verdict tc-verdict">' + t.verdict + '</div>';
+    }
+    html += '</a>';
+    return html;
+  }
+
+  var statusOf = { 'En cours': 'run', 'Terminés': 'done', 'Prévus': 'plan' };
+  var listEl = document.getElementById('list');
+  var emptyEl = document.getElementById('empty');
+  var filtersEl = document.getElementById('filters');
+
+  function render() {
+    var chips = filtersEl.querySelectorAll('.chip');
+    for (var i = 0; i < chips.length; i++) {
+      chips[i].classList.toggle('on', chips[i].getAttribute('data-filter') === state.filter);
+    }
+    var visible = tests.filter(function (t) {
+      return state.filter === 'Tous' || t.status === statusOf[state.filter];
+    });
+    listEl.innerHTML = visible.map(cardHTML).join('');
+    if (visible.length === 0) {
+      emptyEl.removeAttribute('hidden');
+    } else {
+      emptyEl.setAttribute('hidden', '');
+    }
+  }
+
+  filtersEl.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-filter]');
+    if (!btn) return;
+    state.filter = btn.getAttribute('data-filter');
+    render();
+  });
+
+  render();
+}
+
 (async()=>{try{const w=JSON.parse(localStorage.getItem('vl_pw')||'null');
-if(w&&w.exp>Date.now()){const blob=JSON.parse(BLOB);const pw=decodeURIComponent(escape(atob(w.p)));
-const key=await deriveKey(pw,b2u(blob.salt));boot(await tryDecrypt(key));}}catch(e){}})();
-let DATA=null;
-const esc=(s)=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const eur=(n,d=0)=>n==null||isNaN(n)?'—':n.toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d})+' €';
-const pc=(n,d=1)=>n==null?'—':(n*100).toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d})+' %';
-const frDate=(iso)=>{if(!iso)return'—';const[y,m,d]=iso.split('-').map(Number);
-return d+'/'+String(m).padStart(2,'0')+(y!==new Date().getFullYear()?'/'+y:'');};
-function sigPill(p){if(p==null)return'<span class="pill p-na">trop tôt</span>';
-if(p<0.05)return'<span class="pill p-good">significatif · p='+p.toFixed(3)+'</span>';
-if(p<0.15)return'<span class="pill p-warn">tendance · p='+p.toFixed(3)+'</span>';
-return'<span class="pill p-na">pas de différence · p='+p.toFixed(2)+'</span>';}
-function statutPill(t){return t.statut==='en_cours'?'<span class="pill p-run">EN COURS · J'+t.data.joursEcoules+'</span>'
-:'<span class="pill p-na">TERMINÉ · '+frDate(t.debut)+' → '+frDate(t.fin)+'</span>';}
-function deltaTxt(a,b,inv){if(a==null||b==null||!a)return'—';const d=(b-a)/a*100;
-const s=(d>0?'+':'')+d.toLocaleString('fr-FR',{maximumFractionDigits:1})+' %';
-const good=inv?d<0:d>0;return'<span class="'+(Math.abs(d)<1?'':(good?'good':'bad'))+'">'+s+' B vs A</span>';}
-function boot(data){DATA=data;document.getElementById('gate').style.display='none';
-document.getElementById('app').style.display='block';route();}
-window.addEventListener('hashchange',()=>{if(DATA)route()});
-function route(){const id=location.hash.slice(1);
-const t=DATA.tests.find(x=>x.id===id);
-document.getElementById('app').innerHTML=t?detail(t):liste();window.scrollTo(0,0);}
-function carte(t){const V=t.data.V,st=t.data.stats;
-const conv=V.A.orders+V.B.orders,prog=Math.min(100,Math.round(conv/(t.cibleConversions||500)*100));
-return'<div class="card" onclick="location.hash=\''+t.id+'\'">'
-+'<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline"><h2>'+esc(t.nom)+'</h2>'+statutPill(t)+'</div>'
-+'<div class="meta">'+esc(t.page)+' · lancé le '+frDate(t.debut)+(t.verdict?' · <b>'+esc(t.verdict)+'</b>':'')+'</div>'
-+'<div class="row">'
-+'<span class="kv">Exposés <b>'+(V.A.expo+V.B.expo).toLocaleString('fr-FR')+'</b></span>'
-+'<span class="kv">Commandes <b class="va">A '+V.A.orders+'</b> · <b class="vb">B '+V.B.orders+'</b></span>'
-+'<span class="kv">PPV '+deltaTxt(V.A.ppv,V.B.ppv)+'</span>'
-+sigPill(st.ordersBinom?st.ordersBinom.p:null)+'</div>'
-+'<div class="bar"><div style="width:'+prog+'%"></div></div>'
-+'<div class="meta" style="margin-top:4px">'+conv+' / '+(t.cibleConversions||500)+' conversions cible ('+prog+' %)</div></div>';}
-function liste(){const enCours=DATA.tests.filter(t=>t.statut==='en_cours'),finis=DATA.tests.filter(t=>t.statut!=='en_cours');
-return'<h1>🧪 A/B Tests</h1><div class="sub">Généré le '+new Date(DATA.generatedAt).toLocaleString('fr-FR')+' · <a class="back" href="../">← Accueil</a></div>'
-+(enCours.length?'<h2 class="sec">En cours</h2>'+enCours.map(carte).join(''):'')
-+(finis.length?'<h2 class="sec">Terminés</h2>'+finis.map(carte).join(''):'')
-+(!DATA.tests.length?'<div class="box">Aucun test dans le registre.</div>':'')
-+'<div class="foot">Un test = une entrée dans data/ab-tests.json (repo vivelan-compta). La décision se prend au PPV (protocole CRO), la significativité sur la répartition des commandes.</div>';}
-function barsSVG(a,b,fmt){a=a||0;b=b||0;const max=Math.max(a,b)||1;
-const W=212,H=118,BW=58,x1=38,x2=118,base=H-17,top=16;
-const bar=(x,v,cls,lab)=>{const bh=Math.max(v>0?3:1,(base-top)*v/max),y=base-bh;
-return'<rect x="'+x+'" y="'+y.toFixed(1)+'" width="'+BW+'" height="'+bh.toFixed(1)+'" rx="3" class="bf-'+cls+'"/>'
-+'<text x="'+(x+BW/2)+'" y="'+(y-5).toFixed(1)+'" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--tx)">'+fmt(v)+'</text>'
-+'<text x="'+(x+BW/2)+'" y="'+(base+13)+'" text-anchor="middle" font-size="11" fill="var(--mut)">'+lab+'</text>';};
-return'<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block;margin-top:4px">'
-+'<line x1="6" y1="'+base+'" x2="'+(W-6)+'" y2="'+base+'" stroke="var(--bd)"/>'
-+bar(x1,a,'a','A')+bar(x2,b,'b','B')+'</svg>';}
-function metricCard(label,a,b,fmt,sub,muted){
-let d=null;if(a!=null&&b!=null&&a>0)d=(b-a)/a*100;
-const cls=muted||d==null||Math.abs(d)<0.5?'eq':(d>0?'up':'dn');
-const big=d==null?'—':(d>0?'↑ +':'↓ −')+Math.abs(d).toLocaleString('fr-FR',{maximumFractionDigits:Math.abs(d)>=10?1:2})+' %';
-return'<div class="mcard"><div class="l">'+label+'</div><div class="d '+cls+'">'+big+'</div>'
-+'<div class="s">'+(sub||'')+'</div>'+barsSVG(a,b,fmt)+'</div>';}
-function funnelRow(label,a,b,baseA,baseB){const ra=baseA?a/baseA:null,rb=baseB?b/baseB:null;
-return'<tr><td>'+label+'</td><td class="va"><b>'+a.toLocaleString('fr-FR')+'</b>'+(ra!=null?' <span class="meta">('+pc(ra)+')</span>':'')+'</td>'
-+'<td class="vb"><b>'+b.toLocaleString('fr-FR')+'</b>'+(rb!=null?' <span class="meta">('+pc(rb)+')</span>':'')+'</td>'
-+'<td>'+deltaTxt(ra,rb)+'</td></tr>';}
-function chart(t){const tl=t.data.timeline;if(tl.length<2)return'';
-const W=900,H=230,Lp=44,Rp=10,Tp=12,Bp=30;
-const max=Math.max(...tl.flatMap(d=>[d.expoA,d.expoB]),1);
-const X=i=>Lp+(W-Lp-Rp)*(i+0.5)/tl.length,bw=Math.max(3,Math.min(16,(W-Lp-Rp)/tl.length*0.32));
-const Y=v=>Tp+(H-Tp-Bp)*(1-v/max);
-let g='';for(let k=0;k<=3;k++){const v=max*k/3,y=Y(v);
-g+='<line x1="'+Lp+'" y1="'+y+'" x2="'+(W-Rp)+'" y2="'+y+'" stroke="var(--bd)"/><text x="'+(Lp-6)+'" y="'+(y+4)+'" text-anchor="end" font-size="11" fill="var(--mut)">'+Math.round(v)+'</text>';}
-const step=Math.max(1,Math.ceil(tl.length/10));
-tl.forEach((d,i)=>{if(i%step===0||i===tl.length-1){const p=d.d.split('-');
-g+='<text x="'+X(i).toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle" font-size="11" fill="var(--mut)">'+(+p[2])+'/'+(+p[1])+'</text>';}
-g+='<rect x="'+(X(i)-bw-1).toFixed(1)+'" y="'+Y(d.expoA).toFixed(1)+'" width="'+bw+'" height="'+Math.max(1,(H-Bp)-Y(d.expoA)).toFixed(1)+'" rx="2" fill="var(--va)"><title>'+d.d+' — A : '+d.expoA+' exposés, '+d.ordA+' cmd</title></rect>'
-+'<rect x="'+(X(i)+1).toFixed(1)+'" y="'+Y(d.expoB).toFixed(1)+'" width="'+bw+'" height="'+Math.max(1,(H-Bp)-Y(d.expoB)).toFixed(1)+'" rx="2" fill="var(--vb)"><title>'+d.d+' — B : '+d.expoB+' exposés, '+d.ordB+' cmd</title></rect>';});
-return'<div class="box"><h3>Exposés par jour</h3><div class="legend"><span><span class="dot" style="background:var(--va)"></span>Variante A</span><span><span class="dot" style="background:var(--vb)"></span>Variante B</span></div>'
-+'<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block">'+g+'</svg></div>';}
-function detail(t){const V=t.data.V,st=t.data.stats,ob=st.ordersBinom,ct=st.cvrTest;
-const conv=V.A.orders+V.B.orders;
-let verdict;
-if(t.verdict)verdict='<b>Verdict acté : '+esc(t.verdict)+'</b>';
-else if(!ob)verdict='Trop tôt pour conclure ('+conv+' conversions — la lecture statistique démarre à ~10).';
-else if(ob.p<0.05)verdict='<b class="'+(V.B.orders>V.A.orders?'good':'bad')+'">'+(V.B.orders>V.A.orders?'B devant':'A devant')+'</b> sur la répartition des commandes (p='+ob.p.toFixed(3)+' &lt; 0,05). Croiser avec le PPV avant de trancher.';
-else verdict='Pas de différence significative sur les commandes à ce stade (p='+ob.p.toFixed(2)+'). On continue jusqu\'à ~'+(t.cibleConversions||500)+' conversions ou 2 semaines.';
-return'<a class="back" href="#">← Tous les tests</a><h1>'+esc(t.nom)+'</h1>'
-+'<div class="sub">'+esc(t.page)+' · '+statutPill(t)+' · généré le '+new Date(DATA.generatedAt).toLocaleString('fr-FR')+'</div>'
-+'<div class="box"><h3>Hypothèse</h3>'+esc(t.hypothese)
-+'<div style="margin-top:10px"><span class="pill" style="background:rgba(135,87,201,.14);color:var(--va)">A</span> '+esc(t.variantes.A)
-+'<br><span class="pill" style="background:rgba(10,125,79,.14);color:var(--vb)">B</span> '+esc(t.variantes.B)+'</div>'
-+(t.notes?'<div class="meta" style="margin-top:8px">'+esc(t.notes)+'</div>':'')+'</div>'
-+'<div class="box" style="border-color:var(--acc)"><h3>Où on en est</h3>'+verdict+'</div>'
-+(function(){
-const j=t.data.joursEcoules,trafM=(V.A.expo+V.B.expo)/j*30;
-const okEst=conv>=10;
-const dOrd=okEst&&V.A.cvr!=null&&V.B.cvr!=null?(V.B.cvr-V.A.cvr)*trafM:null;
-const dRev=okEst&&V.A.ppv!=null&&V.B.ppv!=null?(V.B.ppv-V.A.ppv)*trafM:null;
-const estTxt=(v,unit)=>v==null?'estimation dès 10 conversions':'EST. '+(v>0?'+':'−')+Math.abs(Math.round(v)).toLocaleString('fr-FR')+' '+unit+'/mois si B déployé';
-const rate=(x,e)=>e?x/e:null;
-const eur2=(v)=>eur(v,2);const int0=(v)=>Math.round(v).toLocaleString('fr-FR');
-const mut=!okEst; /* delta en gris tant que la lecture est « trop tôt » (conv < 10) */
-return'<div class="mgrid">'
-+metricCard('Taux de conversion',V.A.cvr,V.B.cvr,pc,estTxt(dOrd,'commandes')+' · '+sigPill(ct?ct.p:null),mut)
-+metricCard('CA par visiteur',V.A.ppv,V.B.ppv,eur2,estTxt(dRev,'€'),mut)
-+metricCard('Commandes',V.A.orders,V.B.orders,int0,sigPill(ob?ob.p:null)+' · le juge de paix',mut)
-+metricCard('Panier moyen',V.A.aov,V.B.aov,(v)=>eur(v,0),'AOV — commandes Shopify',mut)
-+metricCard('Taux d\'ajout panier',rate(V.A.atc,V.A.expo),rate(V.B.atc,V.B.expo),pc,'ATC / exposés (pixel)')
-+metricCard('Taux de checkout',rate(V.A.co,V.A.expo),rate(V.B.co,V.B.expo),pc,'checkouts démarrés / exposés')
-+'</div>';})()
-+'<div class="tablewrap"><table><thead><tr><th>Étape (visiteurs distincts)</th><th>A</th><th>B</th><th>Δ relatif</th></tr></thead><tbody>'
-+funnelRow('Exposés (vue PDP)',V.A.expo,V.B.expo,null,null)
-+funnelRow('Ajout panier',V.A.atc,V.B.atc,V.A.expo,V.B.expo)
-+funnelRow('Checkout démarré',V.A.co,V.B.co,V.A.expo,V.B.expo)
-+funnelRow('Achat (pixel)',V.A.achatPixel,V.B.achatPixel,V.A.expo,V.B.expo)
-+funnelRow('Commandes (Shopify — décision)',V.A.orders,V.B.orders,V.A.expo,V.B.expo)
-+'</tbody></table></div>'
-+chart(t)
-+'<div class="box"><h3>La validation statistique, concrètement</h3>'
-+'<p style="margin:6px 0"><b>1. Répartition des commandes (le juge de paix).</b> L\'assignation étant 50/50 persistée, sous H₀ (aucun effet) chaque commande a autant de chances de venir de A que de B. On teste l\'écart observé contre ce 50/50 :</p>'
-+'<div class="formula">z = (|nA − n/2| − 0,5) / (√n / 2)   ← correction de continuité'+(ob?'  =  (|'+V.A.orders+' − '+(ob.n/2)+'| − 0,5) / '+(Math.sqrt(ob.n)/2).toFixed(2)+'  =  '+Math.abs(ob.z):'')+'<br>p-value (bilatérale) = 2 × (1 − Φ(|z|))'+(ob?'  =  '+ob.p.toFixed(4):'')+'</div>'
-+'<p style="margin:6px 0"><b>2. CVR avec les dénominateurs du pixel</b> (test de deux proportions, variance poolée) :</p>'
-+'<div class="formula">z = (pB − pA) / √( p̂(1−p̂) × (1/nA + 1/nB) )'+(ct?'  =  '+ct.z+'  →  p = '+ct.p.toFixed(4):'  (en attente de données)')+'</div>'
-+(V.A.wilson&&V.B.wilson?'<p style="margin:6px 0">Intervalles de confiance à 95 % (Wilson) — s\'ils se chevauchent largement, prudence : CVR A ['+pc(V.A.wilson[0])+' ; '+pc(V.A.wilson[1])+'] · CVR B ['+pc(V.B.wilson[0])+' ; '+pc(V.B.wilson[1])+']</p>':'')
-+'<p style="margin:6px 0"><b>Les seuils :</b> p &lt; 0,05 = significatif (moins de 5 % de chances que l\'écart soit du hasard) · 0,05–0,15 = tendance, on laisse tourner · au-delà = pas de différence détectable.</p>'
-+'<p style="margin:6px 0"><b>Honnêteté sur la puissance :</b> avec ~'+(t.cibleConversions||500)+' conversions on détecte de façon fiable (80 % de puissance) un effet relatif ≥ ~25-30 %. Détecter 15-20 % demanderait 1 000 à 1 600 conversions. Si rien ne sort au terme du test : soit il n\'y a pas d\'effet, soit il est trop petit pour être vu à cette taille — dans les deux cas la variante ne paie pas assez pour prolonger, on choisit par simplicité.</p>'
-+'<p style="margin:6px 0;color:var(--mut)">La décision finale se prend au <b>PPV</b> (CA par visiteur exposé), pas au CVR seul : un CVR gagnant avec un AOV qui s\'effondre est un faux gagnant. Refunds ignorés (règle compta du 29/08).</p></div>'
-+'<div class="foot">Sources : funnel = pixel Shopify → Worker Cloudflare → D1 (visiteurs distincts) · commandes &amp; CA = API Shopify (property _vl_ab, transactions SUCCESS). Générer une mise à jour : demander à l\'agent ou lancer scripts/publish.sh.</div>';}
-</script></body></html>
+if(w&&w.exp>Date.now()){const pw=decodeURIComponent(escape(atob(w.p)));boot(await tryDecrypt(pw));return;}}catch(e){}
+location.replace('../login.html');})();
+</script>
+</body>
+</html>

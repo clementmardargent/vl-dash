@@ -1,0 +1,74 @@
+/* Vivélan — espace interne · design system (handoff Claude Design 04/09/2026) */
+:root{
+  --bg:#f7f4ec;          /* fond crème */
+  --card:#fffdf9;        /* cartes */
+  --panel:#f2ede1;       /* panneaux/entêtes de table */
+  --tx:#1f2b27;          /* texte courant */
+  --ink:#14352d;         /* titres / chiffres */
+  --mut:#6d7a74;         /* secondaire */
+  --faint:#9aa5a0;       /* tertiaire */
+  --grn:#17564a;         /* vert principal */
+  --grn-dk:#0e3f36;
+  --grn-bg:#e3efe9;
+  --amb:#8a6a2f;         /* ambre */
+  --amb-bg:#f6ead2;
+  --gold:#b0812f;        /* variante A */
+  --red:#a8452e;
+  --red-soft:#c25b3f;
+  --red-bg:#f7e5e0;
+  --cream:#fdf9ef;       /* texte sur vert */
+  --bd:rgba(23,86,74,.12);
+  --bd-strong:rgba(23,86,74,.25);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:'Figtree',system-ui,sans-serif;color:var(--tx);-webkit-font-smoothing:antialiased}
+a{color:var(--grn);text-decoration:none}
+a:hover{color:var(--grn-dk)}
+input::placeholder{color:#a8b2ad}
+.serif{font-family:'Lora',serif}
+.tnum{font-variant-numeric:tabular-nums}
+
+/* structure */
+.vl-shell{min-height:100vh;display:flex;flex-direction:column}
+.vl-top{height:6px;background:var(--grn)}
+.vl-header{display:flex;align-items:center;justify-content:space-between;padding:18px 48px;background:var(--card);border-bottom:1px solid var(--bd)}
+.vl-header .brand{display:flex;align-items:center;gap:12px}
+.vl-header img{height:26px;display:block}
+.vl-admin{font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--amb);background:var(--amb-bg);padding:4px 10px;border-radius:999px}
+.vl-avatar{width:36px;height:36px;border-radius:50%;background:var(--grn);color:var(--cream);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;letter-spacing:.5px}
+.vl-hright{display:flex;align-items:center;gap:16px}
+.vl-gen{font-size:13.5px;color:var(--mut)}
+.vl-main{width:100%;margin:0 auto;padding:36px 48px 72px;flex:1}
+.vl-footer{padding:20px 48px;border-top:1px solid rgba(23,86,74,.1);display:flex;justify-content:space-between;font-size:12.5px;color:var(--faint)}
+.vl-crumb{font-size:13px;color:var(--faint);margin-bottom:14px}
+.vl-crumb a{color:var(--mut)}
+.vl-crumb .sep{margin:0 4px}
+.vl-crumb .here{color:var(--grn);font-weight:600}
+h1.vl-h1{font-family:'Lora',serif;font-weight:600;font-size:34px;margin:0 0 22px;color:var(--ink)}
+
+/* boutons pill (onglets/filtres) */
+.chip{padding:9px 18px;border-radius:999px;border:1px solid var(--bd-strong);background:var(--card);color:var(--tx);font-size:13.5px;font-weight:600;cursor:pointer;font-family:'Figtree',sans-serif}
+.chip.sm{padding:6px 13px;font-size:12.5px}
+.chip.on{background:var(--grn);color:var(--cream);border-color:var(--grn)}
+
+/* cartes */
+.vl-card{background:var(--card);border:1px solid var(--bd);border-radius:14px}
+.vl-note{display:flex;align-items:center;gap:8px;background:var(--amb-bg);border:1px solid rgba(138,106,47,.25);border-radius:10px;padding:10px 16px;font-size:13px;font-weight:600;color:var(--amb)}
+.vl-verdict{display:flex;align-items:center;gap:8px;background:var(--grn-bg);border-radius:10px;padding:10px 16px;font-size:13px;font-weight:600;color:var(--grn)}
+
+/* étiquettes KPI */
+.klabel{font-size:11px;font-weight:700;letter-spacing:1.4px;color:var(--faint)}
+.kval{font-family:'Lora',serif;font-weight:600;font-size:28px;color:var(--ink);font-variant-numeric:tabular-nums}
+.ksub{font-size:12.5px;color:var(--mut)}
+
+/* pills statut/roas */
+.pill{display:inline-block;padding:3px 8px;border-radius:999px;font-size:12.5px;font-weight:700}
+
+/* tooltip graphique */
+.vl-tip{position:absolute;background:var(--ink);color:var(--cream);border-radius:8px;padding:8px 12px;font-size:12.5px;pointer-events:none;white-space:nowrap;box-shadow:0 6px 18px rgba(20,53,45,.3);z-index:10;font-variant-numeric:tabular-nums}
+
+/* boutons pleins */
+.btn{padding:10px 18px;font-size:13.5px;font-weight:700;font-family:'Figtree',sans-serif;color:var(--cream);background:var(--grn);border:none;border-radius:10px;cursor:pointer}
+.btn:hover{background:var(--grn-dk)}
+.btn.ghost{color:var(--grn);background:var(--grn-bg)}
+.btn.ghost:hover{background:#d5e6dd}

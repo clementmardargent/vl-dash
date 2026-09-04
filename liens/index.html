@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Vivélan — Liens utiles</title>
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,600&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/shared.css">
+<style>
+.lk-search{width:100%;box-sizing:border-box;padding:13px 16px;font-size:14.5px;font-family:'Figtree',sans-serif;border:1px solid var(--bd-strong);border-radius:12px;background:var(--card);color:var(--tx);outline:none;margin-bottom:22px}
+.lk-search:focus{border-color:var(--grn);box-shadow:0 0 0 3px rgba(23,86,74,.12)}
+.lk-row{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid rgba(23,86,74,.07)}
+.lk-row:hover{background:var(--bg)}
+.lk-badge{flex:none;width:74px;text-align:center;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:4px 0;border-radius:6px}
+.lk-badge.grn{color:var(--grn);background:var(--grn-bg)}
+.lk-badge.amb{color:var(--amb);background:var(--amb-bg)}
+.lk-copy{flex:none;padding:7px 13px;font-size:12.5px;font-weight:600;font-family:'Figtree',sans-serif;color:var(--grn);background:var(--grn-bg);border:none;border-radius:8px;cursor:pointer}
+.lk-copy:hover{background:#d5e6dd}
+.lk-act{flex:none;width:26px;height:26px;border:none;border-radius:7px;background:transparent;color:#b9c2bd;font-size:13px;cursor:pointer;line-height:1;padding:0}
+.lk-act.edit:hover{background:var(--grn-bg);color:var(--grn)}
+.lk-act.del:hover{background:var(--red-bg);color:var(--red)}
+.lk-act.confirm{width:auto;padding:0 9px;font-size:11.5px;font-weight:700;font-family:'Figtree',sans-serif;color:var(--red);background:var(--red-bg)}
+.lk-overlay{display:none;position:fixed;inset:0;background:rgba(20,53,45,.35);align-items:center;justify-content:center;padding:24px;z-index:50}
+.lk-overlay.open{display:flex}
+.lk-form{width:100%;max-width:440px;background:var(--card);border-radius:16px;padding:28px;box-sizing:border-box;display:flex;flex-direction:column;gap:18px;box-shadow:0 24px 60px rgba(20,53,45,.25)}
+.lk-x{width:30px;height:30px;border:none;border-radius:8px;background:var(--panel);color:var(--mut);font-size:15px;cursor:pointer;line-height:1}
+.lk-x:hover{background:#e8e2d4}
+.lk-input{padding:12px 14px;font-size:14.5px;font-family:'Figtree',sans-serif;border:1px solid var(--bd-strong);border-radius:10px;background:#fff;color:var(--tx);outline:none}
+.lk-input:focus{border-color:var(--grn);box-shadow:0 0 0 3px rgba(23,86,74,.12)}
+.lk-input.err{border-color:var(--red)}
+.lk-cancel{padding:11px 18px;font-size:13.5px;font-weight:600;font-family:'Figtree',sans-serif;color:var(--grn);background:var(--grn-bg);border:none;border-radius:10px;cursor:pointer}
+.lk-cancel:hover{background:#d5e6dd}
+.lk-submit{padding:11px 20px;font-size:13.5px;font-weight:700;font-family:'Figtree',sans-serif;color:var(--cream);background:var(--grn);border:none;border-radius:10px;cursor:pointer}
+.lk-submit:hover{background:var(--grn-dk)}
+</style>
+</head>
+<body>
+<div class="vl-shell">
+<div class="vl-top"></div>
+<header class="vl-header">
+  <div class="brand">
+    <a href="../index.html" style="display:block"><img src="../assets/logo-vivelan.png" alt="Vivélan"></a>
+    <span class="vl-admin">Admin</span>
+  </div>
+  <div class="vl-hright"><span class="vl-gen" id="sync"></span><div class="vl-avatar">V</div></div>
+</header>
+<main class="vl-main" style="max-width:880px">
+    <div class="vl-crumb"><a href="../index.html">Tableau de bord</a> <span class="sep">/</span> <span class="here">Liens utiles</span></div>
+    <div id="roBanner" hidden style="background:var(--amb-bg);color:var(--amb);border-radius:10px;padding:10px 14px;font-size:13px;font-weight:600;margin-bottom:18px">Synchronisation désactivée (pas de token) — lecture seule.</div>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:24px">
+      <h1 class="vl-h1" style="margin:0">Liens utiles</h1>
+      <button type="button" id="lk-open" class="btn">+ Ajouter un lien</button>
+    </div>
+
+    <input type="text" id="lk-q" class="lk-search" placeholder="Rechercher un lien, un tuto, un contact…" autocomplete="off">
+
+    <div id="lk-list" class="vl-card" style="border-radius:14px;overflow:hidden"></div>
+
+    <div id="lk-nores" hidden style="text-align:center;padding:48px 0;font-size:14px;color:var(--faint)">Aucun lien ne correspond à «&nbsp;<span id="lk-nores-q"></span>&nbsp;».</div>
+  </main>
+<footer class="vl-footer"><span>Vivélan — espace interne</span><span>v2</span></footer>
+<div id="lk-overlay" class="lk-overlay">
+    <form id="lk-form" class="lk-form">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <h2 id="lk-modal-title" class="serif" style="font-weight:600;font-size:21px;margin:0;color:var(--ink)">Ajouter un lien</h2>
+        <button type="button" id="lk-close" class="lk-x">✕</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <label for="lk-title" style="font-size:13px;font-weight:600;color:var(--ink)">Titre</label>
+        <input id="lk-title" type="text" class="lk-input" placeholder="Ex. Tuto paiement fournisseur" autocomplete="off">
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <span style="font-size:13px;font-weight:600;color:var(--ink)">Type</span>
+        <div id="lk-type" style="display:flex;gap:8px">
+          <button type="button" class="chip sm on" data-type="link">Lien</button>
+          <button type="button" class="chip sm" data-type="contact">Contact</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <label for="lk-url" id="lk-url-label" style="font-size:13px;font-weight:600;color:var(--ink)">Lien</label>
+        <input id="lk-url" type="text" class="lk-input" placeholder="https://…" autocomplete="off">
+        <span id="lk-err" hidden style="font-size:12.5px;font-weight:600;color:var(--red)">Renseignez un titre et un lien (URL ou numéro).</span>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:flex-end">
+        <button type="button" id="lk-cancel" class="lk-cancel">Annuler</button>
+        <button type="submit" id="lk-submit" class="lk-submit">Ajouter</button>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+const BLOB="{\"salt\":\"GW2IV4ENLdlecws0nSJLYQ==\",\"iv\":\"BmhCPQE7f32Hsh6m\",\"data\":\"+mYbS2BdjYWUdcMFvdVxlxqch3vDrMYrLEImBD0n4MKGTMQ2spH/nmPJ2U1IaiGTa81GktySwHlAj1avCDkdS5GY5eHG/Eo+NRJ0NF6+vIczCWW1u4vNSIgyIdlx3GbDmu86NzBcDEXN8rrLON6CwaRoFmH6302fgeGM8m5eqFdynPS1CofNo8egDFUeRA8LwSer1tvEodOXNirIMlE0EXrC9WNRImmepOuxvgWZ/PlG1LxZsH5xQ5O0Mmc5d76Uq7dn8LaQ33rAhlNk7wlp3CPQbtDUpxdW0qm9l/GwMCm/lUgZz5Kp+0h7C+bepI/ERqT4TgAXtkL0dYww6NSV4LEYSiyVNbLA2UtyHnHCyD5wHTR0atuUwArf0livqqvUv106sYT5XVgPBpimMSqiCHGCj6jq3UFb5iZy0gvIn7Vk7nhZ6EMsW39afJV+4YI3W816chgYgH8cQJ1LqDYJTzNnwsk0jexQ5hjiWQlXl/DBsYT2STvLZwUZ7D7sw/pqLTq9P+BXwIcCNyOoRIrxIBrmfu02nByPgueO5c+lsIOyv2VuyvWIjP16CcgAitfjmBIAoV0OmtIfQ3K5KfzTas7PsV7aEc94bAYAo0PR4i7opf5npx+tVWIwe06ojwuoTIVJltdahYZ/wQDnbzO2GTbjBAieGYNjXo3ETbwzkkA=\"}";
+
+const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
+async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
+return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:250000,hash:'SHA-256'},km,{name:'AES-GCM',length:256},true,['decrypt']);}
+async function tryDecrypt(pw){const blob=JSON.parse(BLOB);const key=await deriveKey(pw,b2u(blob.salt));
+const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:b2u(blob.iv)},key,b2u(blob.data));
+return JSON.parse(new TextDecoder().decode(plain));}
+
+var SYNC=(function(){
+var GH=null,REPO='',PATH='',MSG='',SHA=null,TIMER=null,PUSHING=false,DIRTY=false,GEN=0,SER=null,APPLY=null;
+function api(){return 'https://api.github.com/repos/'+REPO+'/contents/'+PATH;}
+function hdr(){return {Authorization:'Bearer '+GH,Accept:'application/vnd.github+json'};}
+function b64utf8(s){var u=new TextEncoder().encode(s),b='';for(var i=0;i<u.length;i++)b+=String.fromCharCode(u[i]);return btoa(b);}
+function utf8b64(b){return new TextDecoder().decode(Uint8Array.from(atob(b.replace(/\n/g,'')),function(c){return c.charCodeAt(0);}));}
+function setSync(t){var el=document.getElementById('sync');if(el)el.textContent=t;}
+async function push(keepalive){clearTimeout(TIMER);
+if(S.ro||!DIRTY)return;
+if(PUSHING){TIMER=setTimeout(push,2000);return;} /* verrou : jamais deux envois simultanés */
+PUSHING=true;setSync('⏳ envoi…');
+var gen=GEN;
+try{
+if(!SHA){var r0=await fetch(api(),{headers:hdr(),cache:'no-store'});
+if(r0.ok)SHA=(await r0.json()).sha;else if(r0.status!==404)throw new Error('lecture HTTP '+r0.status);}
+var body={message:MSG,content:b64utf8(SER())};if(SHA)body.sha=SHA;
+var put=await fetch(api(),{method:'PUT',headers:hdr(),keepalive:!!keepalive,body:JSON.stringify(body)});
+if(!put.ok){
+/* 409/422 = quelqu'un a poussé entre notre lecture et notre écriture → on relit le sha et on renvoie */
+if(put.status===409||put.status===422){setSync('⏳ conflit de version — nouvel essai…');SHA=null;PUSHING=false;TIMER=setTimeout(push,800);return;}
+throw new Error('commit HTTP '+put.status);}
+var res=await put.json();SHA=res.content&&res.content.sha?res.content.sha:null;
+if(GEN===gen){DIRTY=false;setSync('✅ synchronisé');}
+else{TIMER=setTimeout(push,500);} /* modifié pendant l'envoi → on repousse */
+}catch(e){setSync('❌ envoi échoué ('+e.message+') — réessai auto…');TIMER=setTimeout(push,15000);}
+finally{PUSHING=false;}}
+var S={ro:true,
+init:function(p,msg,ser,apply){GH=p.gh;REPO=p.repo;PATH=p.path;MSG=msg;SER=ser;APPLY=apply;S.ro=!GH;
+if(S.ro){var b=document.getElementById('roBanner');if(b)b.hidden=false;return;}
+setSync('✅ synchronisé');
+window.addEventListener('pagehide',function(){if(DIRTY)push(true);});
+document.addEventListener('visibilitychange',function(){
+if(document.visibilityState==='hidden'){if(DIRTY)push(true);}
+else if(!DIRTY&&!PUSHING)S.refresh();});},
+refresh:async function(){if(S.ro)return;
+try{var r=await fetch(api(),{headers:hdr(),cache:'no-store'});
+if(r.status===404){SHA=null;return;}
+if(!r.ok)throw new Error('HTTP '+r.status);
+var f=await r.json();SHA=f.sha;
+if(!DIRTY&&!PUSHING)APPLY(JSON.parse(utf8b64(f.content)));}
+catch(e){/* silencieux : le seed est déjà affiché */}},
+change:function(){if(S.ro)return;GEN++;DIRTY=true;setSync('⏳ envoi…');clearTimeout(TIMER);TIMER=setTimeout(push,2000);}};
+return S;})();
+
+'use strict';
+var links = [];
+var q = '', copied = '', copyTimer = null;
+var editIdx = -1, delIdx = -1, delTimer = null;
+
+var isPhone = function(v){ return /^\+?[\d\s().-]{6,}$/.test(v.trim()); };
+
+function normLinks(obj){
+  return (obj && Array.isArray(obj.links) ? obj.links : [])
+    .filter(function(l){ return l && typeof l.title === 'string' && typeof l.raw === 'string'; })
+    .map(function(l){
+      /* type deviné pour les entrées sans champ type (jamais re-poussé automatiquement) */
+      return { title: String(l.title), raw: String(l.raw), type: (l.type === 'link' || l.type === 'contact') ? l.type : (isPhone(l.raw) ? 'contact' : 'link') };
+    });
+}
+function serialize(){ return JSON.stringify({ links: links }, null, 2) + '\n'; }
+function save(){ SYNC.change(); }
+
+function meta(l){
+  var v = l.raw.trim();
+  if(l.type === 'contact') return { url: 'tel:' + v.replace(/[^+\d]/g, ''), sub: v, badge: 'Contact', copy: v };
+  var u = v;
+  if(!/^https?:\/\//i.test(u)) u = 'https://' + u;
+  var h = u;
+  try{ h = new URL(u).hostname.replace('www.', ''); }catch(e){}
+  var badge = h.indexOf('loom.com') !== -1 ? 'Loom'
+    : (h.indexOf('youtube.com') !== -1 || h.indexOf('youtu.be') !== -1) ? 'YouTube'
+    : 'Lien';
+  return { url: u, sub: h, badge: badge, copy: null };
+}
+
+function esc(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+  });
+}
+
+var listEl = document.getElementById('lk-list');
+var noresEl = document.getElementById('lk-nores');
+var noresQ = document.getElementById('lk-nores-q');
+var qEl = document.getElementById('lk-q');
+var overlay = document.getElementById('lk-overlay');
+var formEl = document.getElementById('lk-form');
+var fTitle = document.getElementById('lk-title');
+var fUrl = document.getElementById('lk-url');
+var errEl = document.getElementById('lk-err');
+var modalTitle = document.getElementById('lk-modal-title');
+var submitBtn = document.getElementById('lk-submit');
+var urlLabel = document.getElementById('lk-url-label');
+var typeEl = document.getElementById('lk-type');
+var fType = 'link', typeTouched = false;
+
+function setType(t){
+  fType = t;
+  var chips = typeEl.querySelectorAll('.chip');
+  for(var i = 0; i < chips.length; i++){
+    chips[i].classList.toggle('on', chips[i].getAttribute('data-type') === t);
+  }
+  var contact = t === 'contact';
+  urlLabel.textContent = contact ? 'Numéro ou coordonnée' : 'Lien';
+  fUrl.placeholder = contact ? '+33 6 12 34 56 78' : 'https://…';
+}
+
+function render(){
+  var qq = q.trim().toLowerCase();
+  var rows = links.map(function(l, i){
+    var m = meta(l);
+    return { idx: i, title: l.title, url: m.url, sub: m.sub, badge: m.badge, copy: m.copy };
+  }).filter(function(r){
+    return !qq || (r.title + ' ' + r.sub).toLowerCase().indexOf(qq) !== -1;
+  });
+
+  listEl.innerHTML = rows.map(function(r){
+    var isContact = r.badge === 'Contact';
+    var bodyStyle = 'flex:1;min-width:0;display:flex;flex-direction:column;gap:2px';
+    var body = '<span style="font-size:15px;font-weight:600;color:var(--ink)">' + esc(r.title) + '</span>'
+      + '<span style="font-size:12.5px;color:var(--faint);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(r.sub) + '</span>';
+    return '<div class="lk-row">'
+      + '<span class="lk-badge ' + (isContact ? 'amb' : 'grn') + '">' + esc(r.badge) + '</span>'
+      + (isContact
+        ? '<div style="' + bodyStyle + '">' + body + '</div>'
+        : '<a href="' + esc(r.url) + '" target="_blank" rel="noopener" style="' + bodyStyle + '">' + body + '</a>')
+      + (r.copy
+        ? '<button type="button" class="lk-copy" data-copy="' + esc(r.copy) + '" data-title="' + esc(r.title) + '">'
+          + (copied === r.title ? 'Copié ✓' : 'Copier') + '</button>'
+        : '')
+      + (isContact
+        ? ''
+        : '<a href="' + esc(r.url) + '" target="_blank" rel="noopener" style="flex:none;color:var(--grn);font-size:16px">↗</a>')
+      + (SYNC.ro ? '' :
+        '<button type="button" class="lk-act edit" data-edit="' + r.idx + '" aria-label="Modifier">✎</button>'
+        + (delIdx === r.idx
+          ? '<button type="button" class="lk-act del confirm" data-del="' + r.idx + '">Supprimer&nbsp;?</button>'
+          : '<button type="button" class="lk-act del" data-del="' + r.idx + '" aria-label="Supprimer">✕</button>'))
+      + '</div>';
+  }).join('');
+
+  listEl.style.display = rows.length ? '' : 'none';
+  noresEl.hidden = rows.length > 0;
+  noresQ.textContent = q.trim();
+}
+
+/* recherche instantanée */
+qEl.addEventListener('input', function(){ q = qEl.value; render(); });
+
+/* copie (délégation) */
+function fallbackCopy(t){
+  var ta = document.createElement('textarea');
+  ta.value = t;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try{ document.execCommand('copy'); }catch(e){}
+  ta.remove();
+}
+function copyText(t){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).catch(function(){ fallbackCopy(t); });
+  }else{
+    fallbackCopy(t);
+  }
+}
+listEl.addEventListener('click', function(e){
+  var ed = e.target.closest('[data-edit]');
+  if(ed){
+    e.preventDefault();
+    if(SYNC.ro) return;
+    openModal(parseInt(ed.getAttribute('data-edit'), 10));
+    return;
+  }
+  var dl = e.target.closest('[data-del]');
+  if(dl){
+    e.preventDefault();
+    if(SYNC.ro) return;
+    var i = parseInt(dl.getAttribute('data-del'), 10);
+    clearTimeout(delTimer);
+    if(delIdx === i){
+      links.splice(i, 1);
+      delIdx = -1;
+      save();
+    }else{
+      delIdx = i;
+      delTimer = setTimeout(function(){ delIdx = -1; render(); }, 3000);
+    }
+    render();
+    return;
+  }
+  var b = e.target.closest('[data-copy]');
+  if(!b) return;
+  e.preventDefault();
+  copyText(b.getAttribute('data-copy'));
+  copied = b.getAttribute('data-title');
+  clearTimeout(copyTimer);
+  copyTimer = setTimeout(function(){ copied = ''; render(); }, 1600);
+  render();
+});
+
+/* modal */
+function setErr(on){
+  errEl.hidden = !on;
+  fUrl.classList.toggle('err', on);
+}
+function openModal(idx){
+  editIdx = (typeof idx === 'number' && idx >= 0) ? idx : -1;
+  var editing = editIdx !== -1;
+  fTitle.value = editing ? links[editIdx].title : '';
+  fUrl.value = editing ? links[editIdx].raw : '';
+  typeTouched = editing; /* en modification, pas de détection auto */
+  setType(editing ? links[editIdx].type : 'link');
+  modalTitle.textContent = editing ? 'Modifier le lien' : 'Ajouter un lien';
+  submitBtn.textContent = editing ? 'Enregistrer' : 'Ajouter';
+  setErr(false);
+  overlay.classList.add('open');
+  fTitle.focus();
+}
+function closeModal(){ overlay.classList.remove('open'); }
+
+document.getElementById('lk-open').addEventListener('click', function(){ if(!SYNC.ro) openModal(); });
+document.getElementById('lk-close').addEventListener('click', closeModal);
+document.getElementById('lk-cancel').addEventListener('click', closeModal);
+overlay.addEventListener('click', function(e){ if(e.target === overlay) closeModal(); });
+fTitle.addEventListener('input', function(){ setErr(false); });
+fUrl.addEventListener('input', function(){
+  setErr(false);
+  /* pré-sélection de confort en mode ajout, jamais après un choix manuel */
+  if(editIdx === -1 && !typeTouched) setType(isPhone(fUrl.value) ? 'contact' : 'link');
+});
+typeEl.addEventListener('click', function(e){
+  var c = e.target.closest('.chip');
+  if(!c) return;
+  typeTouched = true;
+  setType(c.getAttribute('data-type'));
+});
+
+formEl.addEventListener('submit', function(e){
+  e.preventDefault();
+  if(SYNC.ro) return;
+  var t = fTitle.value.trim(), u = fUrl.value.trim();
+  if(!t || !u){ setErr(true); return; }
+  if(editIdx !== -1){
+    links[editIdx] = { title: t, raw: u, type: fType };
+  }else{
+    links.push({ title: t, raw: u, type: fType });
+  }
+  save();
+  closeModal();
+  render();
+});
+
+function boot(payload){
+  SYNC.init(payload, 'liens : maj depuis le dashboard', serialize, function(remote){
+    if(overlay.classList.contains('open')) return; /* ne pas écraser une édition en cours */
+    links = normLinks(remote);
+    if(delIdx !== -1){ delIdx = -1; clearTimeout(delTimer); }
+    render();
+  });
+  links = normLinks(payload.seed);
+  if(SYNC.ro) document.getElementById('lk-open').hidden = true;
+  render();
+  SYNC.refresh(); /* seed affiché, puis état le plus récent multi-appareils */
+}
+
+(async()=>{try{const w=JSON.parse(localStorage.getItem('vl_pw')||'null');
+if(w&&w.exp>Date.now()){const pw=decodeURIComponent(escape(atob(w.p)));boot(await tryDecrypt(pw));return;}}catch(e){}
+location.replace('../login.html');})();
+</script>
+</body>
+</html>

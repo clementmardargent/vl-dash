@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Vivélan — To-do list</title>
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,600&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/shared.css">
+<style>
+.todo-input{flex:1;min-width:0;padding:13px 16px;font-size:14.5px;font-family:'Figtree',sans-serif;border:1px solid var(--bd-strong);border-radius:12px;background:var(--card);color:var(--tx);outline:none}
+.todo-input:focus{border-color:var(--grn);box-shadow:0 0 0 3px rgba(23,86,74,.12)}
+.todo-input:disabled{opacity:.55;cursor:not-allowed}
+.todo-add{padding:0 20px;font-size:13.5px;font-weight:700;font-family:'Figtree',sans-serif;color:var(--cream);background:var(--grn);border:none;border-radius:12px;cursor:pointer}
+.todo-add:hover{background:var(--grn-dk)}
+.todo-add:disabled{opacity:.55;cursor:not-allowed}
+.wchip{padding:5px 13px;border-radius:999px;border:1px solid var(--bd-strong);background:var(--card);color:var(--tx);font-size:12.5px;font-weight:600;cursor:pointer;font-family:'Figtree',sans-serif}
+.wchip.on{background:var(--grn);color:var(--cream);border-color:var(--grn)}
+.sec-label{font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--amb);margin-bottom:10px}
+.trow{position:relative;display:flex;align-items:center;gap:12px;padding:13px 20px 13px 14px;border-bottom:1px solid rgba(23,86,74,.07);background:transparent}
+.trow:hover{background:var(--bg)}
+.trow.dragging{opacity:.35}
+.ins-line{position:absolute;left:10px;right:10px;height:3px;border-radius:999px;background:var(--grn);z-index:5;pointer-events:none}
+.ins-line.top{top:-2px}
+.ins-line.bottom{bottom:-2px}
+.grip{flex:none;cursor:grab;color:#c5cdc8;font-size:13px;letter-spacing:1px;user-select:none}
+.circ{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid rgba(23,86,74,.4);background:transparent;cursor:pointer;padding:0}
+.circ:hover{border-color:var(--grn);background:var(--grn-bg)}
+.ttl{flex:1;min-width:0;font-size:15px;font-weight:500;color:var(--ink)}
+.whobtn{padding:4px 11px;border-radius:999px;font-size:11.5px;font-weight:700;font-family:'Figtree',sans-serif;cursor:pointer}
+.whomenu{position:absolute;top:calc(100% + 6px);right:0;background:var(--card);border:1px solid rgba(23,86,74,.15);border-radius:10px;box-shadow:0 10px 28px rgba(20,53,45,.16);padding:6px;z-index:20;min-width:160px;display:flex;flex-direction:column;gap:2px}
+.who-opt{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;border:none;border-radius:7px;background:transparent;color:var(--ink);font-size:13px;font-weight:600;font-family:'Figtree',sans-serif;cursor:pointer;text-align:left}
+.who-opt.on{background:var(--panel)}
+.who-opt:hover{background:var(--panel)}
+.who-opt .chk{color:var(--grn);font-size:12px}
+.del{flex:none;width:26px;height:26px;border:none;border-radius:7px;background:transparent;color:#b9c2bd;font-size:13px;cursor:pointer;line-height:1;padding:0}
+.del:hover{background:var(--red-bg);color:var(--red)}
+.drow{display:flex;align-items:center;gap:14px;padding:13px 20px;border-bottom:1px solid rgba(23,86,74,.07)}
+.drow:hover{background:var(--bg)}
+.dcheck{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid var(--grn);background:var(--grn);color:var(--cream);font-size:12px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.dttl{flex:1;min-width:0;font-size:15px;font-weight:500;color:var(--faint);text-decoration:line-through}
+.done-toggle{display:flex;align-items:center;gap:8px;border:none;background:transparent;padding:0;margin-bottom:10px;cursor:pointer;font-family:'Figtree',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--faint)}
+.done-toggle:hover{color:var(--mut)}
+.empty{text-align:center;padding:34px 20px;font-size:14px;color:var(--faint)}
+</style>
+</head>
+<body>
+<div class="vl-shell">
+<div class="vl-top"></div>
+<header class="vl-header">
+  <div class="brand">
+    <a href="../index.html" style="display:block"><img src="../assets/logo-vivelan.png" alt="Vivélan"></a>
+    <span class="vl-admin">Admin</span>
+  </div>
+  <div class="vl-hright"><span class="vl-gen" id="sync"></span><div class="vl-avatar">V</div></div>
+</header>
+<main class="vl-main" style="max-width:760px">
+    <div class="vl-crumb"><a href="../index.html">Tableau de bord</a> <span class="sep">/</span> <span class="here">To-do list</span></div>
+    <div id="roBanner" hidden style="background:var(--amb-bg);color:var(--amb);border-radius:10px;padding:10px 14px;font-size:13px;font-weight:600;margin-bottom:18px">Synchronisation désactivée (pas de token) — lecture seule.</div>
+    <h1 class="vl-h1" style="margin-bottom:8px">To-do list</h1>
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:26px">
+      <span id="progressTxt" style="font-size:13.5px;color:var(--mut)"></span>
+      <div style="flex:1;max-width:220px;height:6px;border-radius:999px;background:#e8e2d4;overflow:hidden"><div id="progressBar" style="height:100%;border-radius:999px;background:var(--grn);width:0%"></div></div>
+    </div>
+
+    <form id="addForm" style="display:flex;flex-direction:column;gap:10px;margin-bottom:26px">
+      <div style="display:flex;gap:10px">
+        <input id="newTitle" type="text" class="todo-input" placeholder="Nouvelle tâche… (Entrée pour ajouter)">
+        <button type="submit" class="todo-add" id="addBtn">Ajouter</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:12.5px;color:var(--faint)">Filtrer&nbsp;:</span>
+        <span id="filterChips" style="display:flex;align-items:center;gap:8px"></span>
+      </div>
+    </form>
+
+    <div class="sec-label">À faire</div>
+    <div id="openList" class="vl-card" style="margin-bottom:28px"></div>
+
+    <div id="doneWrap"></div>
+  </main>
+<footer class="vl-footer"><span>Vivélan — espace interne</span><span>v2</span></footer>
+<div id="overlay" hidden style="position:fixed;inset:0;z-index:10"></div>
+</div>
+<script>
+const BLOB="{\"salt\":\"ESxp68LC2k3PVaCwJD/eJw==\",\"iv\":\"JhL/8dnK8gYaE+g8\",\"data\":\"QkJewJyE+/ZprycuDiKmuFVX0L62AEOvuiRXMy4yvTa4UAB4MqmIQzLDXJZNGI0ZBW1oXseQp3nmNnrHOD5dk8ktiy9ZSqduXyjJ+EXLplU4fAG4qnX2X3sWTPFnQBrKMvTPQm8niVRdYjGlOXm4VsUNHbdMpq8Z4gHhk4nYsJizsl3kTLQ/MJ3rhnbavkqOW81gfjmQTi5/Js+oGHc8LPionFkyncvV48xCHoQW82SUeOGgxENu0h9z8xZgF/CIkRVrNUYhP2dHvooH\"}";
+
+const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
+async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
+return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:250000,hash:'SHA-256'},km,{name:'AES-GCM',length:256},true,['decrypt']);}
+async function tryDecrypt(pw){const blob=JSON.parse(BLOB);const key=await deriveKey(pw,b2u(blob.salt));
+const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:b2u(blob.iv)},key,b2u(blob.data));
+return JSON.parse(new TextDecoder().decode(plain));}
+
+var SYNC=(function(){
+var GH=null,REPO='',PATH='',MSG='',SHA=null,TIMER=null,PUSHING=false,DIRTY=false,GEN=0,SER=null,APPLY=null;
+function api(){return 'https://api.github.com/repos/'+REPO+'/contents/'+PATH;}
+function hdr(){return {Authorization:'Bearer '+GH,Accept:'application/vnd.github+json'};}
+function b64utf8(s){var u=new TextEncoder().encode(s),b='';for(var i=0;i<u.length;i++)b+=String.fromCharCode(u[i]);return btoa(b);}
+function utf8b64(b){return new TextDecoder().decode(Uint8Array.from(atob(b.replace(/\n/g,'')),function(c){return c.charCodeAt(0);}));}
+function setSync(t){var el=document.getElementById('sync');if(el)el.textContent=t;}
+async function push(keepalive){clearTimeout(TIMER);
+if(S.ro||!DIRTY)return;
+if(PUSHING){TIMER=setTimeout(push,2000);return;} /* verrou : jamais deux envois simultanés */
+PUSHING=true;setSync('⏳ envoi…');
+var gen=GEN;
+try{
+if(!SHA){var r0=await fetch(api(),{headers:hdr(),cache:'no-store'});
+if(r0.ok)SHA=(await r0.json()).sha;else if(r0.status!==404)throw new Error('lecture HTTP '+r0.status);}
+var body={message:MSG,content:b64utf8(SER())};if(SHA)body.sha=SHA;
+var put=await fetch(api(),{method:'PUT',headers:hdr(),keepalive:!!keepalive,body:JSON.stringify(body)});
+if(!put.ok){
+/* 409/422 = quelqu'un a poussé entre notre lecture et notre écriture → on relit le sha et on renvoie */
+if(put.status===409||put.status===422){setSync('⏳ conflit de version — nouvel essai…');SHA=null;PUSHING=false;TIMER=setTimeout(push,800);return;}
+throw new Error('commit HTTP '+put.status);}
+var res=await put.json();SHA=res.content&&res.content.sha?res.content.sha:null;
+if(GEN===gen){DIRTY=false;setSync('✅ synchronisé');}
+else{TIMER=setTimeout(push,500);} /* modifié pendant l'envoi → on repousse */
+}catch(e){setSync('❌ envoi échoué ('+e.message+') — réessai auto…');TIMER=setTimeout(push,15000);}
+finally{PUSHING=false;}}
+var S={ro:true,
+init:function(p,msg,ser,apply){GH=p.gh;REPO=p.repo;PATH=p.path;MSG=msg;SER=ser;APPLY=apply;S.ro=!GH;
+if(S.ro){var b=document.getElementById('roBanner');if(b)b.hidden=false;return;}
+setSync('✅ synchronisé');
+window.addEventListener('pagehide',function(){if(DIRTY)push(true);});
+document.addEventListener('visibilitychange',function(){
+if(document.visibilityState==='hidden'){if(DIRTY)push(true);}
+else if(!DIRTY&&!PUSHING)S.refresh();});},
+refresh:async function(){if(S.ro)return;
+try{var r=await fetch(api(),{headers:hdr(),cache:'no-store'});
+if(r.status===404){SHA=null;return;}
+if(!r.ok)throw new Error('HTTP '+r.status);
+var f=await r.json();SHA=f.sha;
+if(!DIRTY&&!PUSHING)APPLY(JSON.parse(utf8b64(f.content)));}
+catch(e){/* silencieux : le seed est déjà affiché */}},
+change:function(){if(S.ro)return;GEN++;DIRTY=true;setSync('⏳ envoi…');clearTimeout(TIMER);TIMER=setTimeout(push,2000);}};
+return S;})();
+
+'use strict';
+var WHO = ['', 'Matis', 'Clément'];
+var FILTERS = ['all', 'Matis', 'Clément', ''];
+var state = { tasks: [], doneOpen: true, filterWho: 'all', menuFor: null };
+var dragId = null, overIdx = null;
+
+function normTasks(obj){
+  return (obj && Array.isArray(obj.tasks) ? obj.tasks : [])
+    .filter(function(t){ return t && typeof t.title === 'string'; })
+    .map(function(t){
+      return {
+        id: Number(t.id) || 0,
+        title: String(t.title),
+        done: !!t.done,
+        who: WHO.indexOf(t.who) >= 0 ? t.who : ''
+      };
+    });
+}
+function newId(){
+  var id = Date.now();
+  while (state.tasks.some(function(t){ return t.id === id; })) id++;
+  return id;
+}
+function serialize(){
+  return JSON.stringify({ tasks: state.tasks.map(function(t){ return { id: t.id, title: t.title, done: t.done, who: t.who }; }) }, null, 2) + '\n';
+}
+function save(){ SYNC.change(); }
+
+function esc(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+  });
+}
+
+function whoStyle(w){
+  if (w === 'Matis')   return 'border:1px solid transparent;background:var(--grn-bg);color:var(--grn)';
+  if (w === 'Clément') return 'border:1px solid transparent;background:var(--amb-bg);color:var(--amb)';
+  return 'border:1px dashed rgba(23,86,74,.3);background:transparent;color:var(--faint)';
+}
+function whoLabel(w){ return w || 'Non assigné'; }
+
+function openTasks(){ return state.tasks.filter(function(t){ return !t.done; }); }
+function doneTasks(){ return state.tasks.filter(function(t){ return t.done; }); }
+function matchesFilter(t){ return state.filterWho === 'all' || (t.who || '') === state.filterWho; }
+function visibleOpen(){ return openTasks().filter(matchesFilter); }
+
+function menuHtml(t){
+  var opts = WHO.map(function(v){
+    var on = (t.who || '') === v;
+    return '<button type="button" class="who-opt' + (on ? ' on' : '') + '" data-action="assign" data-id="' + t.id + '" data-who="' + esc(v) + '">' +
+      '<span>' + whoLabel(v) + '</span><span class="chk">' + (on ? '✓' : '') + '</span></button>';
+  }).join('');
+  return '<div class="whomenu">' + opts + '</div>';
+}
+
+function render(){
+  var open = visibleOpen();
+  var done = doneTasks().filter(matchesFilter);
+  var total = state.tasks.length;
+  var allDone = doneTasks().length;
+
+  document.getElementById('progressTxt').textContent = allDone + ' / ' + total + ' faites';
+  document.getElementById('progressBar').style.width = (total ? Math.round(allDone / total * 100) : 0) + '%';
+
+  document.getElementById('filterChips').innerHTML = FILTERS.map(function(v){
+    return '<button type="button" class="wchip' + (state.filterWho === v ? ' on' : '') + '" data-action="filter" data-who="' + esc(v) + '">' + (v === 'all' ? 'Tous' : whoLabel(v)) + '</button>';
+  }).join('');
+
+  var listEl = document.getElementById('openList');
+  if (open.length === 0) {
+    listEl.innerHTML = '<div class="empty">' + (openTasks().length === 0 ? 'Tout est fait.' : 'Aucune tâche pour ce filtre.') + '</div>';
+  } else {
+    listEl.innerHTML = open.map(function(t, i){
+      return '<div class="trow"' + (SYNC.ro ? '' : ' draggable="true"') + ' data-id="' + t.id + '" data-idx="' + i + '">' +
+        '<div class="ins-line top" hidden></div>' +
+        '<div class="ins-line bottom" hidden></div>' +
+        '<span class="grip" title="Glisser pour réordonner">⋮⋮</span>' +
+        '<button type="button" class="circ" data-action="toggle" data-id="' + t.id + '" aria-label="Marquer comme faite"></button>' +
+        '<span class="ttl">' + esc(t.title) + '</span>' +
+        '<div style="position:relative;flex:none">' +
+          '<button type="button" class="whobtn" style="' + whoStyle(t.who || '') + '" data-action="menu" data-id="' + t.id + '">' + whoLabel(t.who) + ' ▾</button>' +
+          (state.menuFor === t.id ? menuHtml(t) : '') +
+        '</div>' +
+        '<button type="button" class="del" data-action="remove" data-id="' + t.id + '" aria-label="Supprimer">✕</button>' +
+      '</div>';
+    }).join('');
+    if (!SYNC.ro) attachDrag(listEl);
+  }
+
+  var doneWrap = document.getElementById('doneWrap');
+  if (done.length === 0) {
+    doneWrap.innerHTML = '';
+  } else {
+    var rows = done.map(function(t){
+      return '<div class="drow">' +
+        '<button type="button" class="dcheck" data-action="toggle" data-id="' + t.id + '" aria-label="Remettre à faire">✓</button>' +
+        '<span class="dttl">' + esc(t.title) + '</span>' +
+        '<button type="button" class="del" data-action="remove" data-id="' + t.id + '" aria-label="Supprimer">✕</button>' +
+      '</div>';
+    }).join('');
+    doneWrap.innerHTML =
+      '<button type="button" class="done-toggle" data-action="toggledone">Terminées (' + done.length + ') <span style="font-size:12px">' + (state.doneOpen ? '▾' : '▸') + '</span></button>' +
+      (state.doneOpen ? '<div class="vl-card" style="overflow:hidden">' + rows + '</div>' : '');
+  }
+
+  document.getElementById('overlay').hidden = state.menuFor === null;
+}
+
+/* ---- drag & drop ---- */
+function clearLines(){
+  var lines = document.querySelectorAll('#openList .ins-line');
+  for (var i = 0; i < lines.length; i++) lines[i].hidden = true;
+}
+function showLine(idx){
+  clearLines();
+  var rows = document.querySelectorAll('#openList .trow');
+  if (!rows.length) return;
+  if (idx < rows.length) rows[idx].querySelector('.ins-line.top').hidden = false;
+  else rows[rows.length - 1].querySelector('.ins-line.bottom').hidden = false;
+}
+function attachDrag(listEl){
+  var rows = listEl.querySelectorAll('.trow');
+  Array.prototype.forEach.call(rows, function(row){
+    var id = Number(row.getAttribute('data-id'));
+    var idx = Number(row.getAttribute('data-idx'));
+    row.addEventListener('dragstart', function(e){
+      e.dataTransfer.effectAllowed = 'move';
+      try { e.dataTransfer.setData('text/plain', String(id)); } catch(err) {}
+      dragId = id;
+      if (state.menuFor !== null) { state.menuFor = null; document.getElementById('overlay').hidden = true; var m = listEl.querySelector('.whomenu'); if (m) m.remove(); }
+      setTimeout(function(){ row.classList.add('dragging'); }, 0);
+    });
+    row.addEventListener('dragover', function(e){
+      if (dragId === null) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      var r = row.getBoundingClientRect();
+      var target = e.clientY < r.top + r.height / 2 ? idx : idx + 1;
+      if (overIdx !== target) { overIdx = target; showLine(target); }
+    });
+    row.addEventListener('drop', function(e){
+      e.preventDefault();
+      doDrop();
+    });
+    row.addEventListener('dragend', function(){
+      dragId = null; overIdx = null;
+      clearLines();
+      row.classList.remove('dragging');
+    });
+  });
+}
+function doDrop(){
+  var open = visibleOpen();
+  if (dragId === null || overIdx === null) { dragId = null; overIdx = null; clearLines(); return; }
+  var refId = overIdx < open.length ? open[overIdx].id : null;
+  if (refId === dragId) { dragId = null; overIdx = null; clearLines(); render(); return; }
+  var dragged = null;
+  var arr = state.tasks.filter(function(x){
+    if (x.id === dragId) { dragged = x; return false; }
+    return true;
+  });
+  if (!dragged) { dragId = null; overIdx = null; clearLines(); return; }
+  var insertAt;
+  if (refId !== null) {
+    insertAt = arr.findIndex(function(x){ return x.id === refId; });
+  } else {
+    var lastVis = -1;
+    for (var i = 0; i < arr.length; i++) { if (!arr[i].done && matchesFilter(arr[i])) lastVis = i; }
+    if (lastVis >= 0) {
+      insertAt = lastVis + 1;
+    } else {
+      var openArr = arr.filter(function(x){ return !x.done; });
+      insertAt = openArr.length ? arr.indexOf(openArr[openArr.length - 1]) + 1 : 0;
+    }
+  }
+  arr.splice(insertAt, 0, dragged);
+  state.tasks = arr;
+  dragId = null; overIdx = null;
+  save();
+  render();
+}
+
+/* ---- clicks (délégation) ---- */
+document.addEventListener('click', function(e){
+  var el = e.target.closest('[data-action]');
+  if (!el) return;
+  var action = el.getAttribute('data-action');
+  if (SYNC.ro && action !== 'filter' && action !== 'toggledone') return; /* lecture seule */
+  var id = Number(el.getAttribute('data-id'));
+  if (action === 'filter') {
+    var f = el.getAttribute('data-who');
+    state.filterWho = f === null ? 'all' : f;
+    render();
+  } else if (action === 'toggle') {
+    state.tasks = state.tasks.map(function(x){ return x.id === id ? Object.assign({}, x, { done: !x.done }) : x; });
+    state.menuFor = null;
+    save(); render();
+  } else if (action === 'remove') {
+    state.tasks = state.tasks.filter(function(x){ return x.id !== id; });
+    state.menuFor = null;
+    save(); render();
+  } else if (action === 'menu') {
+    state.menuFor = state.menuFor === id ? null : id;
+    render();
+  } else if (action === 'assign') {
+    var w = el.getAttribute('data-who') || '';
+    state.tasks = state.tasks.map(function(x){ return x.id === id ? Object.assign({}, x, { who: w }) : x; });
+    state.menuFor = null;
+    save(); render();
+  } else if (action === 'toggledone') {
+    state.doneOpen = !state.doneOpen; /* préférence d'affichage locale, pas de push */
+    render();
+  }
+});
+
+document.getElementById('overlay').addEventListener('click', function(){
+  state.menuFor = null;
+  render();
+});
+
+document.getElementById('addForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  if (SYNC.ro) return;
+  var input = document.getElementById('newTitle');
+  var title = input.value.trim();
+  if (!title) return;
+  var who = (state.filterWho === 'Matis' || state.filterWho === 'Clément') ? state.filterWho : '';
+  state.tasks = [{ id: newId(), title: title, done: false, who: who }].concat(state.tasks);
+  input.value = '';
+  save(); render();
+  input.focus();
+});
+
+function boot(payload){
+  SYNC.init(payload, 'todo : maj depuis le dashboard', serialize, function(remote){
+    state.tasks = normTasks(remote);
+    state.menuFor = null;
+    render();
+  });
+  state.tasks = normTasks(payload.seed);
+  if (SYNC.ro) {
+    var inp = document.getElementById('newTitle');
+    inp.disabled = true;
+    inp.placeholder = 'Lecture seule — synchronisation désactivée';
+    document.getElementById('addBtn').disabled = true;
+  }
+  render();
+  SYNC.refresh(); /* seed affiché, puis état le plus récent multi-appareils */
+}
+
+(async()=>{try{const w=JSON.parse(localStorage.getItem('vl_pw')||'null');
+if(w&&w.exp>Date.now()){const pw=decodeURIComponent(escape(atob(w.p)));boot(await tryDecrypt(pw));return;}}catch(e){}
+location.replace('../login.html');})();
+</script>
+</body>
+</html>

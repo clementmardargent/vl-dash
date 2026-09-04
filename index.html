@@ -1,28 +1,70 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
-<title>Vivélan</title><style>
-:root{--bg:#f5f7f4;--card:#fff;--tx:#15271b;--mut:#5f7367;--bd:#dde5dd;--acc:#1d5c3d}
-@media(prefers-color-scheme:dark){:root{--bg:#101613;--card:#18211b;--tx:#e8f0e9;--mut:#8fa396;--bd:#26332a}}
-*{box-sizing:border-box}body{margin:0;font:15px/1.5 -apple-system,system-ui,sans-serif;background:var(--bg);color:var(--tx);
-display:flex;min-height:100vh;align-items:center;justify-content:center;padding:20px}
-.wrap{width:min(680px,100%)}
-h1{font-size:26px;margin:0 0 4px;text-align:center}
-.sub{color:var(--mut);font-size:14px;text-align:center;margin-bottom:26px}
-.grid{display:grid;gap:14px}
-a.card{display:flex;align-items:center;gap:16px;background:var(--card);border:1px solid var(--bd);border-radius:16px;
-padding:20px 22px;text-decoration:none;color:var(--tx);transition:border-color .15s,transform .1s}
-a.card:hover{border-color:var(--acc);transform:translateY(-1px)}
-.ico{font-size:30px}
-.card b{font-size:17px;display:block}
-.card span{color:var(--mut);font-size:13.5px}
-.foot{color:var(--mut);font-size:12px;text-align:center;margin-top:24px}
-</style></head><body><div class="wrap">
-<h1>Vivélan</h1>
-<div class="sub">Tableau de bord</div>
-<div class="grid">
-<a class="card" href="compta/"><span class="ico">💶</span><div><b>Compta</b><span>Journal quotidien, profit net, objectifs ROAS, simulation</span></div></a>
-<a class="card" href="ads/"><span class="ico">📊</span><div><b>Ads</b><span>Performance des publicités Meta</span></div></a>
-<a class="card" href="ab/"><span class="ico">🧪</span><div><b>A/B Tests</b><span>Tests en cours et historique — funnel, significativité, décision PPV</span></div></a>
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Vivélan — Tableau de bord</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,600&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/shared.css">
+<script>try{const w=JSON.parse(localStorage.getItem('vl_pw')||'null');if(!w||!(w.exp>Date.now()))location.replace('login.html')}catch(e){location.replace('login.html')}</script>
+<style>
+.tile{display:flex;flex-direction:column;gap:14px;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:26px 26px 22px;transition:box-shadow .18s,transform .18s,border-color .18s;color:inherit}
+.tile:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(20,53,45,.10);border-color:rgba(23,86,74,.4);color:inherit}
+.tile .ico{width:46px;height:46px;border-radius:12px;background:var(--grn-bg);color:var(--grn);display:flex;align-items:center;justify-content:center;font-weight:700}
+.tile .t{font-family:'Lora',serif;font-weight:600;font-size:21px;color:var(--ink);margin-bottom:6px}
+.tile .d{font-size:14.5px;line-height:1.5;color:var(--mut);text-wrap:pretty}
+</style>
+</head>
+<body>
+<div class="vl-shell">
+<div class="vl-top"></div>
+<header class="vl-header">
+  <div class="brand">
+    <a href="index.html" style="display:block"><img src="assets/logo-vivelan.png" alt="Vivélan"></a>
+    <span class="vl-admin">Admin</span>
+  </div>
+  <div class="vl-hright"><div class="vl-avatar">V</div></div>
+</header>
+
+  <main class="vl-main" style="max-width:1120px;padding-top:56px">
+    <div style="margin-bottom:36px">
+      <div style="font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px">Tableau de bord</div>
+      <h1 class="serif" style="font-weight:600;font-size:40px;margin:0 0 10px;color:var(--ink)">Bonjour</h1>
+      <p style="margin:0;font-size:16px;color:var(--mut)">Où voulez-vous aller aujourd'hui&nbsp;?</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px">
+      <a class="tile" href="compta/">
+        <div class="ico serif" style="font-size:22px">€</div>
+        <div><div class="t">Compta</div><div class="d">Revenus, dépenses et marges du mois, en un coup d'œil.</div></div>
+      </a>
+      <a class="tile" href="ads/">
+        <div class="ico" style="align-items:flex-end;gap:4px;padding-bottom:11px">
+          <span style="display:block;width:5px;height:10px;border-radius:2px;background:var(--grn);opacity:.45"></span>
+          <span style="display:block;width:5px;height:18px;border-radius:2px;background:var(--grn);opacity:.7"></span>
+          <span style="display:block;width:5px;height:14px;border-radius:2px;background:var(--grn)"></span>
+        </div>
+        <div><div class="t">Analyse ads</div><div class="d">Performance des campagnes et des créas, ROAS par canal.</div></div>
+      </a>
+      <a class="tile" href="ab/">
+        <div class="ico" style="font-size:14px;letter-spacing:.5px">A/B</div>
+        <div><div class="t">A/B tests</div><div class="d">Tests en cours, résultats et décisions à prendre.</div></div>
+      </a>
+      <a class="tile" href="liens/">
+        <div class="ico" style="font-size:20px">↗</div>
+        <div><div class="t">Liens utiles</div><div class="d">Accès rapides&nbsp;: Shopify, Meta, banque, fournisseurs…</div></div>
+      </a>
+      <a class="tile" href="todo/">
+        <div class="ico" style="font-size:19px">✓</div>
+        <div><div class="t">To-do list</div><div class="d">Les tâches de l'équipe, priorisées par échéance.</div></div>
+      </a>
+    </div>
+  </main>
+
+<footer class="vl-footer"><span>Vivélan — espace interne</span><span>v2</span></footer>
 </div>
-<div class="foot">Chaque section est chiffrée — un seul mot de passe, mémorisé 30 jours d'une section à l'autre.</div>
-</div></body></html>
+</body>
+</html>

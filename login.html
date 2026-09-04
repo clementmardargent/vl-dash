@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Vivélan — Espace interne</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,600&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/shared.css">
+</head>
+<body>
+<div class="vl-shell">
+  <div class="vl-top"></div>
+  <main style="flex:1;display:flex;align-items:center;justify-content:center;padding:48px 24px">
+    <div style="width:100%;max-width:420px;display:flex;flex-direction:column;align-items:center;gap:28px">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+        <img src="assets/logo-vivelan.png" alt="Vivélan" style="height:38px;display:block">
+        <span class="vl-admin">Admin</span>
+      </div>
+      <form id="f" style="width:100%;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:32px;display:flex;flex-direction:column;gap:18px;box-shadow:0 10px 28px rgba(20,53,45,.06)">
+        <div>
+          <h1 class="serif" style="font-weight:600;font-size:22px;margin:0 0 6px;color:var(--ink)">Espace interne</h1>
+          <p style="margin:0;font-size:14px;color:var(--mut)">Entrez le mot de passe de l'équipe pour continuer.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <label for="pw" style="font-size:13px;font-weight:600;color:var(--ink)">Mot de passe</label>
+          <div style="display:flex;gap:8px">
+            <input id="pw" type="password" placeholder="••••••••" autofocus
+              style="flex:1;min-width:0;padding:12px 14px;font-size:15px;font-family:'Figtree',sans-serif;border:1px solid var(--bd-strong);border-radius:10px;background:#fff;color:var(--tx);outline:none">
+            <button type="button" id="show" class="btn ghost" style="padding:0 14px;font-size:13px;border-radius:10px">Voir</button>
+          </div>
+          <span id="err" style="font-size:13px;font-weight:600;color:var(--red);display:none">Mot de passe incorrect. Réessayez.</span>
+        </div>
+        <button type="submit" class="btn" style="width:100%;padding:14px;font-size:15px;letter-spacing:.2px">Entrer</button>
+      </form>
+      <span style="font-size:12.5px;color:var(--faint)">Accès réservé à l'équipe Vivélan</span>
+    </div>
+  </main>
+</div>
+<script>
+const BLOB="{\"salt\":\"U77zppx2WCwP8wIbLVpQ0A==\",\"iv\":\"PbIk+vKuhe1/b+ui\",\"data\":\"0cBnaIXalelc8lI2thPeI6eFesBF+4exfov+\"}";
+
+const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
+async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
+return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:250000,hash:'SHA-256'},km,{name:'AES-GCM',length:256},true,['decrypt']);}
+async function tryDecrypt(pw){const blob=JSON.parse(BLOB);const key=await deriveKey(pw,b2u(blob.salt));
+const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:b2u(blob.iv)},key,b2u(blob.data));
+return JSON.parse(new TextDecoder().decode(plain));}
+const pw=document.getElementById('pw'),err=document.getElementById('err');
+// FORMAT EXACT vl_pw — interop avec le dashboard /ads/ legacy, ne pas changer.
+function storePw(p){localStorage.setItem('vl_pw',JSON.stringify({p:btoa(unescape(encodeURIComponent(p))),exp:Date.now()+30*864e5}));}
+// session déjà ouverte ET mot de passe toujours valide → home directement
+(async()=>{try{const w=JSON.parse(localStorage.getItem('vl_pw')||'null');
+if(w&&w.exp>Date.now()){await tryDecrypt(decodeURIComponent(escape(atob(w.p))));location.replace('index.html');}}catch(e){}})();
+pw.addEventListener('focus',()=>{pw.style.borderColor='#17564a';pw.style.boxShadow='0 0 0 3px rgba(23,86,74,.12)';});
+pw.addEventListener('blur',()=>{pw.style.borderColor='';pw.style.boxShadow='';});
+document.getElementById('show').addEventListener('click',function(){
+const t=pw.type==='password';pw.type=t?'text':'password';this.textContent=t?'Masquer':'Voir';});
+document.getElementById('f').addEventListener('submit',async(e)=>{
+e.preventDefault();
+try{await tryDecrypt(pw.value);storePw(pw.value);location.href='index.html';}
+catch(e2){err.style.display='block';pw.style.borderColor='#a8452e';}});
+pw.addEventListener('input',()=>{err.style.display='none';});
+</script>
+</body>
+</html>

@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Vivélan — Analyse A/B</title>
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,600&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/shared.css">
+
+</head>
+<body>
+<div class="vl-shell">
+<div class="vl-top"></div>
+<header class="vl-header">
+  <div class="brand">
+    <a href="../index.html" style="display:block"><img src="../assets/logo-vivelan.png" alt="Vivélan"></a>
+    <span class="vl-admin">Admin</span>
+  </div>
+  <div class="vl-hright"><div class="vl-avatar">V</div></div>
+</header>
+  <main class="vl-main" style="max-width:1000px">
+    <div class="vl-crumb"><a href="../index.html">Tableau de bord</a> <span class="sep">/</span> <a href="index.html">A/B tests</a> <span class="sep">/</span> <span class="here">Analyse</span></div>
+    <div id="app"></div>
+  </main>
+<footer class="vl-footer"><span>Vivélan — espace interne</span><span>v2</span></footer>
+</div>
+<script>
+const BLOB="{\"salt\":\"UqtHxJU/6IkxGxD7Fl33Yg==\",\"iv\":\"n/sn3WsIhpGC3K6Q\",\"data\":\"EL2ZwG5JrEO6Yw7dpAyrEAp0aIYr1Ei61guQa0hMiwKSx9jLGcsZivapTZhiqGUanjxvI174Zswl0jc7hU8zVUrLbuboMD16z+3qmB08fVtH25rPFbycg2VPYAVQdZ00JEWwThXPN7chRALwFOdMJbnsfAswLnJtmq/MxjTAh3jdHlxd8W1QhMS9ggXIMmxV1W0VqenDfPzu9mJ+fOYxGTsEPrZFBcOvVQbNooXXgOAPpBPQlsrS6KlPn7OhMhnjeFAb27iUk4eeBDkD3ntoIzLMgRdaY17aIuEVlij13WOzELRRXI1qXnqACUpEzuYGRRjJnToppRD3yOQUM4AQF0hjM0UsoYsSaqfTiPyx7PdaozWb7AAgxDcNIN1lzqj4v9g6N+XVWayK1xt6TmQMPW5qqrzoJ6v2aemf2A/NITUkhttJyeCVX3XLWw9mx4zB/cKjTqj+zrD2lqblpfHnhZyEi05eSoO9BIy3ATr8PpZ3mFFolsT3E3hi/WRT65TadhAn3EbXN7qVoonUyTGYRda7wnJZWnNXO4FR9eqYo2HzvS5KrwLNETPt2d9FJ5Fp9Z7+zEo49XZR4Z+47vQyt0SahhBVnrGCO8ZVqzZ491K7g7LIX7tggkkywFpdvud1Z6QsfZNoE0P+AAImRam7Eq12Q81mObPQUkORDp1eA0vAabBEntvu3Owzywgb4bSrbaJXKfR9SziBefV2NXCbZQSGTTSusIofYguBRpJFa5dnYrYHhNInMdyVBthP+cC6PCWJphV9+gWaK3YtKLSm76dAYVYzK7Xc7mEEtMdVhCnTyH2lGgN5HzFkmDXR88hU8INoeuSJldjR27oExxb4plnJg7mNAD4cbbDEzWNDGLkphB9c423QWHuF3ivl0ujo+wxil0LvQ0X3KnKojeO3MQydwF9bgA96gHL+P+wV1E8RZX2cIkEt+3fZGIFxV61sLZ8T7ivUYbY1fNQWWdaBnZF6OtDoAYPUyETFtkO5bJFRmVNoudY5vG78p7FlOwSiHtJwJLXMbFZEN8c9UTeO0qqQDTyJL7NNVORQHFoTjwjssH6MXEJOe0rbrg/FcMP665ZUzy8o85iaZL2+Rb3JbJNr+8JhW9k6KbGH1EEe24W+2oGxJYfTa2kvId/0NZrG7qj6i9UUr8HR0kT77fUBnAlvFt+qifxxR1PJCdBYkg==\"}";
+
+const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
+async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
+return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:250000,hash:'SHA-256'},km,{name:'AES-GCM',length:256},true,['decrypt']);}
+async function tryDecrypt(pw){const blob=JSON.parse(BLOB);const key=await deriveKey(pw,b2u(blob.salt));
+const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:b2u(blob.iv)},key,b2u(blob.data));
+return JSON.parse(new TextDecoder().decode(plain));}
+
+function boot(AB_DATA) {
+'use strict';
+var GRN = '#17564a', GRNBG = '#e3efe9', AMB = '#8a6a2f', AMBBG = '#f6ead2', MUT = '#9aa5a0', GOLD = '#b0812f';
+
+var T = AB_DATA.tests;
+
+var stStyles = {
+  run:  { stTxt: 'En cours', stFg: GRN, stBg: GRNBG, stBd: '1px solid transparent' },
+  done: { stTxt: 'Terminé',  stFg: AMB, stBg: AMBBG, stBd: '1px solid transparent' },
+  plan: { stTxt: 'Prévu',    stFg: MUT, stBg: 'transparent', stBd: '1px dashed rgba(23,86,74,.3)' }
+};
+
+var fmtE = function(n){ return Math.round(n).toLocaleString('fr-FR') + ' €'; };
+var fmtDate = function(iso){
+  var d = new Date(iso + 'T00:00:00');
+  return isNaN(d) ? iso : d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+};
+var plural = function(n, w){ return n.toLocaleString('fr-FR') + ' ' + w + (n > 1 ? 's' : ''); };
+
+var selFromHash = function(){
+  var h = decodeURIComponent(location.hash.replace(/^#/, ''));
+  for (var i = 0; i < T.length; i++){ if (T[i].id === h) return h; }
+  return T[0].id;
+};
+
+function tooEarly(t){
+  if (t.status === 'plan' || t.winner) return false;
+  var oa = (t.a && t.a.orders) || 0, ob = (t.b && t.b.orders) || 0;
+  return oa + ob < 10;
+}
+
+var state = { sel: selFromHash(), hovDay: null, formulaOpen: false };
+var app = document.getElementById('app');
+
+function dOf(a, b){
+  if (!isFinite(a) || !isFinite(b) || b === 0) return { txt: '', bg: '' };
+  var d = (a / b - 1) * 100;
+  var abs = Math.abs(d);
+  var txt = (d >= 0 ? '+' : '−') + (abs < 10 ? abs.toFixed(1).replace('.', ',') : Math.round(abs)) + ' %';
+  return { txt: txt, bg: d >= 0 ? GRN : '#a8452e' };
+}
+
+/* --- Probabilité bayésienne (formule exacte d'Evan Miller, prior uniforme Beta(1,1)) --- */
+function lgamma(x){
+  var c=[76.18009172947146,-86.50532032941677,24.01409824083091,-1.231739572450155,0.1208650973866179e-2,-0.5395239384953e-5];
+  var y=x, t=x+5.5; t-=(x+0.5)*Math.log(t);
+  var s=1.000000000190015;
+  for(var j=0;j<6;j++){ y+=1; s+=c[j]/y; }
+  return -t+Math.log(2.5066282746310005*s/x);
+}
+function lbeta(a,b){ return lgamma(a)+lgamma(b)-lgamma(a+b); }
+// P(taux de conversion B > taux de conversion A)
+// posteriors : A ~ Beta(1+convA, 1+nA-convA), B ~ Beta(1+convB, 1+nB-convB)
+function probBbeatsA(convA, nA, convB, nB){
+  var aA=1+convA, bA=1+nA-convA, aB=1+convB, bB=1+nB-convB;
+  var total=0;
+  for(var i=0;i<aB;i++){
+    total+=Math.exp(lbeta(aA+i,bA+bB)-Math.log(bB+i)-lbeta(1+i,bB)-lbeta(aA,bA));
+  }
+  return total;
+}
+
+var fmtPct = function(p){ return (p*100).toFixed(1).replace('.', ',') + ' %'; };
+
+function dBadge(delta, big){
+  if (!delta.txt) return '';
+  var pad = big ? '3px 10px' : '2px 8px';
+  var fs = big ? '12.5px' : '11.5px';
+  return '<span style="display:inline-block;vertical-align:middle;margin-left:6px;padding:' + pad + ';border-radius:999px;font-size:' + fs + ';font-weight:700;background:' + delta.bg + ';color:#fdf9ef;font-variant-numeric:tabular-nums">' + delta.txt + '</span>';
+}
+
+function kpiCell(label, val, delta){
+  return '<div><div style="font-size:11px;font-weight:700;letter-spacing:1.2px;color:#9aa5a0">' + label + '</div>' +
+    '<div style="font-size:16px;font-weight:700;color:#14352d;font-variant-numeric:tabular-nums;margin-top:2px">' + val +
+    dBadge(delta) + '</div></div>';
+}
+
+function bayesCard(t){
+  var open = '<div style="background:#fffdf9;border:1px solid rgba(23,86,74,.12);border-radius:14px;padding:20px 24px;margin-bottom:16px">' +
+    '<div style="margin-bottom:16px">' +
+      '<div style="font-size:14px;font-weight:700;color:#14352d">Quelle variante est la bonne ?</div>' +
+      '<div style="font-size:12px;color:#9aa5a0;margin-top:2px">probabilité bayésienne, calculée sur le taux de conversion</div>' +
+    '</div>';
+
+  var nA = t.a.sessions, nB = t.b.sessions;
+  if (!nA || !nB){
+    return open + '<div style="font-size:13.5px;color:#6d7a74">Pas encore de données — la probabilité apparaîtra dès les premières sessions.</div></div>';
+  }
+
+  var pB = probBbeatsA(t.a.orders, nA, t.b.orders, nB);
+  var pA = 1 - pB;
+  var leader = pA >= pB ? 'A' : 'B';
+  var pLead = Math.max(pA, pB);
+
+  var dot = function(k){
+    var c = k === 'A' ? GOLD : GRN;
+    return '<span style="flex:none;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:' + c + ';color:#fdf9ef">' + k + '</span>';
+  };
+
+  var html = open +
+    '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap">' +
+      '<span style="display:flex;align-items:center;gap:10px">' + dot('A') +
+        '<span style="font-family:\'Lora\',serif;font-weight:600;font-size:34px;color:' + GOLD + ';font-variant-numeric:tabular-nums">' + fmtPct(pA) + '</span></span>' +
+      '<span style="display:flex;align-items:center;gap:10px">' +
+        '<span style="font-family:\'Lora\',serif;font-weight:600;font-size:34px;color:' + GRN + ';font-variant-numeric:tabular-nums">' + fmtPct(pB) + '</span>' + dot('B') + '</span>' +
+    '</div>';
+
+  // barre pA / pB + marqueurs 95 % (côté variante en tête) et 50 %
+  var thrX = leader === 'A' ? 95 : 5;
+  var thrShift = thrX >= 50 ? '-100%' : '0';
+  html += '<div style="position:relative">' +
+      '<div style="display:flex;height:16px;border-radius:999px;overflow:hidden">' +
+        '<div style="width:' + (pA * 100).toFixed(2) + '%;background:' + GOLD + ';transition:width .4s"></div>' +
+        '<div style="flex:1;background:' + GRN + '"></div>' +
+      '</div>' +
+      '<div style="position:absolute;top:-3px;bottom:-3px;left:50%;width:1px;background:rgba(20,53,45,.25)"></div>' +
+      '<div style="position:absolute;top:-5px;bottom:-5px;left:' + thrX + '%;width:2px;background:#14352d;border-radius:999px"></div>' +
+    '</div>' +
+    '<div style="position:relative;height:16px;margin-top:5px">' +
+      '<span style="position:absolute;left:50%;transform:translateX(-50%);font-size:11px;color:#9aa5a0">50 %</span>' +
+      '<span style="position:absolute;left:' + thrX + '%;transform:translateX(' + thrShift + ');font-size:11px;font-weight:700;color:#14352d;white-space:nowrap">seuil 95 %</span>' +
+    '</div>';
+
+  // phrase d'état
+  var msg, msgStyle;
+  if (pLead >= 0.95){
+    msg = 'Fiable : la variante ' + leader + ' a ' + fmtPct(pLead) + ' de chances d’être la meilleure — on peut trancher.';
+    msgStyle = 'color:#17564a;font-weight:700';
+  } else if (pLead >= 0.90){
+    msg = 'Tendance forte pour ' + leader + ' (' + fmtPct(pLead) + ') — encore un peu de volume pour verrouiller.';
+    msgStyle = 'color:' + AMB + ';font-weight:700';
+  } else if (pLead >= 0.70){
+    msg = 'La variante ' + leader + ' mène (' + fmtPct(pLead) + ') mais rien de fiable — on laisse tourner.';
+    msgStyle = 'color:#14352d;font-weight:600';
+  } else {
+    msg = 'Trop tôt : les deux variantes sont encore indiscernables (' + fmtPct(pA) + ' / ' + fmtPct(pB) + ').';
+    msgStyle = 'color:#6d7a74;font-weight:600';
+  }
+  html += '<div style="margin-top:12px;font-size:14px;' + msgStyle + '">' + msg + '</div>' +
+    '<div style="margin-top:5px;font-size:12px;color:#9aa5a0">Ce calcul porte sur le taux de conversion — la décision finale croise ce signal avec le CA par visiteur (PPV).</div>';
+
+  // évolution jour par jour (cumuls)
+  var ds = t.days || [];
+  if (ds.length >= 2){
+    var cum = [], cA = 0, cB = 0, eA = 0, eB = 0;
+    for (var q = 0; q < ds.length; q++){
+      cA += ds[q].ordA || 0; cB += ds[q].ordB || 0;
+      eA += ds[q].expoA || 0; eB += ds[q].expoB || 0;
+      cum.push({ label: ds[q].label, p: (eA && eB) ? probBbeatsA(cA, eA, cB, eB) * 100 : 50 });
+    }
+    var W = 640, H = 210, pl = 46, pr = 14, pt = 14, pb = 26;
+    var X = function(i){ return pl + i * (W - pl - pr) / (cum.length - 1); };
+    var Y = function(v){ return pt + (100 - v) * (H - pt - pb) / 100; };
+    var yLab = function(v, col, bold){
+      return '<text x="' + (pl - 7) + '" y="' + (Y(v) + 4) + '" text-anchor="end" font-size="11" font-family="Figtree,sans-serif"' + (bold ? ' font-weight="700"' : '') + ' fill="' + col + '">' + v + ' %</text>';
+    };
+    var poly = cum.map(function(c, i){ return X(i).toFixed(1) + ',' + Y(c.p).toFixed(1); }).join(' ');
+    var dots = cum.map(function(c, i){ return '<circle cx="' + X(i).toFixed(1) + '" cy="' + Y(c.p).toFixed(1) + '" r="3.5" fill="' + GRN + '"/>'; }).join('');
+    var skipX = cum.length > 12;
+    var xLabs = cum.map(function(c, i){
+      if (skipX && (i + 1) % 2 === 0) return '';
+      return '<text x="' + X(i).toFixed(1) + '" y="' + (H - 6) + '" text-anchor="middle" font-size="11" font-family="Figtree,sans-serif" fill="#9aa5a0">' + c.label + '</text>';
+    }).join('');
+    html += '<div style="margin-top:22px">' +
+      '<div style="font-size:11px;font-weight:700;letter-spacing:1.2px;color:#9aa5a0;margin-bottom:8px">ÉVOLUTION DE P(B MEILLEURE)</div>' +
+      '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block" role="img" aria-label="Évolution de la probabilité que B soit meilleure">' +
+        '<line x1="' + pl + '" y1="' + Y(0) + '" x2="' + (W - pr) + '" y2="' + Y(0) + '" stroke="#d8d0bd" stroke-width="1"/>' +
+        '<line x1="' + pl + '" y1="' + Y(50) + '" x2="' + (W - pr) + '" y2="' + Y(50) + '" stroke="#9aa5a0" stroke-width="1" stroke-dasharray="4 4"/>' +
+        '<line x1="' + pl + '" y1="' + Y(95) + '" x2="' + (W - pr) + '" y2="' + Y(95) + '" stroke="' + AMB + '" stroke-width="1" stroke-dasharray="4 4"/>' +
+        yLab(0, '#c9c2b0') + yLab(50, '#9aa5a0') + yLab(95, AMB, true) + yLab(100, '#c9c2b0') +
+        '<polyline points="' + poly + '" fill="none" stroke="' + GRN + '" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>' +
+        dots + xLabs +
+      '</svg></div>';
+  } else {
+    html += '<div style="margin-top:16px;font-size:12px;color:#9aa5a0">L’évolution de la probabilité s’affichera à partir du 2ᵉ jour.</div>';
+  }
+
+  // formule avec valeurs injectées
+  var aA = 1 + t.a.orders, bA = 1 + nA - t.a.orders, aB = 1 + t.b.orders, bB = 1 + nB - t.b.orders;
+  html += '<details' + (state.formulaOpen ? ' open' : '') + ' style="margin-top:18px">' +
+    '<summary data-formula style="cursor:pointer;font-size:12.5px;font-weight:700;color:#6d7a74;user-select:none">Voir la formule</summary>' +
+    '<div style="margin-top:10px;background:#fdf9ef;border:1px solid rgba(23,86,74,.15);border-radius:10px;padding:14px 16px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.8;color:#14352d;overflow-x:auto">' +
+      'A ~ Beta(1 + ' + t.a.orders + ', 1 + (' + nA + ' − ' + t.a.orders + ')) = Beta(' + aA + ', ' + bA + ') · B ~ Beta(' + aB + ', ' + bB + ') — prior uniforme Beta(1,1)<br>' +
+      'P(pB &gt; pA) = Σ_{i=0}^{αB−1} B(αA+i, βA+βB) / [ (βB+i) · B(1+i, βB) · B(αA, βA) ] = ' + fmtPct(pB) + '<br>' +
+      '<span style="color:#6d7a74">Lecture : on modélise le taux de conversion de chaque variante par une loi Beta mise à jour par les données ; le pourcentage est la probabilité exacte que le taux réel de B dépasse celui de A. Seuil de décision : 95 %.</span>' +
+    '</div>' +
+  '</details>';
+
+  return html + '</div>';
+}
+
+function render(){
+  var t = null;
+  for (var i = 0; i < T.length; i++){ if (T[i].id === state.sel) t = T[i]; }
+  t = t || T[0];
+  var st = stStyles[t.status];
+  var hasData = t.status !== 'plan' && !!(t.a && t.b) && t.a.ca !== undefined;
+  var early = tooEarly(t);
+
+  var html = '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px">' + T.map(function(x){
+    return '<button class="chip sm' + (t.id === x.id ? ' on' : '') + '" data-test="' + x.id + '" style="padding:6px 14px">' + x.short + '</button>';
+  }).join('') + '</div>';
+
+  html += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap">' +
+    '<span style="flex:none;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:' + st.stFg + ';background:' + st.stBg + ';border:' + st.stBd + ';padding:4px 11px;border-radius:999px">' + st.stTxt + '</span>' +
+    '<span style="font-size:12.5px;color:#9aa5a0">' + t.meta + '</span></div>' +
+    '<h1 style="font-family:\'Lora\',serif;font-weight:600;font-size:30px;margin:0 0 6px;color:#14352d">' + t.title + '</h1>' +
+    '<p style="margin:0 0 26px;font-size:14.5px;color:#6d7a74;max-width:720px;text-wrap:pretty">' + t.hyp + '</p>';
+
+  if (hasData){
+    var delta = '';
+    if (!t.winner && !early && Math.min(t.a.ca, t.b.ca) > 0){
+      delta = Math.abs((Math.max(t.a.ca, t.b.ca) / Math.min(t.a.ca, t.b.ca) - 1) * 100).toFixed(1).replace('.', ',');
+    }
+    var leaderK = t.winner ? t.winner : (t.a.ca >= t.b.ca ? 'A' : 'B');
+
+    var mkPanel = function(k, v, isLeader){
+      var o = k === 'B' ? t.a : null;
+      var dd = function(g){
+        if (!o) return { txt: '', fg: 'transparent' };
+        return dOf(g(v), g(o));
+      };
+      var dCa = dd(function(x){ return x.ca; });
+      var dOrders = dd(function(x){ return x.orders; });
+      var dSessions = dd(function(x){ return x.sessions; });
+      var dCvr = dd(function(x){ return x.sessions ? x.orders / x.sessions : NaN; });
+      var dAov = dd(function(x){ return x.orders ? x.ca / x.orders : NaN; });
+      var color = k === 'A' ? GOLD : GRN;
+      var bd = (isLeader && !early) ? (k === 'A' ? 'rgba(176,129,47,.5)' : 'rgba(23,86,74,.5)') : 'rgba(23,86,74,.12)';
+      var chip = '';
+      if (isLeader && t.winner){
+        chip = '<span style="margin-left:auto;font-size:11px;font-weight:700;letter-spacing:.5px;color:#17564a;background:#e3efe9;padding:4px 10px;border-radius:999px">Gagnante · déployée</span>';
+      } else if (isLeader && early){
+        chip = '<span style="margin-left:auto;font-size:11px;font-weight:700;letter-spacing:.5px;color:#6d7a74;background:#ece7da;padding:4px 10px;border-radius:999px">trop tôt pour conclure</span>';
+      } else if (isLeader && delta){
+        chip = '<span style="margin-left:auto;font-size:11px;font-weight:700;letter-spacing:.5px;color:#17564a;background:#e3efe9;padding:4px 10px;border-radius:999px">En tête · +' + delta + ' % de CA</span>';
+      }
+      var cvr = v.sessions ? (v.orders / v.sessions * 100).toFixed(1).replace('.', ',') + ' %' : '—';
+      var aov = v.orders ? fmtE(v.ca / v.orders) : '—';
+      return '<div style="background:#fffdf9;border:2px solid ' + bd + ';border-radius:16px;padding:22px 24px">' +
+        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">' +
+          '<span style="flex:none;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;background:' + color + ';color:#fdf9ef">' + k + '</span>' +
+          '<span style="flex:1;min-width:0;font-size:15px;font-weight:700;color:#14352d">' + v.name + '</span>' +
+          chip +
+        '</div>' +
+        '<div style="font-size:11px;font-weight:700;letter-spacing:1.4px;color:#9aa5a0;margin-bottom:4px">CA RÉALISÉ</div>' +
+        '<div style="display:flex;align-items:center;gap:4px;margin-bottom:16px">' +
+          '<span style="font-family:\'Lora\',serif;font-weight:600;font-size:36px;color:' + color + ';font-variant-numeric:tabular-nums">' + fmtE(v.ca) + '</span>' +
+          dBadge(dCa, true) +
+        '</div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 16px">' +
+          kpiCell('COMMANDES', v.orders.toLocaleString('fr-FR'), dOrders) +
+          kpiCell('SESSIONS', v.sessions.toLocaleString('fr-FR'), dSessions) +
+          kpiCell('CONVERSION', cvr, dCvr) +
+          kpiCell('PANIER MOYEN', aov, dAov) +
+        '</div>' +
+      '</div>';
+    };
+
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">' +
+      mkPanel('A', t.a, leaderK === 'A') + mkPanel('B', t.b, leaderK === 'B') + '</div>';
+
+    html += bayesCard(t);
+
+    if (t.verdict){
+      html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;background:#e3efe9;border:1px solid rgba(23,86,74,.25);border-radius:12px;padding:13px 18px;font-size:14px;font-weight:600;color:#17564a">' + t.verdict + '</div>';
+    }
+
+    var days = t.days || [];
+    if (days.length){
+      var dMax = 1;
+      for (var j = 0; j < days.length; j++){ dMax = Math.max(dMax, days[j].ordA, days[j].ordB); }
+      var colStyle = 'flex:1 1 0' + (days.length < 8 ? ';max-width:110px' : '');
+
+      var cols = days.map(function(d, di){
+        var hov = state.hovDay === di;
+        var ha = Math.max(2, d.ordA / dMax * 142), hb = Math.max(2, d.ordB / dMax * 142);
+        var tip = '';
+        if (hov){
+          tip = '<div style="position:absolute;bottom:calc(100% + 2px);left:50%;transform:translateX(-50%);background:#14352d;color:#fdf9ef;border-radius:8px;padding:7px 11px;font-size:12.5px;pointer-events:none;white-space:nowrap;box-shadow:0 6px 18px rgba(20,53,45,.3);z-index:10;font-variant-numeric:tabular-nums">' +
+            '<div style="font-weight:700;margin-bottom:2px">' + d.label + ' · ' + fmtDate(d.date) + '</div>' +
+            '<div style="display:flex;align-items:center;gap:6px;margin-bottom:2px"><span style="width:8px;height:8px;border-radius:50%;background:#d9a851"></span>Variante A&nbsp;: ' + plural(d.ordA, 'commande') + '</div>' +
+            '<div style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:#5cb893"></span>Variante B&nbsp;: ' + plural(d.ordB, 'commande') + '</div>' +
+          '</div>';
+        }
+        return '<div data-day="' + di + '" style="' + colStyle + ';position:relative;display:flex;align-items:flex-end;justify-content:center;gap:3px;height:150px;border-radius:6px;background:' + (hov ? 'rgba(23,86,74,.07)' : 'transparent') + '">' +
+          tip +
+          '<div style="width:38%;max-width:20px;border-radius:3px 3px 0 0;height:' + ha + 'px;background:' + (hov ? '#8f6323' : '#b0812f') + '"></div>' +
+          '<div style="width:38%;max-width:20px;border-radius:3px 3px 0 0;height:' + hb + 'px;background:' + (hov ? '#0e3f36' : '#17564a') + '"></div>' +
+        '</div>';
+      }).join('');
+
+      var labels = days.map(function(d, di){
+        return '<span style="' + colStyle + ';text-align:center;font-size:11.5px;color:#9aa5a0">' + (days.length > 12 && (di + 1) % 2 === 0 ? '' : d.label) + '</span>';
+      }).join('');
+
+      html += '<div style="background:#fffdf9;border:1px solid rgba(23,86,74,.12);border-radius:14px;padding:22px 24px;margin-bottom:16px">' +
+        '<div style="display:flex;align-items:center;gap:18px;margin-bottom:16px;flex-wrap:wrap">' +
+          '<span style="font-size:14px;font-weight:700;color:#14352d;margin-right:auto">Commandes par jour</span>' +
+          '<span style="display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:#14352d"><span style="flex:none;width:10px;height:10px;border-radius:50%;background:#b0812f"></span>' + t.a.name + '</span>' +
+          '<span style="display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:#14352d"><span style="flex:none;width:10px;height:10px;border-radius:50%;background:#17564a"></span>' + t.b.name + '</span>' +
+        '</div>' +
+        '<div style="display:flex;align-items:flex-end;justify-content:center;gap:8px;height:150px;border-bottom:1px solid #d8d0bd">' + cols + '</div>' +
+        '<div style="display:flex;justify-content:center;gap:8px;margin-top:8px">' + labels + '</div>' +
+      '</div>';
+    }
+  } else {
+    html += '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border:1.5px dashed rgba(23,86,74,.25);border-radius:16px;padding:64px 26px">' +
+      '<span style="font-family:\'Lora\',serif;font-weight:600;font-size:19px;color:#14352d">Pas encore de données</span>' +
+      '<span style="font-size:13.5px;color:#6d7a74;text-align:center">Ce test n’a pas démarré — l’analyse apparaîtra ici dès les premières sessions.</span>' +
+    '</div>';
+  }
+
+  app.innerHTML = html;
+}
+
+app.addEventListener('click', function(e){
+  var f = e.target.closest('[data-formula]');
+  if (f){ e.preventDefault(); state.formulaOpen = !state.formulaOpen; render(); return; }
+  var b = e.target.closest('[data-test]');
+  if (b){
+    var id = b.dataset.test;
+    location.hash = id;
+    if (id !== state.sel){ state.sel = id; state.hovDay = null; render(); }
+  }
+});
+
+app.addEventListener('mouseover', function(e){
+  var c = e.target.closest('[data-day]');
+  var i = c ? parseInt(c.dataset.day) : null;
+  if (i !== state.hovDay){ state.hovDay = i; render(); }
+});
+
+app.addEventListener('mouseleave', function(){
+  if (state.hovDay !== null){ state.hovDay = null; render(); }
+});
+
+window.addEventListener('hashchange', function(){
+  var s = selFromHash();
+  if (s !== state.sel){ state.sel = s; state.hovDay = null; render(); }
+});
+
+render();
+}
+
+(async()=>{try{const w=JSON.parse(localStorage.getItem('vl_pw')||'null');
+if(w&&w.exp>Date.now()){const pw=decodeURIComponent(escape(atob(w.p)));boot(await tryDecrypt(pw));return;}}catch(e){}
+location.replace('../login.html');})();
+</script>
+</body>
+</html>
