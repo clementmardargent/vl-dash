@@ -85,7 +85,7 @@
 <div id="overlay" hidden style="position:fixed;inset:0;z-index:10"></div>
 </div>
 <script>
-const BLOB="{\"salt\":\"ESxp68LC2k3PVaCwJD/eJw==\",\"iv\":\"JhL/8dnK8gYaE+g8\",\"data\":\"QkJewJyE+/ZprycuDiKmuFVX0L62AEOvuiRXMy4yvTa4UAB4MqmIQzLDXJZNGI0ZBW1oXseQp3nmNnrHOD5dk8ktiy9ZSqduXyjJ+EXLplU4fAG4qnX2X3sWTPFnQBrKMvTPQm8niVRdYjGlOXm4VsUNHbdMpq8Z4gHhk4nYsJizsl3kTLQ/MJ3rhnbavkqOW81gfjmQTi5/Js+oGHc8LPionFkyncvV48xCHoQW82SUeOGgxENu0h9z8xZgF/CIkRVrNUYhP2dHvooH\"}";
+const BLOB="{\"salt\":\"A3uT/gtOtH40pSGvwTrBcg==\",\"iv\":\"XZzD5dG6efrPnWou\",\"data\":\"2tEVKEBO7h5vzYKA0/JjYJvwxjCItyHcfg2XISkx3uSfX6t75Q/0VAfdjWSNSVLdvdA522W90WYRPARpvSybFgJnai1OLsnmXtNCAyW04ILFqOSsVYTcDxj5kRYNvp1djboDko6md6fFpzf5N7VNg5Mxo6vUJnAMH8ywwegMa2EIDyDAkxU2/+MnJchmS3gMoj3nDFPAQmVsFqU1HFY6VI7D43ru0gPqJKzl04tUyEiCKAc8BYwCKt+PhKg6saEvfnY+CXRktJvET/M+tWezNKFbOfbKTsVGyn5VZaL/nPp6gvc4EznLmHNqUMqH8BczcZxTRAg/fCBSqeZuwji8neA0hh9XRxWW6YZ2P3C7RMoIMoJgVi8a4yt25fJ2vzFI\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
