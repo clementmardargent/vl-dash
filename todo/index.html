@@ -85,7 +85,7 @@
 <div id="overlay" hidden style="position:fixed;inset:0;z-index:10"></div>
 </div>
 <script>
-const BLOB="{\"salt\":\"A3uT/gtOtH40pSGvwTrBcg==\",\"iv\":\"XZzD5dG6efrPnWou\",\"data\":\"2tEVKEBO7h5vzYKA0/JjYJvwxjCItyHcfg2XISkx3uSfX6t75Q/0VAfdjWSNSVLdvdA522W90WYRPARpvSybFgJnai1OLsnmXtNCAyW04ILFqOSsVYTcDxj5kRYNvp1djboDko6md6fFpzf5N7VNg5Mxo6vUJnAMH8ywwegMa2EIDyDAkxU2/+MnJchmS3gMoj3nDFPAQmVsFqU1HFY6VI7D43ru0gPqJKzl04tUyEiCKAc8BYwCKt+PhKg6saEvfnY+CXRktJvET/M+tWezNKFbOfbKTsVGyn5VZaL/nPp6gvc4EznLmHNqUMqH8BczcZxTRAg/fCBSqeZuwji8neA0hh9XRxWW6YZ2P3C7RMoIMoJgVi8a4yt25fJ2vzFI\"}";
+const BLOB="{\"salt\":\"5I/n1t4PB7TB+2WjVDXVpw==\",\"iv\":\"8DnP3Sx97L0MknPv\",\"data\":\"iA4Qj2P4e9QLZ/p7yuIv22AyKA1KqyN/W4cODH++ixo7tUICXmOTfRl6DjJNgtos2ZqCdbZaVKiJpsVDXjxNm9qAUMkT+bKZxUeLWEtTZSfZ8Wvb1IArPoMDM4Cv2RPyVZh/NKdRQy+/2xkqEYBlT0/+unIly8RkkQHG475SbTc9P/ncITcQBvG1sYfjKpl3ODQGeHEARStPi5O09A4UVvd+ADVQ+wgSZwJd9t251stXYuNtYboddFVBfMfb7j6oeutnKCObq5+G7de0IyeEvrheUBBGcNUyfd3j+LHpX+P7KWcBrzUB0iI51aHVY3gFolFghwW/LAIa6U7TvVNCdIsHJzT+85fQF3EP28onxYXw1hMwgpLhgUisALMSydGDBAemmHlf8K+n6kgIX/WEjBIVFCMv+HMNWzwU34hoE9pdcSLrVXKx4rag7fKVBF39rmYFMWJxCvt3BF+6Oixrh76j4QiLaVXc1EL0zBnT/oBd9NCAYw7Nbv/r19JPiJJxRcK0xxP4UlJ834EQiCk9B72+J1y766bxTFiiWp3vAZGcdpfJtQuViIphqomUA6A470tj7GWYcpC77yrhess7aQfv9oU3p/SN20kAej3w9A0pWgNxsX+CZvlQ0gtxu4cgZXWOR+Ks90e6273hvurfPOWgvlGjBVb5mb389oaK\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
