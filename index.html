@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Vivélan — Tableau de bord</title>
+<script>try{if(localStorage.getItem('vivelan-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,600&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -12,7 +13,7 @@
 <script>try{const w=JSON.parse(localStorage.getItem('vl_pw')||'null');if(!w||!(w.exp>Date.now()))location.replace('login.html')}catch(e){location.replace('login.html')}</script>
 <style>
 .tile{display:flex;flex-direction:column;gap:14px;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:26px 26px 22px;transition:box-shadow .18s,transform .18s,border-color .18s;color:inherit}
-.tile:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(20,53,45,.10);border-color:rgba(23,86,74,.4);color:inherit}
+.tile:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(20,53,45,.10);border-color:var(--bd-hov);color:inherit}
 .tile .ico{width:46px;height:46px;border-radius:12px;background:var(--grn-bg);color:var(--grn);display:flex;align-items:center;justify-content:center;font-weight:700}
 .tile .t{font-family:'Lora',serif;font-weight:600;font-size:21px;color:var(--ink);margin-bottom:6px}
 .tile .d{font-size:14.5px;line-height:1.5;color:var(--mut);text-wrap:pretty}
@@ -29,7 +30,7 @@
     <a href="index.html" style="display:block"><img src="assets/logo-vivelan.png" alt="Vivélan"></a>
     <span class="vl-admin">Admin</span>
   </div>
-  <div class="vl-hright"><div class="vl-avatar">V</div></div>
+  <div class="vl-hright"><button id="themeToggle" class="theme-btn" title="Basculer clair/sombre">☾</button><div class="vl-avatar">V</div></div>
 </header>
 
   <main class="vl-main" style="max-width:1120px;padding-top:56px">
@@ -69,5 +70,12 @@
 
 <footer class="vl-footer"><span>Vivélan — espace interne</span><span>v2</span></footer>
 </div>
+<script>
+(function(){var b=document.getElementById('themeToggle');if(!b)return;
+function icon(){b.textContent=document.documentElement.classList.contains('dark')?'☀':'☾';}
+icon();
+b.addEventListener('click',function(){var d=document.documentElement.classList.toggle('dark');
+try{localStorage.setItem('vivelan-theme',d?'dark':'light')}catch(e){}icon();});})();
+</script>
 </body>
 </html>

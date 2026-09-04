@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Vivélan — Espace interne</title>
+<script>try{if(localStorage.getItem('vivelan-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,600&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -13,6 +14,7 @@
 <body>
 <div class="vl-shell">
   <div class="vl-top"></div>
+  <button id="themeToggle" class="theme-btn" title="Basculer clair/sombre" style="position:fixed;top:20px;right:20px;z-index:20">☾</button>
   <main style="flex:1;display:flex;align-items:center;justify-content:center;padding:48px 24px">
     <div style="width:100%;max-width:420px;display:flex;flex-direction:column;align-items:center;gap:28px">
       <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
@@ -28,7 +30,7 @@
           <label for="pw" style="font-size:13px;font-weight:600;color:var(--ink)">Mot de passe</label>
           <div style="display:flex;gap:8px">
             <input id="pw" type="password" placeholder="••••••••" autofocus
-              style="flex:1;min-width:0;padding:12px 14px;font-size:15px;font-family:'Figtree',sans-serif;border:1px solid var(--bd-strong);border-radius:10px;background:#fff;color:var(--tx);outline:none">
+              style="flex:1;min-width:0;padding:12px 14px;font-size:15px;font-family:'Figtree',sans-serif;border:1px solid var(--bd-strong);border-radius:10px;background:var(--input);color:var(--tx);outline:none">
             <button type="button" id="show" class="btn ghost" style="padding:0 14px;font-size:13px;border-radius:10px">Voir</button>
           </div>
           <span id="err" style="font-size:13px;font-weight:600;color:var(--red);display:none">Mot de passe incorrect. Réessayez.</span>
@@ -40,7 +42,7 @@
   </main>
 </div>
 <script>
-const BLOB="{\"salt\":\"Yr0cdLpSnfZoBhSwoGC8lg==\",\"iv\":\"ZKJCP8wyiN0lf0ci\",\"data\":\"sRN5ugyKEanbvLvFOfgXU7/rbZz45x8nKREK\"}";
+const BLOB="{\"salt\":\"s8jk19ufNbw/PE0j6l+M1w==\",\"iv\":\"AzZV99M2Ko4U891Z\",\"data\":\"6eDJYC4+IO6AdsmdpZ7YgJ3eUo+E5oZC2N6v\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
@@ -54,15 +56,21 @@ function storePw(p){localStorage.setItem('vl_pw',JSON.stringify({p:btoa(unescape
 // session déjà ouverte ET mot de passe toujours valide → home directement
 (async()=>{try{const w=JSON.parse(localStorage.getItem('vl_pw')||'null');
 if(w&&w.exp>Date.now()){await tryDecrypt(decodeURIComponent(escape(atob(w.p))));location.replace('index.html');}}catch(e){}})();
-pw.addEventListener('focus',()=>{pw.style.borderColor='#17564a';pw.style.boxShadow='0 0 0 3px rgba(23,86,74,.12)';});
+pw.addEventListener('focus',()=>{pw.style.borderColor='var(--grn)';pw.style.boxShadow='0 0 0 3px var(--bd)';});
 pw.addEventListener('blur',()=>{pw.style.borderColor='';pw.style.boxShadow='';});
 document.getElementById('show').addEventListener('click',function(){
 const t=pw.type==='password';pw.type=t?'text':'password';this.textContent=t?'Masquer':'Voir';});
 document.getElementById('f').addEventListener('submit',async(e)=>{
 e.preventDefault();
 try{await tryDecrypt(pw.value);storePw(pw.value);location.href='index.html';}
-catch(e2){err.style.display='block';pw.style.borderColor='#a8452e';}});
+catch(e2){err.style.display='block';pw.style.borderColor='var(--red)';}});
 pw.addEventListener('input',()=>{err.style.display='none';});
+
+(function(){var b=document.getElementById('themeToggle');if(!b)return;
+function icon(){b.textContent=document.documentElement.classList.contains('dark')?'☀':'☾';}
+icon();
+b.addEventListener('click',function(){var d=document.documentElement.classList.toggle('dark');
+try{localStorage.setItem('vivelan-theme',d?'dark':'light')}catch(e){}icon();});})();
 </script>
 </body>
 </html>

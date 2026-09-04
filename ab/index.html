@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Vivélan — A/B tests</title>
+<script>try{if(localStorage.getItem('vivelan-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
 <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,600&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -14,21 +15,21 @@
 #filters .chip{padding:6px 14px}
 #list{display:flex;flex-direction:column;gap:16px}
 .test-card{display:block;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:22px 24px;transition:box-shadow .18s,transform .18s,border-color .18s}
-.test-card:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(20,53,45,.10);border-color:rgba(23,86,74,.4)}
+.test-card:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(20,53,45,.10);border-color:var(--bd-hov)}
 .tc-head{display:flex;align-items:center;gap:12px;margin-bottom:6px}
 .tc-st{flex:none;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:4px 11px;border-radius:999px}
 .tc-meta{font-size:12.5px;color:var(--faint)}
-.tc-early{flex:none;font-size:11px;font-weight:700;letter-spacing:.5px;color:#6d7a74;background:#ece7da;padding:4px 10px;border-radius:999px}
+.tc-early{flex:none;font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--mut);background:var(--track2);padding:4px 10px;border-radius:999px}
 .tc-arrow{margin-left:auto;color:var(--grn);font-size:16px}
 .tc-title{font-family:'Lora',serif;font-weight:600;font-size:20px;color:var(--ink);margin-bottom:4px}
 .tc-hyp{font-size:13.5px;color:var(--mut);margin-bottom:16px;text-wrap:pretty}
 .tc-variants{display:flex;flex-direction:column;gap:8px}
-.v-row{display:flex;align-items:center;gap:14px;border:1px solid rgba(23,86,74,.1);border-radius:12px;padding:12px 16px;background:var(--card)}
+.v-row{display:flex;align-items:center;gap:14px;border:1px solid var(--bd);border-radius:12px;padding:12px 16px;background:var(--card)}
 .v-badge{flex:none;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700}
 .v-name{flex:1;min-width:0;font-size:14px;font-weight:600;color:var(--ink)}
 .v-tag{font-weight:500;color:var(--faint)}
 .v-data{flex:none;display:flex;align-items:center;gap:12px}
-.v-track{width:150px;height:8px;border-radius:999px;background:#eee8da;overflow:hidden}
+.v-track{width:150px;height:8px;border-radius:999px;background:var(--track2);overflow:hidden}
 .v-bar{height:100%;border-radius:999px}
 .v-ca{width:76px;text-align:right;font-size:14.5px;font-weight:700;font-variant-numeric:tabular-nums}
 .v-n{width:92px;text-align:right;font-size:12px;color:var(--faint);font-variant-numeric:tabular-nums}
@@ -44,7 +45,7 @@
     <a href="../index.html" style="display:block"><img src="../assets/logo-vivelan.png" alt="Vivélan"></a>
     <span class="vl-admin">Admin</span>
   </div>
-  <div class="vl-hright"><div class="vl-avatar">V</div></div>
+  <div class="vl-hright"><button id="themeToggle" class="theme-btn" title="Basculer clair/sombre">☾</button><div class="vl-avatar">V</div></div>
 </header>
   <main class="vl-main" style="max-width:880px">
     <div class="vl-crumb"><a href="../index.html">Tableau de bord</a> <span class="sep">/</span> <span class="here">A/B tests</span></div>
@@ -65,7 +66,7 @@
 <footer class="vl-footer"><span>Vivélan — espace interne</span><span>v2</span></footer>
 </div>
 <script>
-const BLOB="{\"salt\":\"Pbdux+aF3Kg8jx0IDpmWxw==\",\"iv\":\"pqB/qtDH8Kk04oJU\",\"data\":\"/2P9iNqBtUAtjlBU6cuhNuevOCZZI9Gi2eWBLns29kURaUCFe42PhNcaOxPaZzbLGuFTqN/9YP0LiZS5X3spf0f7agYaHK/c1NRdELikBra9AfvINbDnWM1ZMCssMKw9gO6yJ8EnUNFTWwV18TXLgQwMPcXU01845J+0qK539rGZ/tWY33T2ko3/8+kJNk6mI8Pcq6WPIMwLZ8qLn1bSYo15tSt0wN06Hn+Of0myF5dfyZNhLmX/D+vaKlSQ7mTnaKrAdWx4pYMqB4Qi8xPxG1QlzHzylugBv3F+ovwx9FSV8ZGZnUo4eTjtKc1yfqv509zczDjjkBZ+u7dtVs6l/HRWHW5w9+37Q09BOQjgr/k0C/GUW/tEpoC69IrIGBEpP9XY9efdw1O977IZOiKbr4Sm+0gzMqLnlQ1T+YdFccecY/cfJWsYZV0C525Tx6xBnHdWf3A+8FvADaf9nnjkiIJaNrbNoykMvFE58PSI+EcvQ02LLFciarz+ug/Eo9fKeY9rFzi3XmRWDkF4SQ6BosKcZ5HFXvDzP1PQY84QCK1MdnMTvgCARxwNAXWQDaFUNhTTvZD3zJLTqb7JX8sMUPreFH5+ZV2vDROVjfwzPdYLpSrsIF0SGJlBuxLij2avhlwkDGTlz9AhZuhNAN08mb4iV2C9zwKKP2g4+OXFvGZ+SvOiVozT3eCH0gbCEfZBCMFssx1sTwOZkbCutoRzGrEimH8cxFjVfph4sS83+PtiiVTzQMrFGgAYGo37F1kok/9D9t0oGr2pjVLjkNIV3KC7CfRAxGfr9+fMxgm+/pmfp8KHORE/ThR+jar8Y75t8qMH+t2kiFP2VLw2YCSGTJc54aDZERYdEK++SeVa2Ox79vODeq+HJH4ph2rEsr8rZBAtQmO/bsRWFB6r6qZjTiKYetfxvYnmce/jXG/TExACmAtairl6rHceW1WxQRD1jxXbXr6uu6b/Z1sTd7nFGEc4g8JTLhjXD5XspXHSWfdMJH3DZ0FuNS6/waw3Z8ejfR/CMh0u+mcvQRitK6EQuwzuGDB9LQiYgV/fQkVIADjDQ5bJue+rRBsfS6uJ8D1MiRMS2pbT0hM/VzLBRiFpg4Ch4QixJWdFZxjwAZ2Cf+09SbOBlgqknygMEPX4UPJrTp1YiVA/uKgwdPMuOhC7NlBJr4qve4uUQ3dImPz2t8A=\"}";
+const BLOB="{\"salt\":\"QEDpFI//N1HdJs6LE/oYRw==\",\"iv\":\"SLmuGpyn/7wt8dcS\",\"data\":\"4pD8VglsCHDqp1NOTL654N8luRj9700E+OeEH6/soGV8FPbp2019+RrUkZDuHE9FQOCOI/JBNSxwLJgGzbJi0pZojeNAC8LPni9S0feSu3izooiG9ytBQTnfb6zgND00fJnHJh5Moj8T6ZngKXZcksnadXRV6C/Q1roq4ks8cX2R0LVT/3OJV6MqqKaWdLzwvB0MROnhjFXT/a12/jBdH0eyj9bRuJh2bwGowfexIyxroXhtz1UH2C0oUAZU2VJYa772R3XlI2XUNphqSPsx1xXD/pAjcSj6m7Z6K+0T7OqU1jeFu8GAYU7WGh1wk5UtZmvz5Rxaj3bHQsYx/7qUj9VxhFWKbqbPQzUMafWscW5SICY1z4temFBrkF3S3hvuMmU7KJWmJAPjhQsWTqGo1K6za6RhWqLRRfAAjyOG0RyeN3V1aWD0OnBKwrE4KW/DWp9VD5JrcfNPeBvFnYZIrMFCffTnqdvxvCK92qdBQ6j/4oSUq3ubCK8ncPyLtq7YZZRMh3huH0apJtGzMeW9DLal6bin+XohCBcqBcKAyALRYncSVdiKFDwwDXXHBNWw9Au9xFRJPqV6q3JxUWP43Ysq6Hz9xFMrUFxz/xBeRNDqE2no67MfqurT1s9QX9eQVe9kAK+aptkVa8K7o5VUJN5XmYXyYUDApWWVzOpfyLCxucadXPsXKCMGlj3PwpC+vYgGv1eIkdHoNbZQGO+p1d6OyC0r2wtU768RorwLoVGSvw559vW3DTEOqh1aVq844vZGZ3IBpjdUzg5OKp7CtgkMHzeZBzBc1VNcqlPVdjgUrI2+6Is9/IZ/oFJtGbBta2BeJfvk3Y0W/a4pngKBJt4DEBSRWXPY3bo/MON2HDtGWECbszkUkHKciq09k6mlCsiyWhIX+z220ZKhqwzeOQPbtSkwV+KN1nLxW6TWZhZ1pe3nPUQRXkSflK9cfqTeFcUWbyvdB0DGy4Lz8UZ0Ax05iGbsWrzBpmsn3dcTGzeDZC9ttKYktX28Cg6AL/b8LnP9WTmKxHfJ3jijE6ztxbVCPRNU7Idk0342LjL04sxxSrnccfan899VnXUIJfPZQx77FmVfHy7J9SYQei2u+brbRbHTvtNPQEawYF9+O9WKomU7qzUy3MtGNHvlInG8AFxIjzNHARYjQbwIR5nurR0IbDzMmzWzeCJeTzrsNA==\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
@@ -74,8 +75,14 @@ async function tryDecrypt(pw){const blob=JSON.parse(BLOB);const key=await derive
 const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:b2u(blob.iv)},key,b2u(blob.data));
 return JSON.parse(new TextDecoder().decode(plain));}
 
+(function(){var b=document.getElementById('themeToggle');if(!b)return;
+function icon(){b.textContent=document.documentElement.classList.contains('dark')?'☀':'☾';}
+icon();
+b.addEventListener('click',function(){var d=document.documentElement.classList.toggle('dark');
+try{localStorage.setItem('vivelan-theme',d?'dark':'light')}catch(e){}icon();});})();
+
 function boot(AB_DATA) {
-  var GRN = '#17564a', GRNBG = '#e3efe9', AMB = '#8a6a2f', AMBBG = '#f6ead2', MUT = '#9aa5a0';
+  var GRN = 'var(--grn)', GRNBG = 'var(--grn-bg)', AMB = 'var(--amb)', AMBBG = 'var(--amb-bg)', MUT = 'var(--faint)';
 
   var state = { filter: 'Tous' };
 
@@ -89,7 +96,7 @@ function boot(AB_DATA) {
   var stStyles = {
     run:  { txt: 'En cours', style: 'color:' + GRN + ';background:' + GRNBG + ';border:1px solid transparent' },
     done: { txt: 'Terminé',  style: 'color:' + AMB + ';background:' + AMBBG + ';border:1px solid transparent' },
-    plan: { txt: 'Prévu',    style: 'color:' + MUT + ';background:transparent;border:1px dashed rgba(23,86,74,.3)' }
+    plan: { txt: 'Prévu',    style: 'color:' + MUT + ';background:transparent;border:1px dashed var(--bd-x)' }
   };
 
   function fmtE(n) { return n.toLocaleString('fr-FR') + ' €'; }
@@ -106,12 +113,12 @@ function boot(AB_DATA) {
     var isWinner = t.winner === k;
     var maxCa = hasData ? Math.max(v.ca, (other && other.ca) || 0, 1) : 1;
     var barPct = hasData ? Math.round(v.ca / maxCa * 100) : 0;
-    var barColor = leads ? GRN : '#b9c9c1';
-    var caColor = leads ? GRN : '#6d7a74';
-    var badgeBg = (leads || isWinner) ? GRN : '#eee8da';
-    var badgeFg = (leads || isWinner) ? '#fdf9ef' : '#6d7a74';
+    var barColor = leads ? GRN : 'var(--barmut)';
+    var caColor = leads ? GRN : 'var(--mut)';
+    var badgeBg = (leads || isWinner) ? GRN : 'var(--track2)';
+    var badgeFg = (leads || isWinner) ? 'var(--cream)' : 'var(--mut)';
     var rowStyle = isWinner
-      ? 'background:' + GRNBG + ';border-color:rgba(23,86,74,.3)'
+      ? 'background:' + GRNBG + ';border-color:var(--bd-x)'
       : '';
     var tag = isWinner ? '· déployée' : '';
 

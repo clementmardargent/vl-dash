@@ -19,7 +19,40 @@
   --cream:#fdf9ef;       /* texte sur vert */
   --bd:rgba(23,86,74,.12);
   --bd-strong:rgba(23,86,74,.25);
+  --input:#fff;
+  --faint2:#b9c2bd;
+  --grn-bg-hov:#d5e6dd;
+  --amb-bd:rgba(138,106,47,.25);
+  --gold-dk:#8f6323;
+  --cream-mut:rgba(253,249,239,.7);
+  --bd-soft:rgba(23,86,74,.07);
+  --bd-mid:rgba(23,86,74,.15);
+  --bd-x:rgba(23,86,74,.3);
+  --bd-hov:rgba(23,86,74,.4);
+  --grn-bd:rgba(23,86,74,.5);
+  --track:#e8e2d4;
+  --track2:#eee8da;
+  --grid:#ebe5d6;
+  --grid2:#d8d0bd;
+  --barmut:#b9c9c1;
+  --gold-bd:rgba(176,129,47,.5);
+  color-scheme:light;
 }
+
+/* Dark mode (handoff 04/09 soir) — classe posée sur <html> avant le premier paint,
+   persistée en localStorage 'vivelan-theme'. La version light reste strictement identique. */
+html.dark{
+  --bg:#10201b;--card:#1a2b26;--panel:#24352f;--tx:#e6ece8;--ink:#f0f4f1;
+  --mut:#a3b4ad;--faint:#7e928b;--grn:#3b9a81;--grn-dk:#4bab90;--grn-bg:rgba(93,180,151,.14);
+  --amb:#d9a851;--amb-bg:rgba(217,168,81,.14);--gold:#cf9c45;--red:#e08d70;--red-soft:#d97a5c;
+  --red-bg:rgba(224,141,112,.14);--cream:#0f1f1a;--bd:rgba(255,255,255,.1);--bd-strong:rgba(255,255,255,.22);
+  --input:#142420;--faint2:#5d716a;--grn-bg-hov:rgba(93,180,151,.26);--amb-bd:rgba(217,168,81,.35);
+  --gold-dk:#e0b060;--cream-mut:rgba(15,31,26,.65);--bd-soft:rgba(255,255,255,.06);--bd-mid:rgba(255,255,255,.14);
+  --bd-x:rgba(255,255,255,.25);--bd-hov:rgba(255,255,255,.35);--grn-bd:rgba(93,180,151,.5);
+  --track:#2c3d36;--track2:#2c3d36;--grid:#263630;--grid2:#38493f;--barmut:#4a5f57;--gold-bd:rgba(207,156,69,.5);
+  color-scheme:dark;
+}
+html.dark img[alt="Vivélan"]{filter:brightness(0) invert(.93)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);font-family:'Figtree',system-ui,sans-serif;color:var(--tx);-webkit-font-smoothing:antialiased}
 a{color:var(--grn);text-decoration:none}
@@ -39,7 +72,7 @@ input::placeholder{color:#a8b2ad}
 .vl-hright{display:flex;align-items:center;gap:16px}
 .vl-gen{font-size:13.5px;color:var(--mut)}
 .vl-main{width:100%;margin:0 auto;padding:36px 48px 72px;flex:1}
-.vl-footer{padding:20px 48px;border-top:1px solid rgba(23,86,74,.1);display:flex;justify-content:space-between;font-size:12.5px;color:var(--faint)}
+.vl-footer{padding:20px 48px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;font-size:12.5px;color:var(--faint)}
 .vl-crumb{font-size:13px;color:var(--faint);margin-bottom:14px}
 .vl-crumb a{color:var(--mut)}
 .vl-crumb .sep{margin:0 4px}
@@ -53,7 +86,7 @@ h1.vl-h1{font-family:'Lora',serif;font-weight:600;font-size:34px;margin:0 0 22px
 
 /* cartes */
 .vl-card{background:var(--card);border:1px solid var(--bd);border-radius:14px}
-.vl-note{display:flex;align-items:center;gap:8px;background:var(--amb-bg);border:1px solid rgba(138,106,47,.25);border-radius:10px;padding:10px 16px;font-size:13px;font-weight:600;color:var(--amb)}
+.vl-note{display:flex;align-items:center;gap:8px;background:var(--amb-bg);border:1px solid var(--amb-bd);border-radius:10px;padding:10px 16px;font-size:13px;font-weight:600;color:var(--amb)}
 .vl-verdict{display:flex;align-items:center;gap:8px;background:var(--grn-bg);border-radius:10px;padding:10px 16px;font-size:13px;font-weight:600;color:var(--grn)}
 
 /* étiquettes KPI */
@@ -64,11 +97,15 @@ h1.vl-h1{font-family:'Lora',serif;font-weight:600;font-size:34px;margin:0 0 22px
 /* pills statut/roas */
 .pill{display:inline-block;padding:3px 8px;border-radius:999px;font-size:12.5px;font-weight:700}
 
-/* tooltip graphique */
-.vl-tip{position:absolute;background:var(--ink);color:var(--cream);border-radius:8px;padding:8px 12px;font-size:12.5px;pointer-events:none;white-space:nowrap;box-shadow:0 6px 18px rgba(20,53,45,.3);z-index:10;font-variant-numeric:tabular-nums}
+/* tooltip graphique — couleurs EN DUR (choix du design : lisible dans les deux thèmes) */
+.vl-tip{position:absolute;background:#14352d;color:#fdf9ef;border-radius:8px;padding:8px 12px;font-size:12.5px;pointer-events:none;white-space:nowrap;box-shadow:0 6px 18px rgba(20,53,45,.3);z-index:10;font-variant-numeric:tabular-nums}
 
 /* boutons pleins */
 .btn{padding:10px 18px;font-size:13.5px;font-weight:700;font-family:'Figtree',sans-serif;color:var(--cream);background:var(--grn);border:none;border-radius:10px;cursor:pointer}
 .btn:hover{background:var(--grn-dk)}
 .btn.ghost{color:var(--grn);background:var(--grn-bg)}
-.btn.ghost:hover{background:#d5e6dd}
+.btn.ghost:hover{background:var(--grn-bg-hov)}
+
+/* toggle clair/sombre */
+.theme-btn{width:36px;height:36px;border-radius:50%;border:1px solid var(--bd-strong);background:var(--card);color:var(--ink);font-size:14px;cursor:pointer;font-family:'Figtree',sans-serif;line-height:1}
+.theme-btn:hover{background:var(--panel)}

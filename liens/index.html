@@ -5,21 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Vivélan — Liens utiles</title>
+<script>try{if(localStorage.getItem('vivelan-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
 <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,600&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/shared.css">
 <style>
 .lk-search{width:100%;box-sizing:border-box;padding:13px 16px;font-size:14.5px;font-family:'Figtree',sans-serif;border:1px solid var(--bd-strong);border-radius:12px;background:var(--card);color:var(--tx);outline:none;margin-bottom:22px}
-.lk-search:focus{border-color:var(--grn);box-shadow:0 0 0 3px rgba(23,86,74,.12)}
-.lk-row{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid rgba(23,86,74,.07)}
+.lk-search:focus{border-color:var(--grn);box-shadow:0 0 0 3px var(--bd)}
+.lk-row{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid var(--bd-soft)}
 .lk-row:hover{background:var(--bg)}
 .lk-badge{flex:none;width:74px;text-align:center;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:4px 0;border-radius:6px}
 .lk-badge.grn{color:var(--grn);background:var(--grn-bg)}
 .lk-badge.amb{color:var(--amb);background:var(--amb-bg)}
 .lk-copy{flex:none;padding:7px 13px;font-size:12.5px;font-weight:600;font-family:'Figtree',sans-serif;color:var(--grn);background:var(--grn-bg);border:none;border-radius:8px;cursor:pointer}
-.lk-copy:hover{background:#d5e6dd}
-.lk-act{flex:none;width:26px;height:26px;border:none;border-radius:7px;background:transparent;color:#b9c2bd;font-size:13px;cursor:pointer;line-height:1;padding:0}
+.lk-copy:hover{background:var(--grn-bg-hov)}
+.lk-act{flex:none;width:26px;height:26px;border:none;border-radius:7px;background:transparent;color:var(--faint2);font-size:13px;cursor:pointer;line-height:1;padding:0}
 .lk-act.edit:hover{background:var(--grn-bg);color:var(--grn)}
 .lk-act.del:hover{background:var(--red-bg);color:var(--red)}
 .lk-act.confirm{width:auto;padding:0 9px;font-size:11.5px;font-weight:700;font-family:'Figtree',sans-serif;color:var(--red);background:var(--red-bg)}
@@ -27,12 +28,12 @@
 .lk-overlay.open{display:flex}
 .lk-form{width:100%;max-width:440px;background:var(--card);border-radius:16px;padding:28px;box-sizing:border-box;display:flex;flex-direction:column;gap:18px;box-shadow:0 24px 60px rgba(20,53,45,.25)}
 .lk-x{width:30px;height:30px;border:none;border-radius:8px;background:var(--panel);color:var(--mut);font-size:15px;cursor:pointer;line-height:1}
-.lk-x:hover{background:#e8e2d4}
-.lk-input{padding:12px 14px;font-size:14.5px;font-family:'Figtree',sans-serif;border:1px solid var(--bd-strong);border-radius:10px;background:#fff;color:var(--tx);outline:none}
-.lk-input:focus{border-color:var(--grn);box-shadow:0 0 0 3px rgba(23,86,74,.12)}
+.lk-x:hover{background:var(--track)}
+.lk-input{padding:12px 14px;font-size:14.5px;font-family:'Figtree',sans-serif;border:1px solid var(--bd-strong);border-radius:10px;background:var(--input);color:var(--tx);outline:none}
+.lk-input:focus{border-color:var(--grn);box-shadow:0 0 0 3px var(--bd)}
 .lk-input.err{border-color:var(--red)}
 .lk-cancel{padding:11px 18px;font-size:13.5px;font-weight:600;font-family:'Figtree',sans-serif;color:var(--grn);background:var(--grn-bg);border:none;border-radius:10px;cursor:pointer}
-.lk-cancel:hover{background:#d5e6dd}
+.lk-cancel:hover{background:var(--grn-bg-hov)}
 .lk-submit{padding:11px 20px;font-size:13.5px;font-weight:700;font-family:'Figtree',sans-serif;color:var(--cream);background:var(--grn);border:none;border-radius:10px;cursor:pointer}
 .lk-submit:hover{background:var(--grn-dk)}
 </style>
@@ -45,7 +46,7 @@
     <a href="../index.html" style="display:block"><img src="../assets/logo-vivelan.png" alt="Vivélan"></a>
     <span class="vl-admin">Admin</span>
   </div>
-  <div class="vl-hright"><span class="vl-gen" id="sync"></span><div class="vl-avatar">V</div></div>
+  <div class="vl-hright"><span class="vl-gen" id="sync"></span><button id="themeToggle" class="theme-btn" title="Basculer clair/sombre">☾</button><div class="vl-avatar">V</div></div>
 </header>
 <main class="vl-main" style="max-width:880px">
     <div class="vl-crumb"><a href="../index.html">Tableau de bord</a> <span class="sep">/</span> <span class="here">Liens utiles</span></div>
@@ -92,7 +93,7 @@
   </div>
 </div>
 <script>
-const BLOB="{\"salt\":\"T65/5GKWTm8NGi9l0eXDEg==\",\"iv\":\"1oxTKq3wGDBwv/Ql\",\"data\":\"pN4pCHx7eld8r+Vgz3MCb0bCSKQft/sPaEJKkxKf4/8lC4V6Girl7dvGk4kXp1M/8N5NWtRKZbkK2n4imX8WFKwlNGD1XFJKWl5mWlG7K7xAKaE8haoubif2N9v4WV6VfA8BO/xE211jvkQiwV3yNSTc/YEQZ564PP0ru+Mym+a10PRRFGDWItOR9yVxccGIm7eAmkqXhbIBitV1GXpn9aPtT+aG+jleFkKI9pDa6n75F4JLQo8H/n4id/dPZpiTNFgv7QVsAodNs4CPWz0j2k2YAIgQLk0jzB70QNxTF97C07hrBu4QVc6wjn9VRUxCCk/wDJ0fqJFmRwzm406e6QZM4Nmsz7aV9uKukDcwdgLcYtcclD0+bO12RpU16tdVLDZeRGljf08KBRePPtLhH/Pmbqfrj1d5rHmQ3tFdGVnrm2x6MV2MR1eq1XNAP7edwuhoefDlnpNTvp13lSpAhompH9nXUYsVfhikI1OA/h5XNIu/CFRsfz1Al5Ebc6njPcfxnp+OduqKoOWWSv+e5CPrM+dHO0x5FQQ5R76GEADpZJ6emOfC0JGLHbihU5kKq+a0x+tjo9nuh0Xhpb5T3RCFdM2VtjN2CqLbtzBMzmugclrVA2HCYmmZ2pWokgnyQoZghPubVTsGFterIxlX4J+9GsYZR1iiRjEYqiedYiQ=\"}";
+const BLOB="{\"salt\":\"M0pB3ayYSaQRicPMXx+fEw==\",\"iv\":\"260PqSmArgxUAcbT\",\"data\":\"xlSzivpNshUNEw+ob5Lm8QWLJSP+QBKWtB5WqxmgXQ645rJciWQ69q6HvHmj9thGnyddcIDXqs+rw58Ry/jV4QlPjRU8cNt4CGsP5YHEIzCiJBwNIhTaNtvXzYriqLhqXhfvCuxgM6zUeX+/MKOm+YMvBaIsM3ETfUrjkpQXHwCxwyUaRiSQ6fEz2li/xH/1N9taIPsxwsfnFeyAFs5DulCz+3x4utt1TdQsyYc1b/ho0jSwNRXsXggzYYkdjcsHh9dfj5RfgqadCT2YYkgL3lHkpR87XPDGpDJm7j6x414FjiYAbOdta5n/HV+kXuyuLXEhK76S/Q5wI9NwKOFkRzbUcoCCCr6Gwaol6BUHK/WevxB0DHOCLXUISQfIYJrIO8Sbag3183wVSNd3awa5l9zeYMZgSt4/61f1kT/8dzTUE1dpaSQQKTBayvNZBHatqdjVrW1eYS25FyDPne5tK6vBX9w3PeQkiBZhgEmjQQ5gjg80p1yWdh7vcEE+HNefUTZuzE+fg6N/jTgrc1Evq8DgJ3j5vEw4AmBarrSqW9XYuOz9nXXXmhwzhuD78YZcPsinZ3mFWj0PrGk79CB90dSPhJCvAPxymGDn2ZjOq9VHwvBznpb5IBVxM1x9cGNr0mB357J63+pv1cHccsRm8xe5ohoMfXJfI98OFhbKxTQ=\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
@@ -144,6 +145,12 @@ if(!DIRTY&&!PUSHING)APPLY(JSON.parse(utf8b64(f.content)));}
 catch(e){/* silencieux : le seed est déjà affiché */}},
 change:function(){if(S.ro)return;GEN++;DIRTY=true;setSync('⏳ envoi…');clearTimeout(TIMER);TIMER=setTimeout(push,2000);}};
 return S;})();
+
+(function(){var b=document.getElementById('themeToggle');if(!b)return;
+function icon(){b.textContent=document.documentElement.classList.contains('dark')?'☀':'☾';}
+icon();
+b.addEventListener('click',function(){var d=document.documentElement.classList.toggle('dark');
+try{localStorage.setItem('vivelan-theme',d?'dark':'light')}catch(e){}icon();});})();
 
 'use strict';
 var links = [];

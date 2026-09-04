@@ -5,13 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Vivélan — To-do list</title>
+<script>try{if(localStorage.getItem('vivelan-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
 <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,600&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/shared.css">
 <style>
 .todo-input{flex:1;min-width:0;padding:13px 16px;font-size:14.5px;font-family:'Figtree',sans-serif;border:1px solid var(--bd-strong);border-radius:12px;background:var(--card);color:var(--tx);outline:none}
-.todo-input:focus{border-color:var(--grn);box-shadow:0 0 0 3px rgba(23,86,74,.12)}
+.todo-input:focus{border-color:var(--grn);box-shadow:0 0 0 3px var(--bd)}
 .todo-input:disabled{opacity:.55;cursor:not-allowed}
 .todo-add{padding:0 20px;font-size:13.5px;font-weight:700;font-family:'Figtree',sans-serif;color:var(--cream);background:var(--grn);border:none;border-radius:12px;cursor:pointer}
 .todo-add:hover{background:var(--grn-dk)}
@@ -19,25 +20,25 @@
 .wchip{padding:5px 13px;border-radius:999px;border:1px solid var(--bd-strong);background:var(--card);color:var(--tx);font-size:12.5px;font-weight:600;cursor:pointer;font-family:'Figtree',sans-serif}
 .wchip.on{background:var(--grn);color:var(--cream);border-color:var(--grn)}
 .sec-label{font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--amb);margin-bottom:10px}
-.trow{position:relative;display:flex;align-items:center;gap:12px;padding:13px 20px 13px 14px;border-bottom:1px solid rgba(23,86,74,.07);background:transparent}
+.trow{position:relative;display:flex;align-items:center;gap:12px;padding:13px 20px 13px 14px;border-bottom:1px solid var(--bd-soft);background:transparent}
 .trow:hover{background:var(--bg)}
 .trow.dragging{opacity:.35}
 .ins-line{position:absolute;left:10px;right:10px;height:3px;border-radius:999px;background:var(--grn);z-index:5;pointer-events:none}
 .ins-line.top{top:-2px}
 .ins-line.bottom{bottom:-2px}
-.grip{flex:none;cursor:grab;color:#c5cdc8;font-size:13px;letter-spacing:1px;user-select:none}
-.circ{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid rgba(23,86,74,.4);background:transparent;cursor:pointer;padding:0}
+.grip{flex:none;cursor:grab;color:var(--faint2);font-size:13px;letter-spacing:1px;user-select:none}
+.circ{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid var(--bd-hov);background:transparent;cursor:pointer;padding:0}
 .circ:hover{border-color:var(--grn);background:var(--grn-bg)}
 .ttl{flex:1;min-width:0;font-size:15px;font-weight:500;color:var(--ink)}
 .whobtn{padding:4px 11px;border-radius:999px;font-size:11.5px;font-weight:700;font-family:'Figtree',sans-serif;cursor:pointer}
-.whomenu{position:absolute;top:calc(100% + 6px);right:0;background:var(--card);border:1px solid rgba(23,86,74,.15);border-radius:10px;box-shadow:0 10px 28px rgba(20,53,45,.16);padding:6px;z-index:20;min-width:160px;display:flex;flex-direction:column;gap:2px}
+.whomenu{position:absolute;top:calc(100% + 6px);right:0;background:var(--card);border:1px solid var(--bd-mid);border-radius:10px;box-shadow:0 10px 28px rgba(20,53,45,.16);padding:6px;z-index:20;min-width:160px;display:flex;flex-direction:column;gap:2px}
 .who-opt{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;border:none;border-radius:7px;background:transparent;color:var(--ink);font-size:13px;font-weight:600;font-family:'Figtree',sans-serif;cursor:pointer;text-align:left}
 .who-opt.on{background:var(--panel)}
 .who-opt:hover{background:var(--panel)}
 .who-opt .chk{color:var(--grn);font-size:12px}
-.del{flex:none;width:26px;height:26px;border:none;border-radius:7px;background:transparent;color:#b9c2bd;font-size:13px;cursor:pointer;line-height:1;padding:0}
+.del{flex:none;width:26px;height:26px;border:none;border-radius:7px;background:transparent;color:var(--faint2);font-size:13px;cursor:pointer;line-height:1;padding:0}
 .del:hover{background:var(--red-bg);color:var(--red)}
-.drow{display:flex;align-items:center;gap:14px;padding:13px 20px;border-bottom:1px solid rgba(23,86,74,.07)}
+.drow{display:flex;align-items:center;gap:14px;padding:13px 20px;border-bottom:1px solid var(--bd-soft)}
 .drow:hover{background:var(--bg)}
 .dcheck{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid var(--grn);background:var(--grn);color:var(--cream);font-size:12px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
 .dttl{flex:1;min-width:0;font-size:15px;font-weight:500;color:var(--faint);text-decoration:line-through}
@@ -54,7 +55,7 @@
     <a href="../index.html" style="display:block"><img src="../assets/logo-vivelan.png" alt="Vivélan"></a>
     <span class="vl-admin">Admin</span>
   </div>
-  <div class="vl-hright"><span class="vl-gen" id="sync"></span><div class="vl-avatar">V</div></div>
+  <div class="vl-hright"><span class="vl-gen" id="sync"></span><button id="themeToggle" class="theme-btn" title="Basculer clair/sombre">☾</button><div class="vl-avatar">V</div></div>
 </header>
 <main class="vl-main" style="max-width:760px">
     <div class="vl-crumb"><a href="../index.html">Tableau de bord</a> <span class="sep">/</span> <span class="here">To-do list</span></div>
@@ -62,7 +63,7 @@
     <h1 class="vl-h1" style="margin-bottom:8px">To-do list</h1>
     <div style="display:flex;align-items:center;gap:14px;margin-bottom:26px">
       <span id="progressTxt" style="font-size:13.5px;color:var(--mut)"></span>
-      <div style="flex:1;max-width:220px;height:6px;border-radius:999px;background:#e8e2d4;overflow:hidden"><div id="progressBar" style="height:100%;border-radius:999px;background:var(--grn);width:0%"></div></div>
+      <div style="flex:1;max-width:220px;height:6px;border-radius:999px;background:var(--track);overflow:hidden"><div id="progressBar" style="height:100%;border-radius:999px;background:var(--grn);width:0%"></div></div>
     </div>
 
     <form id="addForm" style="display:flex;flex-direction:column;gap:10px;margin-bottom:26px">
@@ -85,7 +86,7 @@
 <div id="overlay" hidden style="position:fixed;inset:0;z-index:10"></div>
 </div>
 <script>
-const BLOB="{\"salt\":\"kZgOVH162lggi9+dFFSpZA==\",\"iv\":\"Imel8eLodQF+Fh+z\",\"data\":\"mofGV9Ae0Kn6i8VETeY+iG/sTUZX0f/uD4haAxsToM3JXV5EDI3c0QtuybVYE/Ix90U6Ps3/qgB89SZEzwd5EK9cUmzpr5zUtzJLS7MAIeWJF/QHgPPqKMhN7WGxG7rPf+Y5mVEzUDqt13XKIkqs4tPHrv8FmOdC9DV/B0DgBzFWmbSwsLP1+TbEB+C+RntIalMPN4Wz9bg/wkElsWuHyh14IwIxqSrdemXPn/7EsXrWcim5h/wnfPNT/csms1DRS6HrgGgrnHk18AUo0EcU6W2m76U7TAjaN4oNs2qxNKMuNj+ElMcjnoGmavRIK1zC62t1fdwc0piwOhN26z1AuGOzKcOg+2bdRcEaCWyKd2OPKcolXNREzEJ0LPd5DkT747PQ8RAkYvlEC4P/z9UYYZfj8ygWXN5le9wzAwDUf/INwV490VYiM0zxRQD2FJ0ju+yeK9RWlkXfZfXtILEDYEcFCZsbI/dvTTMScXavavuEcpjdtQ3Nh1EJKovErvbWSro1/EdKtfAzRosg1sl5d7IwjWTWnZg6lBL5oXWzC63RIwr/H2bnqSHyPHelU2klf6rBkmCX8C3xNp8/WMPC9htGMc8t4nOdWdKSoajQfWAQEFqmwAPvdVpFK2f5+XP4Crz7pPfZQcwmrMMFTDzOEsRpjyTTGk4dnCufKcWLdFtzv2XJQ9Mf9SFyBSbGV+oFu8NeTzVHNzCZYAhw6MZbeQY/6Ax9U8mNNw+bmq1LnoLGYDJSVMwQqtWKTcdPX4G5qZuhg9EH5Qx5nC+ZxLryLKw3TeFkL7I30ZWbXg4EwZ1fxZOrLvFzrBPl4lisH0yU02jAblSpdkOsC/XXt6Tz3qIy7Yv/zGBNgr+Qi9hH1J0EYCLi4D5UK8UJzj81Mb9Qch5OH7QLmBbOJhfZ5n0s4VhmFCThgILcyskEZCBkqmwfgO9X/W1TUbkIuAEmVBAzHsYoKiR94+ODDN5z3iYYoXGLmzK4Bfa44Vm13hwfQOUZqVmOxyBqIwPSzry8RZIYabol1vf0/wYpBQw25MoQwgp05kgAIPbix2LlGE5WFn35zDlt5BHZN8qbQcuOlD3lcxHfdQW+CSaLh9mMgT055mCIYncwwz7HrO2w45SqM+9UP+iQ4qRTIBBAw9JWKa1Wj+RrxWGxGtcDz1bpHOK+cyb2xP2R2TFSoowEzgX9cTnvTQ83BwUXMzC5IW8Nsk1I/vkeSIBy1qJeSKPS9XuAbsZCUw8VTox4SnxVbKiEvm25RxWSmYT9Ac36CtfO4sI4iN3j9xEdJvKAICoIEi1XhVVCCuKglwCzgBo2AHfbbqy9HTU3apeiQrpWieVZjZ/vFXXN1gJrsxjRzIvC87qD+G1pI5FInij29vk4DrjlOySNCYzVuHYsUQowp9P6BpL25gLsEe/8PvlJZ7WdDK5CBYovmIrFVWrbfp2LHFl9i94UySXWMa2DEtb6LB9H8Z49zIBz1N0ylrAicY2B9WoKcd8Pb9Bq3sj2WRVpiXjKJzxqTRTSG3/ifFrEom4Wz4gEOtZedGJf1+YWyUa6OfebMfH0ABxTk0669CWeRP6ocWTPZpaZDw8d+3mmUGEHgCwrkTnyDEjp/N8/+Fx8tbY3LneJhQfHM2sxRlGpi/rpk21q/oMh5KZwnq2eCTtOL6nKfQ6VmILaTxw05XA4W7ajGyZTtqOi2NnHhVAqYrvXL15GEGCFEKVTHf2HUQoNhXIes4xbj00njXU3BxAVz1jTF+MkUXWT6wpLHSUsw1SlfH83hHZqigf+qUUELPWqMaP/3IVEH6YlqZzU/IKHqRkxBjq8ps33Pc8/abIzTA==\"}";
+const BLOB="{\"salt\":\"gobRes64rLh46GVC6GFnAg==\",\"iv\":\"jP9jGwrvi06Q9H8j\",\"data\":\"QOYgDBb1Ptuol3o3cIryrA/r5kMA6S0jwcwiT9B24+LOz4HxF5sQn/MeQowsAZaW6hWobjz+AEQ+xZLRo58Ra1q7COezq8S7XNNgxGIHdYVKpA8BO4jok0gWXFYsjZyD8Dzuc6uyM2+qjmbZyeipc9XztcCIlWGDH6MSYJc4i79zKGttMtgqhcK87DEJSl+/4lY3XHDzYtMMctdhEJcPKZGkDkgNUEhpRS7TKqDEU1fhxz0A6GrFGKu8yYEAtzJ77Dr7+2EOeGRSso53NkGQFGYEQEavfSwhSsZlUwZf1pNrfOnK66OnROWuBmCf8eJ0R80rM0eZdoQdCcyid4IxqtiYnCwdT5MlZ3E2jqeIGEyEYE1dU5rKnqxlNOYkwB4I9KHFhOQlTtbk75azA6GXuKb3bAu2upvBIJ3wBYc07xvfSBzOmWwLFSky9uFmroq4S2oH6gVpgxXbfDhUVr1QeSMz9SsHUqsK8a+MNehzAURkzwSy1Qib4SKxFXcPx1BUy3BAGbjcN0RauapfjHX2oELfLupj3YM7D7rg7j4N9FnbpC4ug0oZuLUWbGf8ZMF7n4a1coGnYFGAHNsiIo/IbCaBtHDbUSxre1FeFr3DPw30In6ONMO/TEiy8F0qqzn237S3dnYHBPh0CCRITyZNf0mV8+0NVF7qLLtbp2iaF8zrK3BA2B/saYzKNsquvI5T/GJBDh/+kpECvgMDBmvQLuA9zxRUFIlkZ58gEhUVwE6K8iKU3MJ/b9tRcSqQz+NsXvtmbx3n+2DeAQBGPHWgXV/gwGzlJMBNW+MlREXzge0O3HcNtvqu+XlskbsXPfZqEg0pDzZKw2J3MTJIlLoJ1ONMoiylHhI5tUn8oTul2b7i/+hRwxlS6xiqXDj17eCuw3Toxqybaw9/GlW2icVb7BTugFKwaXSh6hkl/8aLZxnZNavNwEBtGNh4lo534T6L8fgNcVDjF9OulI7bUVW7MQAqkUlYkeQ16G96hJ9nvh4c5LXmJDym02ax3gXNMXeJVVDP4r0UD9ody5PZjXu0Ys3tjPvQnSKA0XeZyAaz2/HKMdcUBXMHDwLuPdSNd/pA+YL16vK+z7RGV5MW9MwonaWjvA5sWKcQWsySp5gRREJqAtw4rCVtAwYb+Ev4Ca0Iy+cxuofngaqOZeDK8kMuLOiJlRUytpqXv6Eg6CKFyKoe22ACgOvfwK1O6T/fzO8XNkVlq2D5q4fWp66Ek/geeZRrcWppKOqxLVyc8oy8a6TL5ZGw2BI6PPVs/C7d0STBZ7VJZ7mE+4n4C6pANymoO3sZ8sDxjuwClHn84B0O25IPBn3A3bdJP4HMbPh4AFfSk++DP6SMt7r04XNcuHU82Wklo0md/bGApUs1rVWjZkrLk6Kcz3bw2VFtGqGUv541kq5fviS4GmhpFKmVkf8efP+6Nao10LW2GAS5ZIPvyrIB3DxrzX5aLc+JBNFs7CqXPmM0QAvRl+NCMA/CDo4PYbw8z5A2yrCcI2tjAKmk4gzKq/E2MlwgFvUHm2A8UgtKYkMOzPRtR0LDdHWnb13w+0GXduyAQ+7iD77yB8D2OTRWQ6qbW3x6ay5fNxBGlONCdon3pq3TGV+w9J6h9D0ENKbSH8TbFnjeWNGNgM3VZ5p4NZspu+ONyDG9YBdU9mhptWrjuWstptSYP5eZfIiU8+3eUq2mHA7fGLl/34psk0k5o0tI6UqsRxyGUxEMaKwYcCLt7+tghVi+LVcCOoSL1kZT8dYMLtkeCr9wVdeTzd7+N8ncw9UJFIB2ff0dRhfTfr8Nr3N16t3p5iwAyXGe6iKUqbv2cEfmEI2atg==\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
@@ -138,6 +139,12 @@ catch(e){/* silencieux : le seed est déjà affiché */}},
 change:function(){if(S.ro)return;GEN++;DIRTY=true;setSync('⏳ envoi…');clearTimeout(TIMER);TIMER=setTimeout(push,2000);}};
 return S;})();
 
+(function(){var b=document.getElementById('themeToggle');if(!b)return;
+function icon(){b.textContent=document.documentElement.classList.contains('dark')?'☀':'☾';}
+icon();
+b.addEventListener('click',function(){var d=document.documentElement.classList.toggle('dark');
+try{localStorage.setItem('vivelan-theme',d?'dark':'light')}catch(e){}icon();});})();
+
 'use strict';
 var WHO = ['', 'Matis', 'Clément'];
 var FILTERS = ['all', 'Matis', 'Clément', ''];
@@ -175,7 +182,7 @@ function esc(s){
 function whoStyle(w){
   if (w === 'Matis')   return 'border:1px solid transparent;background:var(--grn-bg);color:var(--grn)';
   if (w === 'Clément') return 'border:1px solid transparent;background:var(--amb-bg);color:var(--amb)';
-  return 'border:1px dashed rgba(23,86,74,.3);background:transparent;color:var(--faint)';
+  return 'border:1px dashed var(--bd-x);background:transparent;color:var(--faint)';
 }
 function whoLabel(w){ return w || 'Non assigné'; }
 

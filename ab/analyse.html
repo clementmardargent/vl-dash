@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Vivélan — Analyse A/B</title>
+<script>try{if(localStorage.getItem('vivelan-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
 <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,600&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -19,7 +20,7 @@
     <a href="../index.html" style="display:block"><img src="../assets/logo-vivelan.png" alt="Vivélan"></a>
     <span class="vl-admin">Admin</span>
   </div>
-  <div class="vl-hright"><div class="vl-avatar">V</div></div>
+  <div class="vl-hright"><button id="themeToggle" class="theme-btn" title="Basculer clair/sombre">☾</button><div class="vl-avatar">V</div></div>
 </header>
   <main class="vl-main" style="max-width:1000px">
     <div class="vl-crumb"><a href="../index.html">Tableau de bord</a> <span class="sep">/</span> <a href="index.html">A/B tests</a> <span class="sep">/</span> <span class="here">Analyse</span></div>
@@ -28,7 +29,7 @@
 <footer class="vl-footer"><span>Vivélan — espace interne</span><span>v2</span></footer>
 </div>
 <script>
-const BLOB="{\"salt\":\"Pbdux+aF3Kg8jx0IDpmWxw==\",\"iv\":\"pqB/qtDH8Kk04oJU\",\"data\":\"/2P9iNqBtUAtjlBU6cuhNuevOCZZI9Gi2eWBLns29kURaUCFe42PhNcaOxPaZzbLGuFTqN/9YP0LiZS5X3spf0f7agYaHK/c1NRdELikBra9AfvINbDnWM1ZMCssMKw9gO6yJ8EnUNFTWwV18TXLgQwMPcXU01845J+0qK539rGZ/tWY33T2ko3/8+kJNk6mI8Pcq6WPIMwLZ8qLn1bSYo15tSt0wN06Hn+Of0myF5dfyZNhLmX/D+vaKlSQ7mTnaKrAdWx4pYMqB4Qi8xPxG1QlzHzylugBv3F+ovwx9FSV8ZGZnUo4eTjtKc1yfqv509zczDjjkBZ+u7dtVs6l/HRWHW5w9+37Q09BOQjgr/k0C/GUW/tEpoC69IrIGBEpP9XY9efdw1O977IZOiKbr4Sm+0gzMqLnlQ1T+YdFccecY/cfJWsYZV0C525Tx6xBnHdWf3A+8FvADaf9nnjkiIJaNrbNoykMvFE58PSI+EcvQ02LLFciarz+ug/Eo9fKeY9rFzi3XmRWDkF4SQ6BosKcZ5HFXvDzP1PQY84QCK1MdnMTvgCARxwNAXWQDaFUNhTTvZD3zJLTqb7JX8sMUPreFH5+ZV2vDROVjfwzPdYLpSrsIF0SGJlBuxLij2avhlwkDGTlz9AhZuhNAN08mb4iV2C9zwKKP2g4+OXFvGZ+SvOiVozT3eCH0gbCEfZBCMFssx1sTwOZkbCutoRzGrEimH8cxFjVfph4sS83+PtiiVTzQMrFGgAYGo37F1kok/9D9t0oGr2pjVLjkNIV3KC7CfRAxGfr9+fMxgm+/pmfp8KHORE/ThR+jar8Y75t8qMH+t2kiFP2VLw2YCSGTJc54aDZERYdEK++SeVa2Ox79vODeq+HJH4ph2rEsr8rZBAtQmO/bsRWFB6r6qZjTiKYetfxvYnmce/jXG/TExACmAtairl6rHceW1WxQRD1jxXbXr6uu6b/Z1sTd7nFGEc4g8JTLhjXD5XspXHSWfdMJH3DZ0FuNS6/waw3Z8ejfR/CMh0u+mcvQRitK6EQuwzuGDB9LQiYgV/fQkVIADjDQ5bJue+rRBsfS6uJ8D1MiRMS2pbT0hM/VzLBRiFpg4Ch4QixJWdFZxjwAZ2Cf+09SbOBlgqknygMEPX4UPJrTp1YiVA/uKgwdPMuOhC7NlBJr4qve4uUQ3dImPz2t8A=\"}";
+const BLOB="{\"salt\":\"QEDpFI//N1HdJs6LE/oYRw==\",\"iv\":\"SLmuGpyn/7wt8dcS\",\"data\":\"4pD8VglsCHDqp1NOTL654N8luRj9700E+OeEH6/soGV8FPbp2019+RrUkZDuHE9FQOCOI/JBNSxwLJgGzbJi0pZojeNAC8LPni9S0feSu3izooiG9ytBQTnfb6zgND00fJnHJh5Moj8T6ZngKXZcksnadXRV6C/Q1roq4ks8cX2R0LVT/3OJV6MqqKaWdLzwvB0MROnhjFXT/a12/jBdH0eyj9bRuJh2bwGowfexIyxroXhtz1UH2C0oUAZU2VJYa772R3XlI2XUNphqSPsx1xXD/pAjcSj6m7Z6K+0T7OqU1jeFu8GAYU7WGh1wk5UtZmvz5Rxaj3bHQsYx/7qUj9VxhFWKbqbPQzUMafWscW5SICY1z4temFBrkF3S3hvuMmU7KJWmJAPjhQsWTqGo1K6za6RhWqLRRfAAjyOG0RyeN3V1aWD0OnBKwrE4KW/DWp9VD5JrcfNPeBvFnYZIrMFCffTnqdvxvCK92qdBQ6j/4oSUq3ubCK8ncPyLtq7YZZRMh3huH0apJtGzMeW9DLal6bin+XohCBcqBcKAyALRYncSVdiKFDwwDXXHBNWw9Au9xFRJPqV6q3JxUWP43Ysq6Hz9xFMrUFxz/xBeRNDqE2no67MfqurT1s9QX9eQVe9kAK+aptkVa8K7o5VUJN5XmYXyYUDApWWVzOpfyLCxucadXPsXKCMGlj3PwpC+vYgGv1eIkdHoNbZQGO+p1d6OyC0r2wtU768RorwLoVGSvw559vW3DTEOqh1aVq844vZGZ3IBpjdUzg5OKp7CtgkMHzeZBzBc1VNcqlPVdjgUrI2+6Is9/IZ/oFJtGbBta2BeJfvk3Y0W/a4pngKBJt4DEBSRWXPY3bo/MON2HDtGWECbszkUkHKciq09k6mlCsiyWhIX+z220ZKhqwzeOQPbtSkwV+KN1nLxW6TWZhZ1pe3nPUQRXkSflK9cfqTeFcUWbyvdB0DGy4Lz8UZ0Ax05iGbsWrzBpmsn3dcTGzeDZC9ttKYktX28Cg6AL/b8LnP9WTmKxHfJ3jijE6ztxbVCPRNU7Idk0342LjL04sxxSrnccfan899VnXUIJfPZQx77FmVfHy7J9SYQei2u+brbRbHTvtNPQEawYF9+O9WKomU7qzUy3MtGNHvlInG8AFxIjzNHARYjQbwIR5nurR0IbDzMmzWzeCJeTzrsNA==\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
@@ -37,16 +38,22 @@ async function tryDecrypt(pw){const blob=JSON.parse(BLOB);const key=await derive
 const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:b2u(blob.iv)},key,b2u(blob.data));
 return JSON.parse(new TextDecoder().decode(plain));}
 
+(function(){var b=document.getElementById('themeToggle');if(!b)return;
+function icon(){b.textContent=document.documentElement.classList.contains('dark')?'☀':'☾';}
+icon();
+b.addEventListener('click',function(){var d=document.documentElement.classList.toggle('dark');
+try{localStorage.setItem('vivelan-theme',d?'dark':'light')}catch(e){}icon();});})();
+
 function boot(AB_DATA) {
 'use strict';
-var GRN = '#17564a', GRNBG = '#e3efe9', AMB = '#8a6a2f', AMBBG = '#f6ead2', MUT = '#9aa5a0', GOLD = '#b0812f';
+var GRN = 'var(--grn)', GRNBG = 'var(--grn-bg)', AMB = 'var(--amb)', AMBBG = 'var(--amb-bg)', MUT = 'var(--faint)', GOLD = 'var(--gold)';
 
 var T = AB_DATA.tests;
 
 var stStyles = {
   run:  { stTxt: 'En cours', stFg: GRN, stBg: GRNBG, stBd: '1px solid transparent' },
   done: { stTxt: 'Terminé',  stFg: AMB, stBg: AMBBG, stBd: '1px solid transparent' },
-  plan: { stTxt: 'Prévu',    stFg: MUT, stBg: 'transparent', stBd: '1px dashed rgba(23,86,74,.3)' }
+  plan: { stTxt: 'Prévu',    stFg: MUT, stBg: 'transparent', stBd: '1px dashed var(--bd-x)' }
 };
 
 var fmtE = function(n){ return Math.round(n).toLocaleString('fr-FR') + ' €'; };
@@ -76,7 +83,7 @@ function dOf(a, b){
   var d = (a / b - 1) * 100;
   var abs = Math.abs(d);
   var txt = (d >= 0 ? '+' : '−') + (abs < 10 ? abs.toFixed(1).replace('.', ',') : Math.round(abs)) + ' %';
-  return { txt: txt, bg: d >= 0 ? GRN : '#a8452e' };
+  return { txt: txt, bg: d >= 0 ? GRN : 'var(--red)' };
 }
 
 /* --- Probabilité bayésienne (formule exacte d'Evan Miller, prior uniforme Beta(1,1)) --- */
@@ -105,25 +112,25 @@ function dBadge(delta, big){
   if (!delta.txt) return '';
   var pad = big ? '3px 10px' : '2px 8px';
   var fs = big ? '12.5px' : '11.5px';
-  return '<span style="display:inline-block;vertical-align:middle;margin-left:6px;padding:' + pad + ';border-radius:999px;font-size:' + fs + ';font-weight:700;background:' + delta.bg + ';color:#fdf9ef;font-variant-numeric:tabular-nums">' + delta.txt + '</span>';
+  return '<span style="display:inline-block;vertical-align:middle;margin-left:6px;padding:' + pad + ';border-radius:999px;font-size:' + fs + ';font-weight:700;background:' + delta.bg + ';color:var(--cream);font-variant-numeric:tabular-nums">' + delta.txt + '</span>';
 }
 
 function kpiCell(label, val, delta){
-  return '<div><div style="font-size:11px;font-weight:700;letter-spacing:1.2px;color:#9aa5a0">' + label + '</div>' +
-    '<div style="font-size:16px;font-weight:700;color:#14352d;font-variant-numeric:tabular-nums;margin-top:2px">' + val +
+  return '<div><div style="font-size:11px;font-weight:700;letter-spacing:1.2px;color:var(--faint)">' + label + '</div>' +
+    '<div style="font-size:16px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;margin-top:2px">' + val +
     dBadge(delta) + '</div></div>';
 }
 
 function bayesCard(t){
-  var open = '<div style="background:#fffdf9;border:1px solid rgba(23,86,74,.12);border-radius:14px;padding:20px 24px;margin-bottom:16px">' +
+  var open = '<div style="background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:20px 24px;margin-bottom:16px">' +
     '<div style="margin-bottom:16px">' +
-      '<div style="font-size:14px;font-weight:700;color:#14352d">Quelle variante est la bonne ?</div>' +
-      '<div style="font-size:12px;color:#9aa5a0;margin-top:2px">probabilité bayésienne, calculée sur le taux de conversion</div>' +
+      '<div style="font-size:14px;font-weight:700;color:var(--ink)">Quelle variante est la bonne ?</div>' +
+      '<div style="font-size:12px;color:var(--faint);margin-top:2px">probabilité bayésienne, calculée sur le taux de conversion</div>' +
     '</div>';
 
   var nA = t.a.sessions, nB = t.b.sessions;
   if (!nA || !nB){
-    return open + '<div style="font-size:13.5px;color:#6d7a74">Pas encore de données — la probabilité apparaîtra dès les premières sessions.</div></div>';
+    return open + '<div style="font-size:13.5px;color:var(--mut)">Pas encore de données — la probabilité apparaîtra dès les premières sessions.</div></div>';
   }
 
   var pB = probBbeatsA(t.a.orders, nA, t.b.orders, nB);
@@ -133,7 +140,7 @@ function bayesCard(t){
 
   var dot = function(k){
     var c = k === 'A' ? GOLD : GRN;
-    return '<span style="flex:none;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:' + c + ';color:#fdf9ef">' + k + '</span>';
+    return '<span style="flex:none;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:' + c + ';color:var(--cream)">' + k + '</span>';
   };
 
   var html = open +
@@ -153,30 +160,30 @@ function bayesCard(t){
         '<div style="flex:1;background:' + GRN + '"></div>' +
       '</div>' +
       '<div style="position:absolute;top:-3px;bottom:-3px;left:50%;width:1px;background:rgba(20,53,45,.25)"></div>' +
-      '<div style="position:absolute;top:-5px;bottom:-5px;left:' + thrX + '%;width:2px;background:#14352d;border-radius:999px"></div>' +
+      '<div style="position:absolute;top:-5px;bottom:-5px;left:' + thrX + '%;width:2px;background:var(--ink);border-radius:999px"></div>' +
     '</div>' +
     '<div style="position:relative;height:16px;margin-top:5px">' +
-      '<span style="position:absolute;left:50%;transform:translateX(-50%);font-size:11px;color:#9aa5a0">50 %</span>' +
-      '<span style="position:absolute;left:' + thrX + '%;transform:translateX(' + thrShift + ');font-size:11px;font-weight:700;color:#14352d;white-space:nowrap">seuil 95 %</span>' +
+      '<span style="position:absolute;left:50%;transform:translateX(-50%);font-size:11px;color:var(--faint)">50 %</span>' +
+      '<span style="position:absolute;left:' + thrX + '%;transform:translateX(' + thrShift + ');font-size:11px;font-weight:700;color:var(--ink);white-space:nowrap">seuil 95 %</span>' +
     '</div>';
 
   // phrase d'état
   var msg, msgStyle;
   if (pLead >= 0.95){
     msg = 'Fiable : la variante ' + leader + ' a ' + fmtPct(pLead) + ' de chances d’être la meilleure — on peut trancher.';
-    msgStyle = 'color:#17564a;font-weight:700';
+    msgStyle = 'color:var(--grn);font-weight:700';
   } else if (pLead >= 0.90){
     msg = 'Tendance forte pour ' + leader + ' (' + fmtPct(pLead) + ') — encore un peu de volume pour verrouiller.';
     msgStyle = 'color:' + AMB + ';font-weight:700';
   } else if (pLead >= 0.70){
     msg = 'La variante ' + leader + ' mène (' + fmtPct(pLead) + ') mais rien de fiable — on laisse tourner.';
-    msgStyle = 'color:#14352d;font-weight:600';
+    msgStyle = 'color:var(--ink);font-weight:600';
   } else {
     msg = 'Trop tôt : les deux variantes sont encore indiscernables (' + fmtPct(pA) + ' / ' + fmtPct(pB) + ').';
-    msgStyle = 'color:#6d7a74;font-weight:600';
+    msgStyle = 'color:var(--mut);font-weight:600';
   }
   html += '<div style="margin-top:12px;font-size:14px;' + msgStyle + '">' + msg + '</div>' +
-    '<div style="margin-top:5px;font-size:12px;color:#9aa5a0">Ce calcul porte sur le taux de conversion — la décision finale croise ce signal avec le CA par visiteur (PPV).</div>';
+    '<div style="margin-top:5px;font-size:12px;color:var(--faint)">Ce calcul porte sur le taux de conversion — la décision finale croise ce signal avec le CA par visiteur (PPV).</div>';
 
   // évolution jour par jour (cumuls)
   var ds = t.days || [];
@@ -198,30 +205,30 @@ function bayesCard(t){
     var skipX = cum.length > 12;
     var xLabs = cum.map(function(c, i){
       if (skipX && (i + 1) % 2 === 0) return '';
-      return '<text x="' + X(i).toFixed(1) + '" y="' + (H - 6) + '" text-anchor="middle" font-size="11" font-family="Figtree,sans-serif" fill="#9aa5a0">' + c.label + '</text>';
+      return '<text x="' + X(i).toFixed(1) + '" y="' + (H - 6) + '" text-anchor="middle" font-size="11" font-family="Figtree,sans-serif" fill="var(--faint)">' + c.label + '</text>';
     }).join('');
     html += '<div style="margin-top:22px">' +
-      '<div style="font-size:11px;font-weight:700;letter-spacing:1.2px;color:#9aa5a0;margin-bottom:8px">ÉVOLUTION DE P(B MEILLEURE)</div>' +
+      '<div style="font-size:11px;font-weight:700;letter-spacing:1.2px;color:var(--faint);margin-bottom:8px">ÉVOLUTION DE P(B MEILLEURE)</div>' +
       '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block" role="img" aria-label="Évolution de la probabilité que B soit meilleure">' +
-        '<line x1="' + pl + '" y1="' + Y(0) + '" x2="' + (W - pr) + '" y2="' + Y(0) + '" stroke="#d8d0bd" stroke-width="1"/>' +
-        '<line x1="' + pl + '" y1="' + Y(50) + '" x2="' + (W - pr) + '" y2="' + Y(50) + '" stroke="#9aa5a0" stroke-width="1" stroke-dasharray="4 4"/>' +
+        '<line x1="' + pl + '" y1="' + Y(0) + '" x2="' + (W - pr) + '" y2="' + Y(0) + '" stroke="var(--grid2)" stroke-width="1"/>' +
+        '<line x1="' + pl + '" y1="' + Y(50) + '" x2="' + (W - pr) + '" y2="' + Y(50) + '" stroke="var(--faint)" stroke-width="1" stroke-dasharray="4 4"/>' +
         '<line x1="' + pl + '" y1="' + Y(95) + '" x2="' + (W - pr) + '" y2="' + Y(95) + '" stroke="' + AMB + '" stroke-width="1" stroke-dasharray="4 4"/>' +
-        yLab(0, '#c9c2b0') + yLab(50, '#9aa5a0') + yLab(95, AMB, true) + yLab(100, '#c9c2b0') +
+        yLab(0, '#c9c2b0') + yLab(50, 'var(--faint)') + yLab(95, AMB, true) + yLab(100, '#c9c2b0') +
         '<polyline points="' + poly + '" fill="none" stroke="' + GRN + '" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>' +
         dots + xLabs +
       '</svg></div>';
   } else {
-    html += '<div style="margin-top:16px;font-size:12px;color:#9aa5a0">L’évolution de la probabilité s’affichera à partir du 2ᵉ jour.</div>';
+    html += '<div style="margin-top:16px;font-size:12px;color:var(--faint)">L’évolution de la probabilité s’affichera à partir du 2ᵉ jour.</div>';
   }
 
   // formule avec valeurs injectées
   var aA = 1 + t.a.orders, bA = 1 + nA - t.a.orders, aB = 1 + t.b.orders, bB = 1 + nB - t.b.orders;
   html += '<details' + (state.formulaOpen ? ' open' : '') + ' style="margin-top:18px">' +
-    '<summary data-formula style="cursor:pointer;font-size:12.5px;font-weight:700;color:#6d7a74;user-select:none">Voir la formule</summary>' +
-    '<div style="margin-top:10px;background:#fdf9ef;border:1px solid rgba(23,86,74,.15);border-radius:10px;padding:14px 16px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.8;color:#14352d;overflow-x:auto">' +
+    '<summary data-formula style="cursor:pointer;font-size:12.5px;font-weight:700;color:var(--mut);user-select:none">Voir la formule</summary>' +
+    '<div style="margin-top:10px;background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:14px 16px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.8;color:var(--ink);overflow-x:auto">' +
       'A ~ Beta(1 + ' + t.a.orders + ', 1 + (' + nA + ' − ' + t.a.orders + ')) = Beta(' + aA + ', ' + bA + ') · B ~ Beta(' + aB + ', ' + bB + ') — prior uniforme Beta(1,1)<br>' +
       'P(pB &gt; pA) = Σ_{i=0}^{αB−1} B(αA+i, βA+βB) / [ (βB+i) · B(1+i, βB) · B(αA, βA) ] = ' + fmtPct(pB) + '<br>' +
-      '<span style="color:#6d7a74">Lecture : on modélise le taux de conversion de chaque variante par une loi Beta mise à jour par les données ; le pourcentage est la probabilité exacte que le taux réel de B dépasse celui de A. Seuil de décision : 95 %.</span>' +
+      '<span style="color:var(--mut)">Lecture : on modélise le taux de conversion de chaque variante par une loi Beta mise à jour par les données ; le pourcentage est la probabilité exacte que le taux réel de B dépasse celui de A. Seuil de décision : 95 %.</span>' +
     '</div>' +
   '</details>';
 
@@ -242,9 +249,9 @@ function render(){
 
   html += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap">' +
     '<span style="flex:none;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:' + st.stFg + ';background:' + st.stBg + ';border:' + st.stBd + ';padding:4px 11px;border-radius:999px">' + st.stTxt + '</span>' +
-    '<span style="font-size:12.5px;color:#9aa5a0">' + t.meta + '</span></div>' +
-    '<h1 style="font-family:\'Lora\',serif;font-weight:600;font-size:30px;margin:0 0 6px;color:#14352d">' + t.title + '</h1>' +
-    '<p style="margin:0 0 26px;font-size:14.5px;color:#6d7a74;max-width:720px;text-wrap:pretty">' + t.hyp + '</p>';
+    '<span style="font-size:12.5px;color:var(--faint)">' + t.meta + '</span></div>' +
+    '<h1 style="font-family:\'Lora\',serif;font-weight:600;font-size:30px;margin:0 0 6px;color:var(--ink)">' + t.title + '</h1>' +
+    '<p style="margin:0 0 26px;font-size:14.5px;color:var(--mut);max-width:720px;text-wrap:pretty">' + t.hyp + '</p>';
 
   if (hasData){
     var delta = '';
@@ -265,24 +272,24 @@ function render(){
       var dCvr = dd(function(x){ return x.sessions ? x.orders / x.sessions : NaN; });
       var dAov = dd(function(x){ return x.orders ? x.ca / x.orders : NaN; });
       var color = k === 'A' ? GOLD : GRN;
-      var bd = (isLeader && !early) ? (k === 'A' ? 'rgba(176,129,47,.5)' : 'rgba(23,86,74,.5)') : 'rgba(23,86,74,.12)';
+      var bd = (isLeader && !early) ? (k === 'A' ? 'var(--gold-bd)' : 'var(--grn-bd)') : 'var(--bd)';
       var chip = '';
       if (isLeader && t.winner){
-        chip = '<span style="margin-left:auto;font-size:11px;font-weight:700;letter-spacing:.5px;color:#17564a;background:#e3efe9;padding:4px 10px;border-radius:999px">Gagnante · déployée</span>';
+        chip = '<span style="margin-left:auto;font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--grn);background:var(--grn-bg);padding:4px 10px;border-radius:999px">Gagnante · déployée</span>';
       } else if (isLeader && early){
-        chip = '<span style="margin-left:auto;font-size:11px;font-weight:700;letter-spacing:.5px;color:#6d7a74;background:#ece7da;padding:4px 10px;border-radius:999px">trop tôt pour conclure</span>';
+        chip = '<span style="margin-left:auto;font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--mut);background:var(--track2);padding:4px 10px;border-radius:999px">trop tôt pour conclure</span>';
       } else if (isLeader && delta){
-        chip = '<span style="margin-left:auto;font-size:11px;font-weight:700;letter-spacing:.5px;color:#17564a;background:#e3efe9;padding:4px 10px;border-radius:999px">En tête · +' + delta + ' % de CA</span>';
+        chip = '<span style="margin-left:auto;font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--grn);background:var(--grn-bg);padding:4px 10px;border-radius:999px">En tête · +' + delta + ' % de CA</span>';
       }
       var cvr = v.sessions ? (v.orders / v.sessions * 100).toFixed(1).replace('.', ',') + ' %' : '—';
       var aov = v.orders ? fmtE(v.ca / v.orders) : '—';
-      return '<div style="background:#fffdf9;border:2px solid ' + bd + ';border-radius:16px;padding:22px 24px">' +
+      return '<div style="background:var(--card);border:2px solid ' + bd + ';border-radius:16px;padding:22px 24px">' +
         '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">' +
-          '<span style="flex:none;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;background:' + color + ';color:#fdf9ef">' + k + '</span>' +
-          '<span style="flex:1;min-width:0;font-size:15px;font-weight:700;color:#14352d">' + v.name + '</span>' +
+          '<span style="flex:none;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;background:' + color + ';color:var(--cream)">' + k + '</span>' +
+          '<span style="flex:1;min-width:0;font-size:15px;font-weight:700;color:var(--ink)">' + v.name + '</span>' +
           chip +
         '</div>' +
-        '<div style="font-size:11px;font-weight:700;letter-spacing:1.4px;color:#9aa5a0;margin-bottom:4px">CA RÉALISÉ</div>' +
+        '<div style="font-size:11px;font-weight:700;letter-spacing:1.4px;color:var(--faint);margin-bottom:4px">CA RÉALISÉ</div>' +
         '<div style="display:flex;align-items:center;gap:4px;margin-bottom:16px">' +
           '<span style="font-family:\'Lora\',serif;font-weight:600;font-size:36px;color:' + color + ';font-variant-numeric:tabular-nums">' + fmtE(v.ca) + '</span>' +
           dBadge(dCa, true) +
@@ -302,7 +309,7 @@ function render(){
     html += bayesCard(t);
 
     if (t.verdict){
-      html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;background:#e3efe9;border:1px solid rgba(23,86,74,.25);border-radius:12px;padding:13px 18px;font-size:14px;font-weight:600;color:#17564a">' + t.verdict + '</div>';
+      html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;background:var(--grn-bg);border:1px solid var(--bd-strong);border-radius:12px;padding:13px 18px;font-size:14px;font-weight:600;color:var(--grn)">' + t.verdict + '</div>';
     }
 
     var days = t.days || [];
@@ -322,31 +329,31 @@ function render(){
             '<div style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:#5cb893"></span>Variante B&nbsp;: ' + plural(d.ordB, 'commande') + '</div>' +
           '</div>';
         }
-        return '<div data-day="' + di + '" style="' + colStyle + ';position:relative;display:flex;align-items:flex-end;justify-content:center;gap:3px;height:150px;border-radius:6px;background:' + (hov ? 'rgba(23,86,74,.07)' : 'transparent') + '">' +
+        return '<div data-day="' + di + '" style="' + colStyle + ';position:relative;display:flex;align-items:flex-end;justify-content:center;gap:3px;height:150px;border-radius:6px;background:' + (hov ? 'var(--bd-soft)' : 'transparent') + '">' +
           tip +
-          '<div style="width:38%;max-width:20px;border-radius:3px 3px 0 0;height:' + ha + 'px;background:' + (hov ? '#8f6323' : '#b0812f') + '"></div>' +
-          '<div style="width:38%;max-width:20px;border-radius:3px 3px 0 0;height:' + hb + 'px;background:' + (hov ? '#0e3f36' : '#17564a') + '"></div>' +
+          '<div style="width:38%;max-width:20px;border-radius:3px 3px 0 0;height:' + ha + 'px;background:' + (hov ? 'var(--gold-dk)' : 'var(--gold)') + '"></div>' +
+          '<div style="width:38%;max-width:20px;border-radius:3px 3px 0 0;height:' + hb + 'px;background:' + (hov ? 'var(--grn-dk)' : 'var(--grn)') + '"></div>' +
         '</div>';
       }).join('');
 
       var labels = days.map(function(d, di){
-        return '<span style="' + colStyle + ';text-align:center;font-size:11.5px;color:#9aa5a0">' + (days.length > 12 && (di + 1) % 2 === 0 ? '' : d.label) + '</span>';
+        return '<span style="' + colStyle + ';text-align:center;font-size:11.5px;color:var(--faint)">' + (days.length > 12 && (di + 1) % 2 === 0 ? '' : d.label) + '</span>';
       }).join('');
 
-      html += '<div style="background:#fffdf9;border:1px solid rgba(23,86,74,.12);border-radius:14px;padding:22px 24px;margin-bottom:16px">' +
+      html += '<div style="background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:22px 24px;margin-bottom:16px">' +
         '<div style="display:flex;align-items:center;gap:18px;margin-bottom:16px;flex-wrap:wrap">' +
-          '<span style="font-size:14px;font-weight:700;color:#14352d;margin-right:auto">Commandes par jour</span>' +
-          '<span style="display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:#14352d"><span style="flex:none;width:10px;height:10px;border-radius:50%;background:#b0812f"></span>' + t.a.name + '</span>' +
-          '<span style="display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:#14352d"><span style="flex:none;width:10px;height:10px;border-radius:50%;background:#17564a"></span>' + t.b.name + '</span>' +
+          '<span style="font-size:14px;font-weight:700;color:var(--ink);margin-right:auto">Commandes par jour</span>' +
+          '<span style="display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--ink)"><span style="flex:none;width:10px;height:10px;border-radius:50%;background:var(--gold)"></span>' + t.a.name + '</span>' +
+          '<span style="display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--ink)"><span style="flex:none;width:10px;height:10px;border-radius:50%;background:var(--grn)"></span>' + t.b.name + '</span>' +
         '</div>' +
-        '<div style="display:flex;align-items:flex-end;justify-content:center;gap:8px;height:150px;border-bottom:1px solid #d8d0bd">' + cols + '</div>' +
+        '<div style="display:flex;align-items:flex-end;justify-content:center;gap:8px;height:150px;border-bottom:1px solid var(--grid2)">' + cols + '</div>' +
         '<div style="display:flex;justify-content:center;gap:8px;margin-top:8px">' + labels + '</div>' +
       '</div>';
     }
   } else {
-    html += '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border:1.5px dashed rgba(23,86,74,.25);border-radius:16px;padding:64px 26px">' +
-      '<span style="font-family:\'Lora\',serif;font-weight:600;font-size:19px;color:#14352d">Pas encore de données</span>' +
-      '<span style="font-size:13.5px;color:#6d7a74;text-align:center">Ce test n’a pas démarré — l’analyse apparaîtra ici dès les premières sessions.</span>' +
+    html += '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border:1.5px dashed var(--bd-strong);border-radius:16px;padding:64px 26px">' +
+      '<span style="font-family:\'Lora\',serif;font-weight:600;font-size:19px;color:var(--ink)">Pas encore de données</span>' +
+      '<span style="font-size:13.5px;color:var(--mut);text-align:center">Ce test n’a pas démarré — l’analyse apparaîtra ici dès les premières sessions.</span>' +
     '</div>';
   }
 
