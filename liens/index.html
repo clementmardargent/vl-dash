@@ -93,7 +93,7 @@
   </div>
 </div>
 <script>
-const BLOB="{\"salt\":\"dAiXFG3uLgu8fBMpL2Zrsg==\",\"iv\":\"f82UZH5mWSzXHNft\",\"data\":\"nEQ1bPh3Uoklp99xf9xX0vat+XdNmq2rkWT+3zkCQRSQAUiHztLamfE0/7KPYXyD7A9g+F3ERDTKD5iEwPcjuFsKcz8MXmIH8H/G2Imfim0lmZQfXSeG1y9rCoIsvhGSmNRKaxFbUxvWihpL2EWmKZhyBuiKFtH3TeIOTDPO442+h0NcA6qY88kt5Cf+ZsCVC7LOESexmkBCVaFT0DSYUECPNFpqfDjYsNc+6BJZiiOQ+0EXAQ6w1LotpH5hgKyLbGUfj4KyH9nMU4pxOuLrpciNeV4qk4v18gDVt3YzsdfZ8MhMYI+3hBvpKMjEQcdCh7Iqg3S43oT7rdvKd18RBUSroPaG6cNQ5DrmKrlHcGF0HSC5MnT4MBmZG+hYpcsaj6ob9Q+m+/pEpzph6ir9pbhY8JiT+EV/PQxObrlQhKiRAHLGM5CVmv/YFSvML0e9PRaHvLFTYTnw7PfZEMsETZhkVjDpCXzE3Xgsz/1g6pMGYjgKLIUOmV0RucZzaBzyJEDW6noCOwLOcFfKpPj9SYggJCag+N/DicDPH6LVNklPibYMcEZ1kefMxcKdIJE5h7z48GuEChjNh9RTjR1ivX7LO75e/VziVBRBI82sKO49ECqYCN5pE7S/wPRkMuD+FlEn0M+ZX01P7Pkr77yTgCZo3Korw2Ir9ZLnLTUGBzw=\"}";
+const BLOB="{\"salt\":\"yZgK8J0y7sSNqp9AhQVK1g==\",\"iv\":\"JbBZRNx3evcmxV4r\",\"data\":\"0tdCBbNGIjxE2TVR7v2Aubrs/qHwOhK2MtOzLahyoAvA3cLRPycguhxW3Z2K67dya4BSJnihVSW/W1dpyhL7be6LTB6Ndk4o8wWt5qmUWqe06gYx/0VpHE6OmNfD6CgJF3rvI8IHsMuwwkABnLOMBiAh2hgERXdMssIhCvV3v4vKtGTLmFdO+rvfKbNJPUvsfIaApvQ0GSDxgjhUr36seZdRN1RZN5ntRFQStyd6dWzzOGSVToGp6RpLay0HY3ECELT52XESsQxqZY3IEPjtg8ifP0Lp8l+OuS25agImcsZP5CUGTYuqkNWGV0eEleNJASFO1iXWRPbRJSqQxaqh5I+ZZe+A7aCNL0afkDpyRhXZflCZmbtJYB0VRy9olpZTX7mMHiOOA13wcEv2mtRvRkkBsJBOQYLRM6YCNQoABl/6FPDWXQ5FUTp3q43fSRbEzMC2dPNIOSVH5mu82VjKiqAZtxSob3qT4AmnECyJawL8h0E/0U23NQ4HtDxGNzQt5EfcY4LrOlCnDB9f20QfS3onOOh0LpVrFNb9/7onJ1YA2VWjJ6K9J4mMcLFEpTqOjJfHYJNXENMlBdC1LDZCFti/Q6Xs3gTlwlNIroc9Wj6GlYnr0aTMndPMWSHska1i+vZ9MGhj8qcP2izoeFvmik0dZUriMFM1T7WpB+wKUd0=\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
@@ -375,9 +375,11 @@ function boot(payload){
   SYNC.refresh(); /* seed affiché, puis état le plus récent multi-appareils */
 }
 
-(async()=>{try{const w=JSON.parse(localStorage.getItem('vl_pw')||'null');
-if(w&&w.exp>Date.now()){const pw=decodeURIComponent(escape(atob(w.p)));boot(await tryDecrypt(pw));return;}}catch(e){}
-location.replace('../login.html');})();
+(async()=>{let p=null;
+try{const w=JSON.parse(localStorage.getItem('vl_pw')||'null');
+if(w&&w.exp>Date.now()){const pw=decodeURIComponent(escape(atob(w.p)));p=await tryDecrypt(pw);}}catch(e){}
+if(p===null){location.replace('../login.html');return;}
+boot(p);})();
 </script>
 </body>
 </html>
