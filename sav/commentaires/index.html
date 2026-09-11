@@ -39,10 +39,9 @@
 .th .pf{display:block;margin-top:6px;text-align:center;font-size:9px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--faint)}
 .body{flex:1;min-width:0}
 .meta{display:flex;align-items:center;gap:10px;margin-bottom:6px;white-space:nowrap;overflow:hidden}
-.meta .a{font-size:13.5px;font-weight:700;color:var(--ink)}
-.meta .w{font-size:12px;color:var(--faint)}
+.meta .w{font-size:12.5px;color:var(--mut)}
 .meta .dec{margin-left:auto;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:4px 11px;border-radius:999px}
-.dec.keep{color:var(--grn);background:var(--grn-bg)}.dec.hide{color:var(--red);background:var(--red-bg)}.dec.reply{color:var(--amb);background:var(--amb-bg)}
+.dec.keep{color:var(--grn);background:var(--grn-bg)}.dec.hide{color:var(--red);background:var(--red-bg)}.dec.reply{color:var(--amb);background:var(--amb-bg)}.dec.archived{color:var(--mut);background:var(--panel)}
 .txt{margin:0;font-size:14.5px;line-height:1.55;color:var(--tx);text-wrap:pretty;white-space:pre-wrap;word-break:break-word}
 .hidden-now{font-size:10.5px;font-weight:700;color:var(--red);letter-spacing:.4px;text-transform:uppercase;background:var(--red-bg);padding:3px 8px;border-radius:999px}
 .acts{flex:none;display:flex;gap:10px;align-items:flex-start}
@@ -95,7 +94,7 @@
 <footer class="vl-footer"><span>Vivélan — espace interne</span><span>v2</span></footer>
 </div>
 <script>
-const BLOB="{\"salt\":\"ctyqZPm6AoPBWMXCqaEv+g==\",\"iv\":\"xbcY/ltRGaJh0PA0\",\"data\":\"tDnysTrTtbrxS0zXjBCEMnKu8rRgXXC0DOfY09w0PI7rT/voPoqsMziPP2sBVS1uTlRSHIlFA+DpdpAAWl84ziG6HDtrlHNZFt5Vl1Ez+Wbm6Iupwxexb2xKkiCePlGxh9Uuf0iCBU5PNUAoadV61aE/wCq787kalcKK9S3qWF1yBt7gfbi/RfvoBTDns1kHbfF4ptdWlIYGn/NDeRWzooG/aLECTBI5M7doTVYlq9f00s25ybeS0Ho=\"}";
+const BLOB="{\"salt\":\"q6HtFXw9tKPuQIwd71PU9w==\",\"iv\":\"GHxLPiJhfhHr8erf\",\"data\":\"jjqNnenymz0vRv4rLzTjrAuw6PBD+Wwk9MpHYxt70P5NNlmNnlhZS8cAvYJB4B3S4fidra2bMd8vTQG5FkuaJD6aBorEe2S9Bmwp+GPFv7aejKrwrjx3YbAap+1amF6tdMq0pyW5albemFLHXQj84bQslmGInvmpO+Bq3z+sYRNfjx8L9rM8O0qiCVHhtXPGb6Kkl+fGCinH0NSpEFeKmN1EN5e1Jglzz4AzYG2Mhu+1TVanrKfWgRw=\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
@@ -111,7 +110,7 @@ b.addEventListener('click',function(){var d=document.documentElement.classList.t
 try{localStorage.setItem('vivelan-theme',d?'dark':'light')}catch(e){}icon();});})();
 
 var P=null,STATE={view:'pending',data:[],counts:{}};
-var LABEL={keep:'Garder',hide:'Supprimer',reply:'Répondre'},DONE={keep:'Gardé',hide:'Supprimé',reply:'Répondu'};
+var LABEL={keep:'Garder',hide:'Supprimer',reply:'Répondre'},DONE={keep:'Gardé',hide:'Supprimé',reply:'Répondu',archived:'Archivé'};
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
 function frDate(iso){if(!iso)return '';var d=new Date(iso);return d.toLocaleDateString('fr-FR',{day:'numeric',month:'long'})+' à '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});}
 function api(path,opt){opt=opt||{};opt.headers=Object.assign({'Authorization':'Bearer '+P.savKey,'Content-Type':'application/json'},opt.headers||{});
@@ -129,8 +128,8 @@ function thumb(c){var vid=(c.media_type||'').toLowerCase().indexOf('video')>=0;v
 return '<div class="th"><div class="v">'+(img?'<img src="'+esc(c.media_url)+'" alt="" loading="lazy" onerror="this.remove()">':'')+(vid?'<div class="play">▶</div>':(img?'':'<span class="lab">VISUEL</span>'))+'</div>'+
 '<span class="pf">'+(c.platform==='instagram'?'Insta':'Facebook')+'</span></div>';}
 function card(c){var done=c.status==='done';var rec=c.claude_action;
-var h='<div class="cm'+(done?' arch':'')+'" id="c-'+esc(c.id)+'"><div class="row">'+thumb(c)+'<div class="body"><div class="meta"><span class="a">'+esc(c.author||'Anonyme')+'</span><span class="w">'+esc(frDate(c.created_time))+(c.like_count?' · '+c.like_count+' j’aime':'')+'</span>'+
-(c.is_hidden&&!done?'<span class="hidden-now">masqué actuellement</span>':'')+(done?'<span class="dec '+esc(c.human_action)+'">'+(DONE[c.human_action]||c.human_action)+'</span>':'')+'</div>'+
+var h='<div class="cm'+(done?' arch':'')+'" id="c-'+esc(c.id)+'"><div class="row">'+thumb(c)+'<div class="body"><div class="meta"><span class="w">'+esc(frDate(c.created_time))+(c.like_count?' · '+c.like_count+' j’aime':'')+'</span>'+
+(c.is_hidden&&!done?'<span class="hidden-now">Masqué</span>':'')+(done?'<span class="dec '+esc(c.human_action)+'">'+(DONE[c.human_action]||c.human_action)+'</span>':'')+'</div>'+
 '<p class="txt">'+esc(c.text||'(sans texte)')+'</p></div>';
 if(!done)h+='<div class="acts">'+['keep','hide','reply'].map(function(a){return '<button class="'+a+(rec===a?' rec':'')+'" title="'+(rec===a?'Recommandé par Claude'+(c.claude_reason?' : '+esc(c.claude_reason):''):LABEL[a])+'" onclick="'+(a==='reply'?'toggleReply(\''+esc(c.id)+'\',true)':'decide(\''+esc(c.id)+'\',\''+a+'\')')+'">'+LABEL[a]+'</button>';}).join('')+'</div>';
 h+='</div>';
@@ -140,7 +139,8 @@ if(!done)h+='<div class="rp" id="rp-'+esc(c.id)+'" '+(rec==='reply'?'':'hidden')
 '<div class="row2"><button class="send" onclick="sendReply(\''+esc(c.id)+'\')">Publier la réponse</button><button class="cancel" onclick="toggleReply(\''+esc(c.id)+'\',false)">Annuler</button><span class="cnt">'+(c.claude_reply||'').length+' / 2000</span></div></div>';
 return h+'</div>';}
 function toggleReply(id,open){var p=document.getElementById('rp-'+id);if(!p)return;p.hidden=!open;if(open){fit();var t=p.querySelector('textarea');t.focus();t.setSelectionRange(t.value.length,t.value.length);}}
-function sendReply(id){var p=document.getElementById('rp-'+id);var text=p.querySelector('textarea').value.trim();if(!text){p.querySelector('textarea').focus();return;}decide(id,'reply',text);}
+function sendReply(id){var p=document.getElementById('rp-'+id);var text=p.querySelector('textarea').value.trim();if(!text){p.querySelector('textarea').focus();return;}
+if(!confirm('Publier cette réponse maintenant, publiquement, sous le commentaire ?\n\n'+text))return;decide(id,'reply',text);}
 function decide(id,action,reply){var card=document.getElementById('c-'+id);card.querySelectorAll('button').forEach(function(b){b.disabled=true;});var old=card.querySelector('.err');if(old)old.remove();
 api('/comments/decision',{method:'POST',body:JSON.stringify(reply?{id:id,action:action,reply:reply}:{id:id,action:action})}).then(function(r){
 if(!r.applied)throw new Error('Meta a refusé : '+JSON.stringify(r.meta).slice(0,160));
