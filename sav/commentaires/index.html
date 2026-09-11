@@ -78,8 +78,7 @@
 </header>
 <nav class="sav-nav">
   <a href="../../sav/commentaires/" class="on">Commentaires</a>
-  <span>Mail</span>
-  <span>DM</span>
+  <span>Analyse</span>
 </nav>
   <main class="vl-main" style="max-width:880px;padding-top:40px">
     <div class="crumb"><a href="../../index.html">Tableau de bord</a> <span class="sep">/</span> <a href="../">SAV</a> <span class="sep">/</span> <span class="here">Commentaires</span></div>
@@ -94,7 +93,7 @@
 <footer class="vl-footer"><span>Vivélan — espace interne</span><span>v2</span></footer>
 </div>
 <script>
-const BLOB="{\"salt\":\"q6HtFXw9tKPuQIwd71PU9w==\",\"iv\":\"GHxLPiJhfhHr8erf\",\"data\":\"jjqNnenymz0vRv4rLzTjrAuw6PBD+Wwk9MpHYxt70P5NNlmNnlhZS8cAvYJB4B3S4fidra2bMd8vTQG5FkuaJD6aBorEe2S9Bmwp+GPFv7aejKrwrjx3YbAap+1amF6tdMq0pyW5albemFLHXQj84bQslmGInvmpO+Bq3z+sYRNfjx8L9rM8O0qiCVHhtXPGb6Kkl+fGCinH0NSpEFeKmN1EN5e1Jglzz4AzYG2Mhu+1TVanrKfWgRw=\"}";
+const BLOB="{\"salt\":\"Z54/rj4BCkLeeNh2ht7MeA==\",\"iv\":\"LUqyC7oDzhck+g10\",\"data\":\"LV5x05D3gDow4FTDo8KbjmrLGc2YWnOBiBDg+RCWFShAAJJKWmIu09G0DjFnaBLpTq1mgM7FwJg+PcHezbwKgCbWGrMZ5VA+t4Hem5HbZdONUROAGsl6OdpZNSo2SSEOxJ5GdjVcG78XFVff4slnUlCKhNEjaUQKO13qwJEk5FovfvotVmHa+EJxGnMIqIKs4tvEYKu34O3jpvebLC6kFFxFNMRPgV0iyY9CXUfKyxKx6W0TsqMkdr8=\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
