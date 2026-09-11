@@ -11,13 +11,29 @@
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,600&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/shared.css">
 <style>
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px;margin-top:22px}
-.tile{display:flex;flex-direction:column;gap:12px;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:24px;transition:box-shadow .18s,transform .18s;color:inherit}
-.tile:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(20,53,45,.10);color:inherit}
-.tile .ico{width:44px;height:44px;border-radius:12px;background:var(--grn-bg);color:var(--grn);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px}
-.tile .t{font-family:'Lora',serif;font-weight:600;font-size:20px;color:var(--ink)}
-.tile .d{font-size:14px;line-height:1.5;color:var(--mut)}
-.tile.off{opacity:.5;cursor:default}.tile.off:hover{transform:none;box-shadow:none}
+.sav-nav{display:flex;gap:4px;flex-wrap:wrap;padding:10px 48px;background:var(--card);border-bottom:1px solid var(--bd)}
+.sav-nav a,.sav-nav span{padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600;color:var(--mut)}
+.sav-nav span{opacity:.6}
+.sav-nav a{color:var(--mut)}
+.sav-nav a:hover{background:var(--panel);color:var(--ink)}
+.sav-nav a.on,.sav-nav a.on:hover{color:var(--cream);background:var(--grn)}
+.crumb{font-size:13px;color:var(--faint);margin-bottom:14px}.crumb a{color:var(--mut)}.crumb .sep{margin:0 4px}.crumb .here{color:var(--grn);font-weight:600}
+.svg-ico svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media (max-width:640px){.sav-nav{padding:8px 16px}}
+</style>
+<style>
+.intro{margin-bottom:32px}
+.intro h1{font-family:'Lora',serif;font-weight:600;font-size:34px;margin:0 0 8px;color:var(--ink)}
+.intro p{margin:0;font-size:15px;color:var(--mut)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.tile{display:flex;flex-direction:column;gap:12px;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:22px;transition:box-shadow .18s,transform .18s,border-color .18s;color:inherit}
+a.tile:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(20,53,45,.10);border-color:var(--bd-hov);color:inherit}
+.tile .ico{width:46px;height:46px;border-radius:12px;background:var(--grn-bg);color:var(--grn);display:flex;align-items:center;justify-content:center}
+.tile .t{display:flex;align-items:center;gap:8px;margin-bottom:4px;font-family:'Lora',serif;font-weight:600;font-size:19px;color:var(--ink)}
+.tile .d{font-size:13.5px;line-height:1.5;color:var(--mut);text-wrap:pretty}
+.tile.off{opacity:.55;cursor:default}
+.tile.off .ico{background:var(--panel);color:var(--mut)}
+.soon{font-family:'Figtree',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--faint);border:1px dashed var(--bd-strong);padding:2px 8px;border-radius:999px}
 </style>
 </head>
 <body>
@@ -30,19 +46,20 @@
   </div>
   <div class="vl-hright"><button id="themeToggle" class="theme-btn" title="Basculer clair/sombre">☾</button><div class="vl-avatar">V</div></div>
 </header>
-  <main class="vl-main" style="max-width:880px">
-    <div class="vl-crumb"><a href="../index.html">Tableau de bord</a> <span class="sep">/</span> <span class="here">SAV</span></div>
-    <h1 class="vl-h1">SAV</h1>
+
+  <main class="vl-main" style="max-width:1120px;padding-top:40px">
+    <div class="crumb"><a href="../index.html">Tableau de bord</a> <span class="sep">/</span> <span class="here">SAV</span></div>
+    <div class="intro"><h1>SAV</h1><p>Tous les canaux client, triés et pilotés par Claude.</p></div>
     <div class="grid">
-      <div class="tile off"><div class="ico">✉</div><div><div class="t">Mail</div><div class="d">Bientôt : brouillons e-mail, interventions humaines, statistiques.</div></div></div>
-      <a class="tile" href="commentaires/"><div class="ico">💬</div><div><div class="t">Commentaires</div><div class="d">Commentaires sous les publicités Facebook et Instagram, choix de Claude, votre décision.</div></div></a>
-      <div class="tile off"><div class="ico">✎</div><div><div class="t">DM</div><div class="d">Bientôt : messages privés Facebook et Instagram.</div></div></div>
+      <a class="tile" href="commentaires/"><div class="ico svg-ico"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-8 8H4l2-3a8 8 0 1115-5z M8 10h8 M8 14h5"/></svg></div><div><div class="t">Commentaires</div><div class="d">Les commentaires sous les ads : garder, supprimer ou répondre, avec l'avis de Claude.</div></div></a>
+      <div class="tile off"><div class="ico svg-ico"><svg viewBox="0 0 24 24"><path d="M3 6h18v12H3z M3 7l9 6 9-6"/></svg></div><div><div class="t">Mail <span class="soon">Bientôt</span></div><div class="d">Les e-mails du service client : brouillons de Claude, interventions humaines, statistiques.</div></div></div>
+      <div class="tile off"><div class="ico svg-ico"><svg viewBox="0 0 24 24"><path d="M21 11a8 8 0 10-3.3 6.5L21 19z"/></svg></div><div><div class="t">DM <span class="soon">Bientôt</span></div><div class="d">Les messages privés Facebook et Instagram, avec les brouillons de Claude.</div></div></div>
     </div>
   </main>
 <footer class="vl-footer"><span>Vivélan — espace interne</span><span>v2</span></footer>
 </div>
 <script>
-const BLOB="{\"salt\":\"aL2+5HXZB8ORkX8bNJObhw==\",\"iv\":\"1gNxpznmnldFKsLZ\",\"data\":\"8uF+sfEXRekLE7ca7LmQV4DPO/e0kzBP0HjqOyE6+U9LYFyzfOCETklUKiXt9ODX4EGvj+CNaMux7G6lnfz1k0SvH6CTQpDdfNl7zhgfz7/+kGJEopHCsLeAg1sZuhbj8VHzM3Wr4C0Kb4h0aaJRAOKd6+voBDYXt5yepDo3lY6bLK3C9yK57MCarLGFtLGiA71gQKf6uIdlWRpbeqIJ3SqDUGnXbPkSeAJoeb2EYuYS7zfA8VFcrKs=\"}";
+const BLOB="{\"salt\":\"YUqigo404K5Bgktl2HJTsw==\",\"iv\":\"WBYxycDV6haTESBH\",\"data\":\"sNI/O9f3KOT+r69HiCrOtSQLOYLk2GPUOcooalobP9kitPcUVdUx9KzR6bDOaOm6t+Q3Fr9UoPmvsKaUwoCd/RfFhbRIt4XEJ/ljRBfbytSgrBHOljdH0lE9NEQRl+xkfgWI/gM7/zwWmgx+UK3h0in+mTFefod5OIgddcvs3W4/Fgi+1P51F9PCk+ydy6dQcUtSRgDJw048IF1i7sO3VOW5TTL52IgtN2ErvMXQbCDmcvfRtZ5IXag=\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
