@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Vivélan — SAV</title>
+<script>try{if(localStorage.getItem('vivelan-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,600&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/shared.css">
+<style>
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px;margin-top:22px}
+.tile{display:flex;flex-direction:column;gap:12px;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:24px;transition:box-shadow .18s,transform .18s;color:inherit}
+.tile:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(20,53,45,.10);color:inherit}
+.tile .ico{width:44px;height:44px;border-radius:12px;background:var(--grn-bg);color:var(--grn);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px}
+.tile .t{font-family:'Lora',serif;font-weight:600;font-size:20px;color:var(--ink)}
+.tile .d{font-size:14px;line-height:1.5;color:var(--mut)}
+.tile.off{opacity:.5;cursor:default}.tile.off:hover{transform:none;box-shadow:none}
+</style>
+</head>
+<body>
+<div class="vl-shell">
+<div class="vl-top"></div>
+<header class="vl-header">
+  <div class="brand">
+    <a href="../index.html" style="display:block"><img src="../assets/logo-vivelan.png" alt="Vivélan"></a>
+    <span class="vl-admin">Admin</span>
+  </div>
+  <div class="vl-hright"><button id="themeToggle" class="theme-btn" title="Basculer clair/sombre">☾</button><div class="vl-avatar">V</div></div>
+</header>
+  <main class="vl-main" style="max-width:880px">
+    <div class="vl-crumb"><a href="../index.html">Tableau de bord</a> <span class="sep">/</span> <span class="here">SAV</span></div>
+    <h1 class="vl-h1">SAV</h1>
+    <div class="grid">
+      <div class="tile off"><div class="ico">✉</div><div><div class="t">Mail</div><div class="d">Bientôt : brouillons e-mail, interventions humaines, statistiques.</div></div></div>
+      <a class="tile" href="commentaires/"><div class="ico">💬</div><div><div class="t">Commentaires</div><div class="d">Commentaires sous les publicités Facebook et Instagram, choix de Claude, votre décision.</div></div></a>
+      <div class="tile off"><div class="ico">✎</div><div><div class="t">DM</div><div class="d">Bientôt : messages privés Facebook et Instagram.</div></div></div>
+    </div>
+  </main>
+<footer class="vl-footer"><span>Vivélan — espace interne</span><span>v2</span></footer>
+</div>
+<script>
+const BLOB="{\"salt\":\"aL2+5HXZB8ORkX8bNJObhw==\",\"iv\":\"1gNxpznmnldFKsLZ\",\"data\":\"8uF+sfEXRekLE7ca7LmQV4DPO/e0kzBP0HjqOyE6+U9LYFyzfOCETklUKiXt9ODX4EGvj+CNaMux7G6lnfz1k0SvH6CTQpDdfNl7zhgfz7/+kGJEopHCsLeAg1sZuhbj8VHzM3Wr4C0Kb4h0aaJRAOKd6+voBDYXt5yepDo3lY6bLK3C9yK57MCarLGFtLGiA71gQKf6uIdlWRpbeqIJ3SqDUGnXbPkSeAJoeb2EYuYS7zfA8VFcrKs=\"}";
+
+const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
+async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
+return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:250000,hash:'SHA-256'},km,{name:'AES-GCM',length:256},true,['decrypt']);}
+async function tryDecrypt(pw){const blob=JSON.parse(BLOB);const key=await deriveKey(pw,b2u(blob.salt));
+const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:b2u(blob.iv)},key,b2u(blob.data));
+return JSON.parse(new TextDecoder().decode(plain));}
+
+(function(){var b=document.getElementById('themeToggle');if(!b)return;
+function icon(){b.textContent=document.documentElement.classList.contains('dark')?'☀':'☾';}
+icon();
+b.addEventListener('click',function(){var d=document.documentElement.classList.toggle('dark');
+try{localStorage.setItem('vivelan-theme',d?'dark':'light')}catch(e){}icon();});})();
+function boot(p){}
+
+(async()=>{let p=null;
+try{const w=JSON.parse(localStorage.getItem('vl_pw')||'null');
+if(w&&w.exp>Date.now()){const pw=decodeURIComponent(escape(atob(w.p)));p=await tryDecrypt(pw);}}catch(e){}
+if(p===null){location.replace('../login.html');return;}
+boot(p);})();
+</script>
+</body>
+</html>

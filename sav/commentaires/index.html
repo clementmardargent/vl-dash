@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Vivélan — Commentaires</title>
+<script>try{if(localStorage.getItem('vivelan-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
+<link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,600&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/shared.css">
+<style>
+#top{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:-8px 0 18px}
+.chip{font:inherit;font-size:13px;border:1px solid var(--bd);background:var(--card);color:var(--ink);padding:6px 12px;border-radius:999px;cursor:pointer}
+.chip.on{background:var(--grn);color:#fff;border-color:var(--grn)}
+.cnt{font-size:13px;color:var(--faint);margin-left:auto}
+.ad{background:var(--card);border:1px solid var(--bd);border-radius:16px;margin-bottom:18px;overflow:hidden}
+.ad-h{display:flex;gap:14px;align-items:flex-start;padding:16px 18px;border-bottom:1px solid var(--bd)}
+.ad-h img{width:84px;height:84px;object-fit:cover;border-radius:10px;background:var(--grn-bg);flex:none}
+.ad-h .n{font-weight:600;color:var(--ink);font-size:14px}
+.ad-h .copy{font-size:13px;color:var(--mut);margin-top:4px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.ad-h .copy.open{display:block}
+.pf{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:2px 8px;border-radius:6px;background:var(--grn-bg);color:var(--grn);margin-right:8px}
+.pf.ig{background:#fde7f1;color:#b4236a}
+.cm{display:flex;gap:16px;padding:14px 18px;border-top:1px solid var(--bd);align-items:flex-start}
+.cm:first-of-type{border-top:0}
+.cm .body{flex:1;min-width:0}
+.cm .who{font-size:12.5px;color:var(--faint);margin-bottom:4px}
+.cm .txt{font-size:14.5px;line-height:1.5;color:var(--ink);white-space:pre-wrap;word-break:break-word}
+.cm .why{font-size:12.5px;color:var(--mut);margin-top:6px;font-style:italic}
+.act{flex:none;display:grid;grid-template-columns:1fr 1fr;gap:8px;width:230px}
+.act .col{display:flex;flex-direction:column;align-items:center;gap:4px}
+.tag{font-size:10.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--grn);height:14px}
+.btn{font:inherit;font-size:13.5px;font-weight:600;width:100%;padding:9px 0;border-radius:10px;border:1px solid var(--bd);background:var(--card);color:var(--ink);cursor:pointer}
+.btn.keep.pick{border-color:var(--grn);box-shadow:0 0 0 2px var(--grn-bg)}
+.btn.hide{color:#a3262b}.btn.hide.pick{border-color:#a3262b;box-shadow:0 0 0 2px #fbe4e5}
+.btn:disabled{opacity:.5;cursor:wait}
+.hid{font-size:11px;color:var(--faint)}
+#empty{text-align:center;padding:48px 0;font-size:14px;color:var(--faint)}
+.dark .pf.ig{background:#3a1c2b;color:#f2a5c9}.dark .btn.hide.pick{box-shadow:0 0 0 2px #4a2224}
+</style>
+</head>
+<body>
+<div class="vl-shell">
+<div class="vl-top"></div>
+<header class="vl-header">
+  <div class="brand">
+    <a href="../../index.html" style="display:block"><img src="../../assets/logo-vivelan.png" alt="Vivélan"></a>
+    <span class="vl-admin">Admin</span>
+  </div>
+  <div class="vl-hright"><button id="themeToggle" class="theme-btn" title="Basculer clair/sombre">☾</button><div class="vl-avatar">V</div></div>
+</header>
+  <main class="vl-main" style="max-width:960px">
+    <div class="vl-crumb"><a href="../../index.html">Tableau de bord</a> <span class="sep">/</span> <a href="../">SAV</a> <span class="sep">/</span> <span class="here">Commentaires</span></div>
+    <h1 class="vl-h1">Commentaires sous les publicités</h1>
+    <p style="margin:-14px 0 18px;font-size:13.5px;color:var(--mut)">Claude propose, vous décidez. « Masquer » cache le commentaire au public (son auteur le voit toujours) ; « Garder » le laisse visible. Une fois cliqué, le commentaire est traité et sort de la liste.</p>
+    <div id="top">
+      <button class="chip on" data-k="pending">À valider</button>
+      <button class="chip" data-k="done">Traités</button>
+      <span style="width:8px"></span>
+      <button class="chip on" data-k="all">Tous</button>
+      <button class="chip" data-k="hide">Claude propose de masquer</button>
+      <button class="chip" data-k="keep">Claude propose de garder</button>
+      <span class="cnt" id="cnt"></span>
+    </div>
+    <div id="list"></div>
+  </main>
+<footer class="vl-footer"><span>Vivélan — espace interne</span><span>v2</span></footer>
+</div>
+<script>
+const BLOB="{\"salt\":\"aL2+5HXZB8ORkX8bNJObhw==\",\"iv\":\"1gNxpznmnldFKsLZ\",\"data\":\"8uF+sfEXRekLE7ca7LmQV4DPO/e0kzBP0HjqOyE6+U9LYFyzfOCETklUKiXt9ODX4EGvj+CNaMux7G6lnfz1k0SvH6CTQpDdfNl7zhgfz7/+kGJEopHCsLeAg1sZuhbj8VHzM3Wr4C0Kb4h0aaJRAOKd6+voBDYXt5yepDo3lY6bLK3C9yK57MCarLGFtLGiA71gQKf6uIdlWRpbeqIJ3SqDUGnXbPkSeAJoeb2EYuYS7zfA8VFcrKs=\"}";
+
+const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
+async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
+return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:250000,hash:'SHA-256'},km,{name:'AES-GCM',length:256},true,['decrypt']);}
+async function tryDecrypt(pw){const blob=JSON.parse(BLOB);const key=await deriveKey(pw,b2u(blob.salt));
+const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:b2u(blob.iv)},key,b2u(blob.data));
+return JSON.parse(new TextDecoder().decode(plain));}
+
+(function(){var b=document.getElementById('themeToggle');if(!b)return;
+function icon(){b.textContent=document.documentElement.classList.contains('dark')?'☀':'☾';}
+icon();
+b.addEventListener('click',function(){var d=document.documentElement.classList.toggle('dark');
+try{localStorage.setItem('vivelan-theme',d?'dark':'light')}catch(e){}icon();});})();
+
+var P=null,STATE={view:'pending',filter:'all',data:[]};
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function frDate(iso){if(!iso)return '';var d=new Date(iso);return d.toLocaleDateString('fr-FR',{day:'numeric',month:'long'})+' à '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});}
+function api(path,opt){opt=opt||{};opt.headers=Object.assign({'Authorization':'Bearer '+P.savKey,'Content-Type':'application/json'},opt.headers||{});
+return fetch(P.worker+path,opt).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();});}
+function load(){document.getElementById('list').innerHTML='<div id="empty">Chargement…</div>';
+api('/comments?status='+STATE.view+'&limit=500').then(function(d){STATE.data=d.comments;STATE.counts=d.counts||{};render();})
+.catch(function(e){document.getElementById('list').innerHTML='<div id="empty">Impossible de joindre le Worker ('+esc(e.message)+').</div>';});}
+function render(){var rows=STATE.data.filter(function(c){return STATE.filter==='all'||c.claude_action===STATE.filter;});
+document.getElementById('cnt').textContent=(STATE.counts.pending||0)+' à valider · '+(STATE.counts.done||0)+' traités';
+var byAd={};rows.forEach(function(c){var k=c.post_id||c.id;(byAd[k]=byAd[k]||{ad:c,items:[]}).items.push(c);});
+var keys=Object.keys(byAd);var list=document.getElementById('list');
+if(!keys.length){list.innerHTML='<div id="empty">'+(STATE.view==='pending'?'Rien à valider. Tout est à jour.':'Aucune décision enregistrée pour l’instant.')+'</div>';return;}
+list.innerHTML=keys.map(function(k){var g=byAd[k],a=g.ad,ig=a.platform==='instagram';
+return '<section class="ad"><div class="ad-h">'+(a.media_url?'<img src="'+esc(a.media_url)+'" alt="" onerror="this.style.display=\'none\'">':'')+
+'<div style="flex:1;min-width:0"><div><span class="pf'+(ig?' ig':'')+'">'+(ig?'Instagram':'Facebook')+'</span><span class="n">'+esc(a.ad_name||'Publicité')+'</span>'+
+(a.permalink?' · <a href="'+esc(a.permalink)+'" target="_blank" rel="noopener" style="font-size:13px">voir la pub ↗</a>':'')+'</div>'+
+'<div class="copy" onclick="this.classList.toggle(\'open\')" title="Cliquer pour dérouler">'+esc(a.ad_copy||'(pas de texte)')+'</div></div></div>'+
+g.items.map(card).join('')+'</section>';}).join('');}
+function card(c){var done=STATE.view==='done';var pick=done?c.human_action:c.claude_action;
+function col(action,label){var isClaude=c.claude_action===action;return '<div class="col"><div class="tag">'+(isClaude?'Choix de Claude':'')+'</div>'+
+'<button class="btn '+action+(pick===action?' pick':'')+'" '+(done?'disabled':'onclick="decide(this,\''+esc(c.id)+'\',\''+action+'\')"')+'>'+label+'</button></div>';}
+return '<div class="cm" id="c-'+esc(c.id)+'"><div class="body"><div class="who">'+esc(c.author||'Anonyme')+' · '+frDate(c.created_time)+(c.like_count?' · '+c.like_count+' j’aime':'')+(c.is_hidden?' · <span class="hid">masqué actuellement</span>':'')+'</div>'+
+'<div class="txt">'+esc(c.text||'(sans texte)')+'</div>'+(c.claude_reason?'<div class="why">Claude : '+esc(c.claude_reason)+(c.claude_category?' · '+esc(c.claude_category):'')+'</div>':'')+
+(done&&c.human_at?'<div class="why">Votre décision : '+(c.human_action==='hide'?'masqué':'gardé')+' le '+frDate(c.human_at)+'</div>':'')+'</div>'+
+'<div class="act">'+col('keep','Garder')+col('hide','Masquer')+'</div></div>';}
+function decide(btn,id,action){var card=document.getElementById('c-'+id);card.querySelectorAll('.btn').forEach(function(b){b.disabled=true;});
+api('/comments/decision',{method:'POST',body:JSON.stringify({id:id,action:action})}).then(function(r){
+if(!r.applied)throw new Error('Meta a refusé : '+JSON.stringify(r.meta).slice(0,120));
+card.style.transition='opacity .3s';card.style.opacity='0';setTimeout(function(){STATE.data=STATE.data.filter(function(c){return c.id!==id;});STATE.counts.pending=(STATE.counts.pending||1)-1;STATE.counts.done=(STATE.counts.done||0)+1;render();},300);
+}).catch(function(e){alert('Échec : '+e.message);card.querySelectorAll('.btn').forEach(function(b){b.disabled=false;});});}
+document.getElementById('top').addEventListener('click',function(e){var b=e.target.closest('button[data-k]');if(!b)return;
+var k=b.dataset.k;if(k==='pending'||k==='done'){STATE.view=k;STATE.filter='all';}else STATE.filter=k;
+document.querySelectorAll('#top button[data-k]').forEach(function(x){x.classList.toggle('on',x.dataset.k===STATE.view||x.dataset.k===STATE.filter);});
+if(k==='pending'||k==='done')load();else render();});
+function boot(payload){P=payload;if(!P.savKey){document.getElementById('list').innerHTML='<div id="empty">Clé d’accès absente du build.</div>';return;}load();}
+
+(async()=>{let p=null;
+try{const w=JSON.parse(localStorage.getItem('vl_pw')||'null');
+if(w&&w.exp>Date.now()){const pw=decodeURIComponent(escape(atob(w.p)));p=await tryDecrypt(pw);}}catch(e){}
+if(p===null){location.replace('../../login.html');return;}
+boot(p);})();
+</script>
+</body>
+</html>
