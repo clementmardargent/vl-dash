@@ -25,7 +25,8 @@
 .intro{margin-bottom:32px}
 .intro h1{font-family:'Lora',serif;font-weight:600;font-size:34px;margin:0 0 8px;color:var(--ink)}
 .intro p{margin:0;font-size:15px;color:var(--mut)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:720px){.grid{grid-template-columns:1fr}}
 .tile{display:flex;flex-direction:column;gap:12px;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:22px;transition:box-shadow .18s,transform .18s,border-color .18s;color:inherit}
 a.tile:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(20,53,45,.10);border-color:var(--bd-hov);color:inherit}
 .tile .ico{width:46px;height:46px;border-radius:12px;background:var(--grn-bg);color:var(--grn);display:flex;align-items:center;justify-content:center}
@@ -59,7 +60,7 @@ a.tile:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(20,53,45,.10
 <footer class="vl-footer"><span>Vivélan — espace interne</span><span>v2</span></footer>
 </div>
 <script>
-const BLOB="{\"salt\":\"/JXM9bG7E1C+OTeKHzSJtg==\",\"iv\":\"lbI7MEtFMnLCKlwV\",\"data\":\"1ownUTyzZEfJkne1pcDAWk8ZxVrGysaCEvAd2iDxsot7vytfyDqaQVjOkyEZHsw6s1O1eXwg7XtWFKXQ8sOWH+VOjF6u85laIsrxqEiUXDjrM0qKzsITeZAf8TCgyuSWI84h6Uw22PUp8IekOPaobSpRi2coEFbzhsTykQv7rNsk+RALSczk1GWIb8o115xnXTZdqeWiYMiUvEQUSbXI1XNRDt6Xknr57qjNDjbnHdxKlZSbnZ9dDco=\"}";
+const BLOB="{\"salt\":\"iwLsmWQhKHUm+IiCI2w7eQ==\",\"iv\":\"hVj3PgB5xwZLeYAk\",\"data\":\"tq9GZIo6rWGCshxx2b5L8oJnK/GCnbkh3PBbXmv2NO9zl6u+Sjjz/lxo1FFwcMOAW1c+CF/KNuaVtU6ZUaJVHCcZKsxKTwhwQiLfZDcR4+9PBCqsfNCH2Fi28rjWyP3Jecghksej/LPJGG5/y5NewzYC5FlEDT2Idxc7ua6d2hsCO/vuG5BSwnWyK4Q7mYlb/IPaCOxMcfuVJXf2hmHRG0ttPVQXI+/gGQXlwcjHEX0jUNiQvPU9IOU=\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
