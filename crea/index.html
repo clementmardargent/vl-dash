@@ -21,6 +21,9 @@
 .side-head .t{font-family:'Lora',serif;font-weight:600;font-size:17px;color:var(--ink)}
 .btn-new{padding:8px 13px;font-size:12.5px;font-weight:700;font-family:'Figtree',sans-serif;color:var(--cream);background:var(--grn);border:none;border-radius:9px;cursor:pointer}
 .btn-new:hover{background:var(--grn-dk)}
+.side-search{flex:none;padding:10px 12px;border-bottom:1px solid var(--bd-soft)}
+#sessSearch{width:100%;box-sizing:border-box;padding:8px 12px;font-size:13px;font-family:'Figtree',sans-serif;border:1px solid var(--bd-strong);border-radius:9px;background:var(--input);color:var(--tx);outline:none}
+#sessSearch:focus{border-color:var(--grn);box-shadow:0 0 0 3px var(--bd)}
 .side-list{flex:1;overflow-y:auto}
 .sess{display:flex;gap:10px;align-items:center;width:100%;box-sizing:border-box;padding:13px 16px;border:none;border-bottom:1px solid var(--bd-soft);background:transparent;cursor:pointer;text-align:left;font-family:'Figtree',sans-serif}
 .sess.on{background:var(--grn-bg)}
@@ -152,6 +155,7 @@
   <div class="crea-box">
     <aside class="crea-side">
       <div class="side-head"><span class="t">Sessions</span><button type="button" id="newBtn" class="btn-new">+ Nouvelle</button></div>
+      <div class="side-search"><input id="sessSearch" type="text" placeholder="Rechercher une session (VIV-…)" autocomplete="off"></div>
       <div id="sessList" class="side-list"></div>
     </aside>
     <section class="crea-chat" id="chatZone">
@@ -201,7 +205,7 @@
   </div>
 </div>
 <script>
-const BLOB="{\"salt\":\"wwgsATW3nwWLSwUfB7Y9Ow==\",\"iv\":\"S0roJx2bI2OmvURO\",\"data\":\"mde0QduFt8xBU4o8LLHW5G3aMXGmSfuDbhUgZwDMp61nJs055BJx0sJbNhvQOzN3qBQohTzAYOMyT24LpTCIa2eq06UTjFvdfTJFofDL3dF+IEjArgCXskSJIqpNrxXoCFPa8ezBJgb+7HsyWsaDI/ebOL0MsXaZbGI3guk++9j2m8xpTq6xps5AeFeBoQ==\"}";
+const BLOB="{\"salt\":\"GOqVbWV/BxeftxtIUFUibQ==\",\"iv\":\"hYknuz08d+z/fhMq\",\"data\":\"4aDsivXIyIzSCmLwuIFVhgxj6rjpWdEQraGtLKHb3+RkYTgWaxME3fcQM9GBLV6G+kD7vTvlYaQzIfBLVQ6IUk+YK4E/REC4BCStZsB9L1D1R4+Ym1z3R++1el1PrumOEbnN8F/vhfLJLemerQpwyojRLVGg+vPMCB0b3xh/zoGTyBS7r6YBnciSyNJV+A==\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
@@ -299,9 +303,12 @@ function msgHtml(m){
 
 function renderSide(){
   var side=document.getElementById('sessList');
-  side.innerHTML=state.sessions.length?state.sessions.map(sessRow).join('')
-    :'<div class="side-empty">Aucune session — écrivez un premier message, elle se crée toute seule.</div>';
-  document.getElementById('mobileSess').innerHTML=state.sessions.map(mobileChip).join('');
+  var q=(state.q||'').trim().toLowerCase();
+  var vis=q?state.sessions.filter(function(s){return s.name.toLowerCase().indexOf(q)!==-1;}):state.sessions;
+  if(!state.sessions.length)side.innerHTML='<div class="side-empty">Aucune session — écrivez un premier message, elle se crée toute seule.</div>';
+  else if(!vis.length)side.innerHTML='<div class="side-empty">Aucune session ne correspond à «&nbsp;'+esc(state.q)+'&nbsp;».</div>';
+  else side.innerHTML=vis.map(sessRow).join('');
+  document.getElementById('mobileSess').innerHTML=vis.map(mobileChip).join('');
 }
 function renderHead(){
   var sel=bySel();
@@ -316,7 +323,7 @@ function renderHead(){
     document.getElementById('badgeRun').hidden=!RUNNING[sel.status];
     document.getElementById('badgeAsk').hidden=sel.status!=='besoin_humain';
   }
-  document.getElementById('msgInput').placeholder=sel?'Répondre à l\'agent…':'Décrivez la vidéo à produire — la session se crée à l\'envoi…';
+  document.getElementById('msgInput').placeholder=sel?'Répondre à l\'agent…':'Décrivez la vidéo à produire…';
   majBulle();
   var chips=document.getElementById('chips');
   chips.hidden=state.attachments.length===0;
@@ -416,6 +423,11 @@ document.addEventListener('click',function(e){
   var rm=e.target.closest('[data-rm]');
   if(rm){state.attachments.splice(Number(rm.getAttribute('data-rm')),1);renderHead();return;}
 });
+/* recherche par nom de session */
+document.getElementById('sessSearch').addEventListener('input',function(){
+  state.q=this.value;renderSide();
+});
+
 /* interactions qui effacent la pastille non-lu de la session ouverte */
 document.addEventListener('click',function(){marquerLu();});
 document.getElementById('msgInput').addEventListener('input',function(){marquerLu();});
