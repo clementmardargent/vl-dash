@@ -31,6 +31,13 @@
 .spin{flex:none;width:16px;height:16px;border-radius:50%;border:2px solid var(--grn-bg-hov);border-top-color:var(--grn);animation:spin .9s linear infinite;box-sizing:border-box}
 .dot-unread{flex:none;width:10px;height:10px;border-radius:50%;background:var(--gold)}
 .who-dot{flex:none;width:19px;height:19px;border-radius:50%;background:var(--amb-bg);color:var(--amb);font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;text-transform:uppercase}
+/* bulle « en train d'écrire » façon messagerie — visible quand la session est en production */
+.tb{display:flex;align-items:center;gap:5px;padding:15px 17px;border-radius:16px 16px 16px 4px;background:var(--panel);width:fit-content}
+.tb span{width:7px;height:7px;border-radius:50%;background:var(--mut);animation:tb 1.2s infinite ease-in-out}
+.tb span:nth-child(2){animation-delay:.15s}
+.tb span:nth-child(3){animation-delay:.3s}
+@keyframes tb{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-4px);opacity:1}}
+@media (prefers-reduced-motion:reduce){.tb span{animation-duration:2.4s}}
 /* -- pop-up prénom (première visite) : impossible à fermer sans répondre -- */
 .name-overlay{display:none;position:fixed;inset:0;background:rgba(10,20,17,.82);align-items:center;justify-content:center;padding:24px;z-index:100}
 .name-overlay.open{display:flex}
@@ -88,7 +95,7 @@
 #composeForm{display:flex;gap:10px;align-items:flex-end}
 .btn-attach{flex:none;width:44px;height:44px;border-radius:12px;border:1px solid var(--bd-strong);background:var(--card);color:var(--mut);cursor:pointer;display:flex;align-items:center;justify-content:center}
 .btn-attach:hover{border-color:var(--grn);color:var(--grn)}
-#msgInput{flex:1;min-width:0;resize:none;padding:12px 14px;font-size:14px;line-height:1.5;font-family:'Figtree',sans-serif;border:1px solid var(--bd-strong);border-radius:12px;background:var(--input);color:var(--tx);outline:none;box-sizing:border-box}
+#msgInput{flex:1;min-width:0;resize:none;height:44px;overflow-y:hidden;padding:10px 14px;font-size:14px;line-height:1.5;font-family:'Figtree',sans-serif;border:1px solid var(--bd-strong);border-radius:12px;background:var(--input);color:var(--tx);outline:none;box-sizing:border-box}
 #msgInput:focus{border-color:var(--grn);box-shadow:0 0 0 3px var(--bd)}
 #msgInput:disabled{opacity:.55}
 .btn-send{flex:none;padding:12px 22px;font-size:13.5px;font-weight:700;font-family:'Figtree',sans-serif;color:var(--cream);background:var(--grn);border:none;border-radius:12px;cursor:pointer}
@@ -167,7 +174,7 @@
         <form id="composeForm">
           <button type="button" id="attachBtn" class="btn-attach" title="Joindre un fichier"><svg viewBox="0 0 24 24" style="width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M21 12l-8.5 8.5a5 5 0 01-7-7L14 5a3.3 3.3 0 014.7 4.7L10 18.4a1.7 1.7 0 01-2.4-2.4L16 7.5"></path></svg></button>
           <input type="file" id="fileInput" multiple hidden>
-          <textarea id="msgInput" rows="2"></textarea>
+          <textarea id="msgInput" rows="1"></textarea>
           <button type="submit" id="sendBtn" class="btn-send">Envoyer</button>
         </form>
       </div>
@@ -194,7 +201,7 @@
   </div>
 </div>
 <script>
-const BLOB="{\"salt\":\"P/ARlITpm5zUDKf4pKlG/Q==\",\"iv\":\"WwnbONs0Y1wCwRga\",\"data\":\"QX1ZUvYS3EIdiECr0F2wYzwxXdEXoH1Z7hONtveUqyoQHoRxoPLZa0YMqfoDDIBthzdBgkpKpbtzI9wNs+dWWYB54vqcaHDPIZWIVUlG2GdxIsrxJdTszf9AE1kPHg8yj4JHsBUai9WLAfQJSvzR6hiEizAxLcQyd48bCamd6lnHVXWfX1Zv5keJwnsVMQ==\"}";
+const BLOB="{\"salt\":\"wwgsATW3nwWLSwUfB7Y9Ow==\",\"iv\":\"S0roJx2bI2OmvURO\",\"data\":\"mde0QduFt8xBU4o8LLHW5G3aMXGmSfuDbhUgZwDMp61nJs055BJx0sJbNhvQOzN3qBQohTzAYOMyT24LpTCIa2eq06UTjFvdfTJFofDL3dF+IEjArgCXskSJIqpNrxXoCFPa8ezBJgb+7HsyWsaDI/ebOL0MsXaZbGI3guk++9j2m8xpTq6xps5AeFeBoQ==\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
@@ -310,6 +317,7 @@ function renderHead(){
     document.getElementById('badgeAsk').hidden=sel.status!=='besoin_humain';
   }
   document.getElementById('msgInput').placeholder=sel?'Répondre à l\'agent…':'Décrivez la vidéo à produire — la session se crée à l\'envoi…';
+  majBulle();
   var chips=document.getElementById('chips');
   chips.hidden=state.attachments.length===0;
   chips.innerHTML=state.attachments.map(function(f,i){
@@ -318,10 +326,25 @@ function renderHead(){
 function appendMsgs(list){
   var bodyEl=document.getElementById('chatBody');
   var atBottom=bodyEl.scrollHeight-bodyEl.scrollTop-bodyEl.clientHeight<80;
+  var tb=document.getElementById('typingBubble');
+  if(tb)tb.remove(); /* la bulle reste toujours SOUS le dernier message */
   var html='';
   for(var i=0;i<list.length;i++){html+=msgHtml(list[i]);if(list[i].id>state.lastId)state.lastId=list[i].id;}
   bodyEl.insertAdjacentHTML('beforeend',html);
+  majBulle();
   if(atBottom)bodyEl.scrollTop=bodyEl.scrollHeight;
+}
+/* bulle « en train d'écrire » : affichée quand la session ouverte est en production */
+function majBulle(){
+  var bodyEl=document.getElementById('chatBody');
+  var s=bySel();
+  var tb=document.getElementById('typingBubble');
+  var doit=!!s&&s.status==='production'&&!bodyEl.hidden;
+  if(doit&&!tb){
+    var atBottom=bodyEl.scrollHeight-bodyEl.scrollTop-bodyEl.clientHeight<120;
+    bodyEl.insertAdjacentHTML('beforeend','<div class="msg agent" id="typingBubble"><div class="tb"><span></span><span></span><span></span></div></div>');
+    if(atBottom)bodyEl.scrollTop=bodyEl.scrollHeight;
+  }else if(!doit&&tb){tb.remove();}
 }
 function renderMd(){
   var ov=document.getElementById('mdOverlay');
@@ -337,8 +360,24 @@ function renderMd(){
 }
 
 /* ---- chargements ---- */
+var luRecent={}; /* pastilles effacées localement il y a <15 s : on ignore un éventuel écho serveur */
 function loadSessions(){
-  return api('/sessions').then(function(j){state.sessions=j.sessions;renderSide();renderHead();});
+  return api('/sessions').then(function(j){
+    state.sessions=j.sessions;
+    state.sessions.forEach(function(s){
+      if(s.unread&&luRecent[s.id]&&Date.now()-luRecent[s.id]<15000)s.unread=0;
+    });
+    renderSide();renderHead();
+  });
+}
+/* toute interaction avec la page (clic n'importe où, saisie) marque la session ouverte comme lue */
+function marquerLu(){
+  var s=bySel();
+  if(!s||!s.unread)return;
+  s.unread=0;
+  luRecent[s.id]=Date.now();
+  renderSide();
+  api('/sessions/'+s.id+'/lu',{method:'POST'}).catch(function(){});
 }
 function openSession(id){
   state.sel=id;state.lastId=0;
@@ -346,6 +385,7 @@ function openSession(id){
   renderSide();renderHead();
   api('/sessions/'+id+'/lu',{method:'POST'}).catch(function(){});
   var s=bySel();if(s)s.unread=0;
+  luRecent[id]=Date.now();
   return api('/sessions/'+id+'/messages').then(function(j){
     appendMsgs(j.messages);
     document.getElementById('chatBody').scrollTop=document.getElementById('chatBody').scrollHeight;
@@ -376,6 +416,21 @@ document.addEventListener('click',function(e){
   var rm=e.target.closest('[data-rm]');
   if(rm){state.attachments.splice(Number(rm.getAttribute('data-rm')),1);renderHead();return;}
 });
+/* interactions qui effacent la pastille non-lu de la session ouverte */
+document.addEventListener('click',function(){marquerLu();});
+document.getElementById('msgInput').addEventListener('input',function(){marquerLu();});
+
+/* input mono-ligne qui grandit avec le contenu, 12 lignes max */
+var _inp=document.getElementById('msgInput');
+function autoGrow(){
+  _inp.style.height='44px';
+  var max=12*21+22; /* 12 lignes de 21px + padding */
+  var h=Math.min(_inp.scrollHeight+2,max);
+  if(h>44)_inp.style.height=h+'px';
+  _inp.style.overflowY=(_inp.scrollHeight+2>max)?'auto':'hidden';
+}
+_inp.addEventListener('input',autoGrow);
+
 document.getElementById('newBtn').addEventListener('click',function(){
   state.sel=null;state.lastId=0;state.attachments=[];
   document.getElementById('msgInput').value='';
@@ -429,7 +484,7 @@ document.getElementById('composeForm').addEventListener('submit',function(e){
     if(text)chain=chain.then(function(){return api('/sessions/'+sid+'/messages',{method:'POST',
       headers:{'Content-Type':'application/json'},body:JSON.stringify({text:text})});});
     return chain.then(function(){
-      input.value='';state.attachments=[];
+      input.value='';state.attachments=[];autoGrow();
       return loadSessions().then(function(){
         if(state.sel!==sid)return openSession(sid);
         return api('/sessions/'+sid+'/messages?after='+state.lastId).then(function(j){appendMsgs(j.messages);});
