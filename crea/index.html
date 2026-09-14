@@ -51,6 +51,11 @@
 .msg.agent{align-items:flex-start}
 .msg .stack{max-width:74%;display:flex;flex-direction:column;gap:8px}
 .bubble{padding:10px 15px;font-size:14px;line-height:1.55;text-wrap:pretty;white-space:pre-wrap;word-break:break-word}
+.bubble code{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:.88em;padding:1px 5px;border-radius:5px}
+.msg.agent .bubble code{background:rgba(127,127,127,.16)}
+.msg.me .bubble code{background:rgba(255,255,255,.18)}
+.bubble .mdh{font-weight:700;display:block;margin:2px 0}
+.bubble .mdd{font-weight:700}
 .msg.me .bubble{border-radius:16px 16px 4px 16px;background:var(--grn);color:var(--cream)}
 .msg.me .bubble a{color:var(--cream);text-decoration:underline;font-weight:600}
 .msg.agent .bubble{border-radius:16px 16px 16px 4px;background:var(--panel);color:var(--tx)}
@@ -172,7 +177,7 @@
   </div>
 </div>
 <script>
-const BLOB="{\"salt\":\"yMZ+7LKlJTyCguFxuArZMA==\",\"iv\":\"/iO2u8yICMVmZtBG\",\"data\":\"pMHmLe7J/BV1aEU71d2ZfnVvTyvzl1Oi3Ut6b5XqRTNXVE1m4834ZiWUi+PS/eDOwBybm65zZaaRVFtrW8eEMVC/yuXUuFYxvpfM/8PHzaszRc+fF04Uq/sRBU6Q7N4+wEcHk186aXwE/XDZ9vcG6PL8W3M50tLa5kQyJ/o/GIh6JwBJMIYc9a2DjbIewA==\"}";
+const BLOB="{\"salt\":\"RaTqOOMWMdhnxt26yjngbw==\",\"iv\":\"S0LondiAysPAs1cO\",\"data\":\"1/SxRKVethPr9FmgBju3NwCnWH21PWq6eKEfzmBRcRkF/QzeI5b0claMwH83uclWHrPncyumaTHVSrvI+lLycQ0TRf4Gb+/Bkft2+F2uXJW7Xn8+vlzVS6PzwbURA2GCB1zzc89SnL5eBk8hU3pNrh+3tvzZIu2jivjWfHJxsHlmeJBbkIVJ06r4rHkJIQ==\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
@@ -219,6 +224,22 @@ function subOf(s){
 
 var FILE_SVG='<svg viewBox="0 0 24 24" style="width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M14 3H6v18h12V7z M14 3v4h4"></path></svg>';
 
+/* markdown léger dans les bulles : gras, italique, code, liens, titres, puces — tout est échappé d'abord */
+function mdInline(s){
+  var h=esc(s);
+  h=h.replace(/**([^*
+]+)**/g,'<strong>$1</strong>');
+  h=h.replace(/(^|[s(])*([^*
+]+)*(?=[s.,;:!?)]|$)/g,'$1<em>$2</em>');
+  h=h.replace(/`([^`
+]+)`/g,'<code>$1</code>');
+  h=h.replace(/[([^]
+]+)]((https?://[^)s]+))/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+  h=h.replace(/^#{1,4}s+(.+)$/gm,'<span class="mdh">$1</span>');
+  h=h.replace(/^[-*•]s+/gm,'<span class="mdd">—</span> ');
+  return h;
+}
+
 function sessRow(s){
   var sub=subOf(s);
   return '<button type="button" class="sess'+(state.sel===s.id?' on':'')+'" data-sess="'+s.id+'">'
@@ -236,7 +257,7 @@ function mobileChip(s){
 function msgHtml(m){
   var me=m.role!=='agent';
   var parts='';
-  if(m.text)parts+='<div class="bubble">'+esc(m.text)+'</div>';
+  if(m.text)parts+='<div class="bubble">'+mdInline(m.text)+'</div>';
   if(m.file){
     var f=m.file;
     if(f.kind==='image')parts+='<div class="media-card" style="width:240px"><img src="'+esc(f.url)+'" alt="" loading="lazy"><div class="cap">'+esc(f.name)+'</div></div>';
