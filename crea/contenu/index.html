@@ -159,9 +159,63 @@
 .dv-meta dd{margin:0;min-width:0;color:var(--tx);word-break:break-word;font-variant-numeric:tabular-nums}
 .dv-meta code{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:11.5px}
 .dv-cr{display:inline-block;margin:0 4px 3px 0;padding:1px 7px;border-radius:6px;background:var(--panel);font-size:11.5px;font-weight:700}
+/* -- statuts : actions de l'aperçu, formulaire (raison / prénom), barre de sélection -- */
+@keyframes dvpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
+.dv-pact{display:flex;flex-direction:column;gap:10px}
+.dv-pact:empty{display:none}
+.dv-pbtns{display:flex;flex-wrap:wrap;gap:8px}
+.dv-act{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:34px;padding:7px 14px;border:1px solid transparent;border-radius:9px;font-size:13px;font-weight:700;line-height:1.2;cursor:pointer;white-space:nowrap}
+.dv-act-ok{background:var(--grn);color:var(--cream)}
+.dv-act-ok:hover{background:var(--grn-dk)}
+.dv-act-no{background:var(--card);color:var(--red);border-color:var(--bd-strong)}
+.dv-act-no:hover{background:var(--red-bg);border-color:var(--red)}
+.dv-act-rouge{background:var(--red);color:var(--card)}
+.dv-act-rouge:hover{filter:brightness(.92)}
+.dv-act-ghost{background:transparent;color:var(--mut);border-color:var(--bd-strong)}
+.dv-act-ghost:hover{background:var(--panel);color:var(--ink)}
+.dv-act:disabled,.dv-act:disabled:hover{opacity:.45;cursor:not-allowed;filter:none}
+.dv-act-ok:disabled:hover{background:var(--grn)}
+.dv-act-no:disabled:hover{background:var(--card);border-color:var(--bd-strong)}
+.dv-form{display:flex;flex-direction:column;gap:9px;width:100%;padding:12px;border-radius:10px;background:var(--panel);box-sizing:border-box}
+.dv-fl{display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:700;color:var(--ink)}
+.dv-fl .h{font-weight:500;color:var(--faint)}
+.dv-fin{width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid var(--bd-strong);border-radius:8px;background:var(--input);color:var(--tx);font-family:'Figtree',sans-serif;font-size:13.5px;line-height:1.45;outline:none;resize:vertical}
+.dv .dv-fin:focus-visible{outline:none}
+.dv-fin:focus{border-color:var(--grn);box-shadow:0 0 0 3px var(--bd)}
+.dv-fin[aria-invalid="true"]{border-color:var(--red)}
+.dv-ferr{font-size:12.5px;font-weight:600;color:var(--red)}
+.dv-ferr:empty{display:none}
+.dv-fbtns{display:flex;flex-wrap:wrap;gap:8px}
+.dv-prun{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:600;color:var(--mut)}
+.dv-prun .dv-spin{flex:none;width:16px;height:16px}
+.dv-pnote{margin:0;font-size:12.5px;color:var(--faint)}
+/* tuiles : mode sélection (case à cocher, tuile encadrée) et changement de statut en cours */
+.dv-chk{position:absolute;left:7px;top:7px;z-index:2;width:22px;height:22px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,.95);border-radius:6px;background:rgba(10,20,17,.34);color:#fdf9ef;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.dv-chk svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;opacity:0}
+.dv-tile.dv-sel .dv-chk{background:var(--grn);border-color:var(--grn)}
+.dv-tile.dv-sel .dv-chk svg{opacity:1}
+.dv-tile.dv-sel .dv-th,.dv-tile.dv-sel .dv-tb:hover .dv-th{box-shadow:0 0 0 3px var(--grn)}
+.dv-tile.dv-m .dv-pill{top:auto;bottom:7px}
+.dv-run{position:absolute;left:6px;bottom:6px;z-index:1;display:flex;align-items:center;gap:6px;max-width:calc(100% - 58px);box-sizing:border-box;padding:3px 9px 3px 7px;border-radius:999px;background:rgba(10,20,17,.76);color:#fdf9ef;font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dv-run i{flex:none;width:8px;height:8px;border-radius:50%;animation:dvpulse 1.1s ease-in-out infinite}
+.dv-selbtn{flex:none;display:flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid var(--bd-strong);border-radius:999px;background:var(--card);color:var(--mut);font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap}
+.dv-selbtn svg{flex:none;width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.dv-selbtn:hover{color:var(--ink);border-color:var(--bd-hov)}
+.dv-selbtn.on,.dv-selbtn.on:hover{background:var(--grn);border-color:var(--grn);color:var(--cream)}
+.dv-selbar{position:sticky;bottom:0;z-index:5;margin:0 18px 14px;padding:10px 12px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;border:1px solid var(--bd);border-radius:12px;background:var(--card);box-shadow:0 8px 28px rgba(20,53,45,.18)}
+.dv-sbn{flex:none;font-size:13px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.dv-sbx{flex:1;min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.dv-sbact{margin-left:auto;display:flex;flex-wrap:wrap;gap:8px}
+.dv-lien{padding:6px 8px;border:none;border-radius:6px;background:none;color:var(--grn);font-size:13px;font-weight:700;cursor:pointer}
+.dv-lien:hover{text-decoration:underline}
+.dv-lien:disabled{color:var(--faint);cursor:default;text-decoration:none}
 /* -- toast -- */
-.dv-toast{position:fixed;left:50%;bottom:28px;z-index:300;padding:10px 18px;border-radius:999px;background:var(--ink);color:var(--card);font-family:'Figtree',sans-serif;font-size:13px;font-weight:700;box-shadow:0 10px 30px rgba(10,20,17,.3);opacity:0;transform:translate(-50%,10px);transition:opacity .18s,transform .18s;pointer-events:none;white-space:nowrap}
-.dv-toast.on{opacity:1;transform:translate(-50%,0)}
+/* messages empilés : aucun n'en écrase un autre (une erreur reste lisible même si un succès arrive juste après) */
+.dv-toasts{position:fixed;left:16px;right:16px;bottom:28px;z-index:300;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none}
+.dv-toast{max-width:100%;box-sizing:border-box;padding:10px 18px;border-radius:999px;background:var(--ink);color:var(--card);font-family:'Figtree',sans-serif;font-size:13px;font-weight:700;box-shadow:0 10px 30px rgba(10,20,17,.3);opacity:0;transform:translateY(10px);transition:opacity .18s,transform .18s;white-space:nowrap}
+.dv-toast.on{opacity:1;transform:none}
+.dv-toast.dv-long{white-space:normal;max-width:min(560px,100%);border-radius:14px;line-height:1.45;text-align:center}
+.dv-toast.dv-err{background:var(--red);color:var(--card)}
 /* -- pop-up (page Génération) -- */
 .dv-pop{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(20,53,45,.45)}
 .dv-popbox{width:92vw;max-width:1200px;height:86vh;display:flex;flex-direction:column;background:var(--card);border-radius:18px;overflow:hidden;box-shadow:0 24px 60px rgba(20,53,45,.3)}
@@ -175,6 +229,7 @@
 @media (prefers-reduced-motion:reduce){
 .dv-toast,.dv-th,.dv-hv,.dv-ok,.dv-tpb svg,.dv-info{transition:none}
 .dv-spin{animation-duration:2.4s}
+.dv-run i{animation-duration:2.6s}
 }
 /* -- mobile ≤720px : uniquement des surcharges -- */
 @media (max-width:720px){
@@ -202,7 +257,15 @@
 .dv-pop{padding:0}
 .dv-popbox{width:100%;height:100%;max-width:none;border-radius:0}
 .dv-navbtn{padding:7px 10px}
-.dv-toast{bottom:18px}
+.dv-toasts{bottom:18px}
+/* 1re ligne : sections … Sélectionner ✕ (même order 2 : l'ordre du DOM s'applique) */
+.dv-selbtn{order:2;margin-left:auto}
+.dv-close{margin-left:0}
+.dv-fin{font-size:16px} /* sous 16 px, Safari iOS zoome au focus */
+/* barre de sélection pleine largeur, boutons répartis sur toute la ligne */
+.dv-selbar{margin:0;padding:10px 12px calc(10px + env(safe-area-inset-bottom));border-radius:0;border-left:none;border-right:none;border-bottom:none}
+.dv-sbact{flex-basis:100%;margin-left:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.dv-sbact .dv-act{min-height:40px;padding:8px 6px}
 }</style>
 </head>
 <body>
@@ -226,7 +289,7 @@
 </main>
 </div>
 <script>
-const BLOB="{\"salt\":\"iFEeiXi0EwIo/RyzfAn9cg==\",\"iv\":\"LfRlNX3+IXuqOI56\",\"data\":\"LlB3DfVYNt88srCElyGaH3o1/TjTpulGYf68m2TPsd2b2rvclcJ3qQZMTb1FADLOa8N0GUxgPU4ACmudicQB57nIxicmlD8wqLlrHVAbC9xuyFojO7EozkOrH4NZ+Obv0URSETUSoeGdbIZyclGbuphsZ2DsCPn1X8jCJN3ZbKnFsgt4BgHTM8Ho2K2xyQ==\"}";
+const BLOB="{\"salt\":\"l1VaqespYbSEuhaLiQsOnw==\",\"iv\":\"bN12njjdJac+sqOF\",\"data\":\"mXjrofESkbu3QG7++EwnpeHLTp360um+oghrTvpH2UdaLck8ztJnRr7r71Ms1fIWaPi2eogChGon+dJUvfOP5vv0qtr3h1CT6CZgvMpTmshAvRiFNVkOfdM2dVr+NIMupBZ2NdSwTd/keUHzCCl+bN+Ug0DMUoCLDSQ3dpNvzVISQ6MfRwh+pK4Zy8adDA==\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
@@ -259,8 +322,23 @@ var DV_SVG={
   info:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5 M12 7.5v.01"></path></svg>',
   ok:'<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>',
   chev:'<svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"></path></svg>',
-  loupe:'<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>'
+  loupe:'<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>',
+  coche:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"></rect><path d="M8.5 12.5l2.5 2.5 5-5.5"></path></svg>'
 };
+/* statuts modifiables depuis le dashboard — contrat « Statuts de la bibliothèque depuis le dashboard ».
+   Mêmes règles que le Worker et le service VPS (défense en profondeur) ; ici pour des messages clairs. */
+var DV_ID_RE=/^[A-Za-z0-9][A-Za-z0-9_.-]{0,199}$/;
+/* = NON_HUMAIN de bibliotheque.py, comme le Worker : le \b de Python est Unicode (celui de JS est ASCII) → lookahead
+   Unicode ; re.I de Python confond İ / ı avec i → ramenés à i avant le test (dvMachine) */
+var DV_MACHINE_RE=/^\s*(claude|ia|ai|bot|agent|assistant|session|script|robot|auto)(?![\p{L}\p{N}_])/iu;
+function dvMachine(s){return DV_MACHINE_RE.test(String(s).replace(/[İı]/g,'i'));}
+var DV_PRENOM_RE=/^\p{L}[\p{L} '’-]*$/u;
+var DV_LOT_MAX=200;              /* ids par action (limite du Worker) */
+var DV_SONDE_MS=2000;            /* sondage de l'état des actions */
+var DV_SONDE_MAX_MS=3*60*1000;   /* sans nouvelles du serveur depuis 3 min : on rend la main ; action encore en file ou en cours au-delà : sondage ralenti */
+var DV_SONDE_LENT_MS=10000;      /* sondage ralenti (actions de plus de 3 min, toujours en attente / en cours côté serveur) */
+var DV_SONDE_FIN_MS=15*60*1000;  /* au-delà : on rend la main, l'action reste en file côté serveur */
+var DV_RELECTURE_MS=4000;        /* action faite : l'index est relu jusqu'à 3 fois, toutes les 4 s */
 function dvA(o,k){return !!o&&Object.prototype.hasOwnProperty.call(o,k);}
 function dvEsc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 /* normalisation de recherche : sans accents, minuscules, tirets / points / soulignés = espaces */
@@ -391,16 +469,21 @@ function dvFiltrer(idx,f){
 }
 function dvIcone(k){return '<span class="dv-ic">'+(dvA(DV_SVG,k)?DV_SVG[k]:DV_SVG.autre)+'</span>';}
 function dvPluriel(n,mot){return n+' '+mot+(n>1?'s':'');}
-/* ctx = {base, qs, ou} */
+/* ctx = {base, qs, ou, m (mode sélection), s (cochée), v (statut visé d'un changement en cours, sinon '')} */
 function dvTuileHtml(e,i,ctx){
   var k=dvKind(e),st=dvStatut(e),nom=dvBase(e.fichier)||e.id;
+  var m=!!ctx.m,s=m&&!!ctx.s,v=dvA(DV_STATUT_LABEL,ctx.v)?ctx.v:'';
   var vis=e.vignette?'<img src="'+dvEsc(dvUrl(ctx.base,ctx.qs,e.vignette))+'" alt="" loading="lazy" decoding="async">':dvIcone(k);
   var dur=(k==='video'||k==='audio')&&dvDuree(e.duree)?'<span class="dv-dur">'+dvDuree(e.duree)+'</span>':'';
-  return '<div class="dv-tile'+(st==='ecarte'?' dv-ec':'')+'" data-i="'+i+'" data-k="'+k+'">'
-    +'<button type="button" class="dv-tb" data-dv-pick="'+i+'" title="'+dvEsc(e.fichier+' — cliquer pour copier le chemin')+'">'
-    +'<span class="dv-th" style="aspect-ratio:'+dvRatio(e).toFixed(4)+'">'+vis+dur+'<span class="dv-pill dv-s-'+st+'" title="'+DV_STATUT_LABEL[st]+'" aria-hidden="true"></span>'
+  var pastille=v?'<span class="dv-run" title="Passage en « '+DV_STATUT_LABEL[v]+' » en cours" aria-hidden="true"><i class="dv-s-'+v+'"></i>→ '+DV_STATUT_LABEL[v]+'</span>'
+    :'<span class="dv-pill dv-s-'+st+'" title="'+DV_STATUT_LABEL[st]+'" aria-hidden="true"></span>';
+  return '<div class="dv-tile'+(st==='ecarte'?' dv-ec':'')+(m?' dv-m':'')+(s?' dv-sel':'')+'" data-i="'+i+'" data-k="'+k+'">'
+    +'<button type="button" class="dv-tb" data-dv-pick="'+i+'"'+(m?' aria-pressed="'+s+'"':'')
+    +' title="'+dvEsc(e.fichier+(m?' — cliquer pour sélectionner':' — cliquer pour copier le chemin'))+'">'
+    +'<span class="dv-th" style="aspect-ratio:'+dvRatio(e).toFixed(4)+'">'+vis+dur+pastille
+    +(m?'<span class="dv-chk" aria-hidden="true">'+DV_SVG.ok+'</span>':'')
     +'<span class="dv-ok" aria-hidden="true">'+DV_SVG.ok+'</span></span>'
-    +'<span class="dv-nm">'+dvEsc(nom)+'<span class="dv-sr"> — '+DV_STATUT_LABEL[st]+'</span></span>'
+    +'<span class="dv-nm">'+dvEsc(nom)+'<span class="dv-sr"> — '+DV_STATUT_LABEL[st]+(v?', passage en « '+DV_STATUT_LABEL[v]+' » en cours':'')+'</span></span>'
     +(e.description?'<span class="dv-ds">'+dvEsc(e.description)+'</span>':'')
     +(ctx.ou?'<span class="dv-ou">'+dvEsc(ctx.ou)+'</span>':'')
     +'</button>'
@@ -447,7 +530,7 @@ function dvCrumbHtml(idx,st,n,masques){
     +sep+'<span class="here">'+dvEsc(dvLabel(idx,st.sel.dossier))+'</span>';
   return '<span class="dv-cp">'+h+'</span><span class="dv-cn">'+dvPluriel(n,'média')+(masques?' · '+dvPluriel(masques,'masqué'):'')+'</span>';
 }
-/* ctx = {base, qs, ou} */
+/* ctx = {base, qs, ou, act} — act : voir dvActionsHtml */
 function dvApercuHtml(e,i,ctx){
   var k=dvKind(e),st=dvStatut(e),nom=dvBase(e.fichier)||e.id,url=dvUrl(ctx.base,ctx.qs,e.rel);
   var poster=e.vignette?dvUrl(ctx.base,ctx.qs,e.vignette):'',m;
@@ -472,6 +555,7 @@ function dvApercuHtml(e,i,ctx){
     +'<button type="button" class="dv-x" data-dv-xprev title="Fermer (Échap)" aria-label="Fermer l’aperçu">✕</button></div>'
     +'<div class="dv-pb"><div class="dv-pm">'+m+'</div>'
     +'<div class="dv-pst"><span class="dv-badge dv-b-'+st+'"><i class="dv-dot dv-s-'+st+'"></i>'+DV_STATUT_LABEL[st]+'</span><span>'+dvEsc(ctx.ou)+'</span></div>'
+    +'<div class="dv-pact" data-dv-zone="p">'+dvActionsHtml(e,ctx.act)+'</div>'
     +(e.description?'<p class="dv-pd">'+dvEsc(e.description)+'</p>':'')
     +bloc('Usage',e.usage)
     +bloc('Raison de l’écart',e.raison_ecart,'ecart')
@@ -480,6 +564,113 @@ function dvApercuHtml(e,i,ctx){
     +'<div class="dv-acts"><a class="dv-open" href="'+dvEsc(url)+'" target="_blank" rel="noopener">Ouvrir le fichier ↗</a></div>'
     +(meta.length?'<dl class="dv-meta">'+meta.join('')+'</dl>':'')
     +'</div>';
+}
+/* ---- statuts : validations, regroupement, libellés, gabarits ---- */
+function dvIdOk(id){return typeof id==='string'&&DV_ID_RE.test(id);}
+/* prénom passé en --par : 1 à 40 caractères, lettres / espaces / apostrophes / tirets, jamais un nom de machine */
+function dvPrenom(v){
+  var s=String(v==null?'':v).normalize('NFC').replace(/\s+/g,' ').trim();
+  s=s.charAt(0).toUpperCase()+s.slice(1); /* majuscule AVANT les contrôles : c'est cette forme qui part au Worker (ß → SS allonge) */
+  if(!s)return {ok:false,err:'Indiquez votre prénom.'};
+  if(Array.from(s).length>40)return {ok:false,err:'Prénom trop long : 40 caractères au maximum.'};
+  if(!DV_PRENOM_RE.test(s))return {ok:false,err:'Prénom : lettres, espaces, apostrophes et tirets uniquement.'};
+  if(dvMachine(s))return {ok:false,err:'Un prénom humain est requis : valider ou écarter est réservé aux humains.'};
+  return {ok:true,v:s};
+}
+/* raison d'un écart : comme le Worker — NFC, espaces et sauts de ligne normalisés, 1 à 300 caractères
+   (points de code, pas unités UTF-16), sans caractère de contrôle */
+function dvRaison(v){
+  var s=String(v==null?'':v).normalize('NFC').replace(/\s+/g,' ').trim(),n=Array.from(s).length;
+  if(!s)return {ok:false,err:'Indiquez la raison de l’écart.'};
+  if(n>300)return {ok:false,err:'Raison trop longue : '+n+' caractères pour 300 au maximum.'};
+  if(/[\x00-\x1f\x7f-\x9f]/.test(s))return {ok:false,err:'Raison : caractères de contrôle interdits.'};
+  return {ok:true,v:s};
+}
+function dvCarte(idx){var m=Object.create(null);dvEntrees(idx).forEach(function(e){if(!(e.id in m))m[e.id]=e;});return m;}
+/* sélection → lots d'au plus DV_LOT_MAX ids à envoyer. Écartés du lot : doublons, ids non conformes ou absents
+   de l'index (invalides), médias déjà au statut visé (deja), changement déjà en cours (occupes = {id: statut visé}) */
+function dvRegrouper(idx,ids,statut,occupes){
+  var carte=dvCarte(idx),vus=Object.create(null),ok=[],r={lots:[],n:0,deja:0,occupes:0,invalides:0};
+  (ids||[]).forEach(function(id){
+    id=String(id);if(vus[id])return;vus[id]=1;
+    var e=dvIdOk(id)?carte[id]:null;
+    if(!e){r.invalides++;return;}
+    if(dvStatut(e)===statut){r.deja++;return;}
+    if(occupes&&dvA(occupes,id)&&occupes[id]){r.occupes++;return;}
+    ok.push(id);
+  });
+  for(var i=0;i<ok.length;i+=DV_LOT_MAX)r.lots.push(ok.slice(i,i+DV_LOT_MAX));
+  r.n=ok.length;
+  return r;
+}
+/* l'index relu montre-t-il le statut visé ? (un média sorti de l'index n'est plus attendu) */
+function dvReflete(idx,ids,statut){var c=dvCarte(idx);return (ids||[]).every(function(id){var e=c[id];return !e||dvStatut(e)===statut;});}
+function dvAccord(n,mot){return mot+(n>1?'s':'');}
+/* hors : cochés absents de l'affichage (autre dossier / section, filtres, recherche) — ils partent aussi */
+function dvNbSel(n,hors){return n+' '+dvAccord(n,'sélectionné')+(hors>0?' · dont '+hors+' non '+dvAccord(hors,'affiché'):'');}
+function dvCourt(s,n){s=String(s==null?'':s).replace(/\s+/g,' ').trim();return s.length>n?s.slice(0,n-1).trim()+'…':s;}
+/* libellés des toasts — etape : 'envoi' | 'fait' | 'erreur' */
+function dvLibStatut(n,statut,etape){
+  var ec=statut==='ecarte';
+  if(etape==='fait')return dvPluriel(n,'média')+' '+dvAccord(n,ec?'écarté':'validé');
+  if(etape==='erreur')return (ec?'Échec de l’écart':'Échec de la validation')+(n>1?' ('+dvPluriel(n,'média')+')':'');
+  return (ec?'Écart en cours':'Validation en cours')+' · '+dvPluriel(n,'média');
+}
+/* message d'envoi d'après dvRegrouper : ce qui part, ce qui est ignoré (ou pourquoi rien ne part) */
+function dvLibEnvoi(g,statut){
+  var ec=statut==='ecarte',ign=[],tot=g.deja+g.occupes+g.invalides;
+  if(g.deja)ign.push(g.deja+' déjà '+dvAccord(g.deja,ec?'écarté':'validé'));
+  if(g.occupes)ign.push(g.occupes+' déjà en cours');
+  if(g.invalides)ign.push(g.invalides+' non '+dvAccord(g.invalides,'modifiable'));
+  if(!g.n)return (ec?'Rien à écarter':'Rien à valider')+(ign.length?' : '+ign.join(', '):'');
+  return dvLibStatut(g.n,statut,'envoi')+(ign.length?' — '+dvAccord(tot,'ignoré')+' : '+ign.join(', '):'');
+}
+/* bilan d'un envoi (tous ses lots finis), en un seul message :
+   b = {statut, ok (médias passés), retard (index pas encore à jour), echec, motif, suspens (sans réponse finale), perdu (serveur injoignable)}
+   → {msg, err, long} ou null s'il n'y a rien à dire */
+function dvLibBilan(b){
+  var p=[];
+  if(b.ok)p.push(dvLibStatut(b.ok,b.statut,'fait')+(b.retard?' — l’affichage suivra à la prochaine synchro':''));
+  if(b.echec)p.push(p.length?'échec pour '+b.echec+' : '+b.motif:dvLibStatut(b.echec,b.statut,'erreur')+' : '+b.motif);
+  if(b.suspens)p.push(dvPluriel(b.suspens,'média')+(b.perdu?' sans réponse du serveur depuis 3 min':' toujours en cours côté serveur au bout de 15 min')
+    +' — la demande reste en file ; le statut s’affichera à la prochaine synchro');
+  if(!p.length)return null;
+  return {msg:p.join(' · '),err:!!b.echec,long:!!(b.echec||b.suspens||b.retard)};
+}
+/* formulaire d'une zone (aperçu ou barre de sélection) : z = {statut, raison, rv (raison à reprendre), prenom, pv (prénom à corriger), err, n} */
+function dvFormHtml(z){
+  var ec=z.statut==='ecarte';
+  return '<form class="dv-form" data-dv-form novalidate>'
+    +(z.raison?'<label class="dv-fl">Raison de l’écart'+(z.n>1?' <span class="h">(la même pour les '+z.n+' médias)</span>':'')
+      +'<textarea class="dv-fin" data-dv-f="r" rows="2" maxlength="300" aria-required="true" placeholder="Ex. : main déformée, logo illisible, flou de bougé…">'+dvEsc(z.rv||'')+'</textarea></label>':'')
+    +(z.prenom?'<label class="dv-fl">Votre prénom <span class="h">— enregistré dans la fiche avec la décision</span>'
+      +'<input class="dv-fin" data-dv-f="p" type="text" maxlength="40" autocomplete="given-name" aria-required="true" value="'+dvEsc(z.pv||'')+'"></label>':'')
+    +'<div class="dv-ferr" role="alert">'+dvEsc(z.err||'')+'</div>'
+    +'<div class="dv-fbtns"><button type="submit" class="dv-act '+(ec?'dv-act-rouge':'dv-act-ok')+'">'+(ec?'Confirmer':'Valider')+'</button>'
+    +'<button type="button" class="dv-act dv-act-ghost" data-dv-a="fannul">Annuler</button></div></form>';
+}
+/* actions de l'aperçu : a = {v (statut visé d'un changement en cours), z (formulaire ouvert)} */
+function dvActionsHtml(e,a){
+  a=a||{};
+  var st=dvStatut(e),v=dvA(DV_STATUT_LABEL,a.v)?a.v:'';
+  if(!dvIdOk(e.id))return '<p class="dv-pnote">Statut non modifiable ici : identifiant de média non reconnu.</p>';
+  if(v)return '<div class="dv-prun" role="status"><span class="dv-spin" aria-hidden="true"></span>Passage en « '+DV_STATUT_LABEL[v]+' » en cours…</div>';
+  if(a.z&&a.z.statut!==st)return dvFormHtml(a.z);
+  var h=(st!=='valide'?'<button type="button" class="dv-act dv-act-ok" data-dv-a="valider">Valider</button>':'')
+    +(st!=='ecarte'?'<button type="button" class="dv-act dv-act-no" data-dv-a="ecarter" aria-expanded="false">Écarter…</button>':'');
+  return h?'<div class="dv-pbtns">'+h+'</div>':'';
+}
+/* barre de sélection, hors compteur : o = {n (cochés), nAff (affichés cochables), tous (tous cochés), z (formulaire)} */
+function dvSelBarHtml(o){
+  if(o.z)return dvFormHtml(o.z);
+  var off=o.n?'':' disabled';
+  return '<button type="button" class="dv-lien" data-dv-a="tout"'+(o.nAff&&!o.tous?'':' disabled')
+    +' title="'+(o.nAff>1?'Cocher les '+o.nAff+' médias affichés':(o.nAff?'Cocher le média affiché':'Aucun média affiché'))+'">Tout sélectionner</button>'
+    +'<span class="dv-sbact">'
+    +'<button type="button" class="dv-act dv-act-ok" data-dv-a="valider"'+off+'>Valider</button>'
+    +'<button type="button" class="dv-act dv-act-no" data-dv-a="ecarter" aria-expanded="false"'+off+'>Écarter…</button>'
+    +'<button type="button" class="dv-act dv-act-ghost" data-dv-a="quitter" title="Quitter le mode sélection (Échap)" aria-label="Annuler la sélection">Annuler</button>'
+    +'</span>';
 }
 /* dv:pure:end */
 
@@ -502,21 +693,41 @@ function dvCopier(t){
   }
   return Promise.resolve(repli());
 }
-function dvToast(msg){
-  var t=document.getElementById('dvToast');
-  if(!t){t=document.createElement('div');t.id='dvToast';t.className='dv-toast';t.setAttribute('role','status');t.setAttribute('aria-live','polite');document.body.appendChild(t);}
-  t.textContent=msg;t.classList.add('on');
-  clearTimeout(dvToast._t);dvToast._t=setTimeout(function(){t.classList.remove('on');},1800);
+/* o = {long: message sur plusieurs lignes, affiché 6,5 s ; ms: durée d'un message court ; err: erreur (rouge, 9 s)}.
+   Les messages s'empilent (3 au plus, les plus anciens hors erreur partent d'abord) ; un message identique déjà
+   affiché est prolongé. Barre de sélection collée en bas de l'écran : les messages passent au-dessus. */
+function dvToast(msg,o){
+  o=o||{};
+  var box=document.getElementById('dvToasts');
+  if(!box){box=document.createElement('div');box.id='dvToasts';box.className='dv-toasts';box.setAttribute('role','status');box.setAttribute('aria-live','polite');document.body.appendChild(box);}
+  var bar=document.querySelector('.dv-selbar:not([hidden])'),r=bar?bar.getBoundingClientRect():null,vh=window.innerHeight||0;
+  box.style.bottom=r&&r.height&&r.top<vh&&r.bottom>vh-150?Math.round(vh-r.top+10)+'px':''; /* barre dans la bande basse de l'écran */
+  var t=null;[].forEach.call(box.children,function(x){if(x.textContent===msg)t=x;});
+  if(!t){
+    t=document.createElement('div');t.className='dv-toast';t.textContent=msg;box.appendChild(t);
+    while(box.children.length>3){var v=box.querySelector('.dv-toast:not(.dv-err)')||box.children[0];if(v===t)v=box.children[0];box.removeChild(v);}
+    void t.offsetWidth; /* état de départ posé avant la transition */
+  }
+  t.classList.toggle('dv-long',!!(o.long||o.err));t.classList.toggle('dv-err',!!o.err);t.classList.add('on');
+  clearTimeout(t._t);clearTimeout(t._r);
+  t._t=setTimeout(function(){t.classList.remove('on');t._r=setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t);},250);},
+    o.err?9000:(o.long?6500:(o.ms||1800)));
 }
 
-/* dvCreer(hôte, opts) — opts : auth() → {key, worker} ; fermer() (pop-up : affiche ✕).
-   Même comportement partout : un clic sur un média copie son chemin. */
+/* dvCreer(hôte, opts) — opts : auth() → {key, worker} ; fermer() (pop-up : affiche ✕) ;
+   prenom() / surPrenom(v) : prénom de la page hôte (sinon localStorage 'crea_prenom', partagé avec Génération).
+   Même comportement partout : un clic sur un média copie son chemin — sauf en mode sélection, où il le coche.
+   Statuts : Valider / Écarter… (aperçu ou barre de sélection) → POST /biblio/statut, puis sondage de
+   GET /biblio/actions jusqu'à 'fait' / 'erreur', et relecture de l'index (GET /biblio). */
 function dvCreer(host,opts){
   opts=opts||{};
   /* à chaque arrivée (page ou pop-up) : refs = tout, sans filtre de produit ; B-rolls = Coussin
-     (ou le produit de la session). Seule la dernière section consultée est mémorisée. */
+     (ou le produit de la session). Seule la dernière section consultée est mémorisée.
+     mode/coche : mode sélection et médias cochés (par id) ; vises : {id: statut visé} des changements en cours ;
+     acts : {n° d'action: {ids, statut, t0}} à sonder ; zp / zb : formulaire ouvert dans l'aperçu / la barre. */
   var D={etat:'init',idx:null,base:'',qs:'',charge:0,err:'',retry:true,enCours:null,q:'',apercu:-1,
-    section:'plans',sel:{},statuts:{},ouverts:{}};
+    section:'plans',sel:{},statuts:{},ouverts:{},
+    mode:false,coche:Object.create(null),vises:Object.create(null),acts:Object.create(null),zp:null,zb:null,affiches:[],prenomMem:''};
   function arrivee(produit){
     D.sel={plans:{produit:produit||'coussin',dossier:null},references:{produit:null,dossier:null}};
     D.ouverts={plans:{},references:{}};D.ouverts.plans[D.sel.plans.produit]=true;
@@ -537,16 +748,18 @@ function dvCreer(host,opts){
     +'<div class="dv-stf" role="group" aria-label="Statuts affichés">'
     +Object.keys(DV_STATUT_FILTRE).map(function(k){return '<button type="button" class="dv-st" data-dv-st="'+k+'"><i class="dv-dot dv-s-'+k+'"></i>'+DV_STATUT_FILTRE[k]+'</button>';}).join('')
     +'</div>'
+    +'<button type="button" class="dv-selbtn" data-dv-mode aria-pressed="false" title="Cocher plusieurs médias pour les valider ou les écarter">'+DV_SVG.coche+'Sélectionner</button>'
     +(opts.fermer?'<button type="button" class="dv-x dv-close" data-dv-close title="Fermer (Échap)" aria-label="Fermer la bibliothèque">✕</button>':'')
     +'</div>'
     +'<div class="dv-body"><nav class="dv-tree" aria-label="Dossiers"></nav><div class="dv-chips"></div>'
-    +'<div class="dv-main"><div class="dv-crumb"></div><div class="dv-grid"></div><div class="dv-msg" hidden></div></div></div>'
+    +'<div class="dv-main"><div class="dv-crumb"></div><div class="dv-grid"></div><div class="dv-msg" hidden></div>'
+    +'<div class="dv-selbar" data-dv-zone="b" role="region" aria-label="Médias sélectionnés" hidden></div></div></div>'
     +'<aside class="dv-prev" hidden aria-label="Aperçu du média"></aside>'
     +'</div>';
   var root=host.querySelector('.dv');
   function q1(sel){return root.querySelector(sel);}
   var elQ=q1('.dv-q'),elTree=q1('.dv-tree'),elChips=q1('.dv-chips'),elMain=q1('.dv-main'),elCrumb=q1('.dv-crumb'),
-      elGrid=q1('.dv-grid'),elMsg=q1('.dv-msg'),elPrev=q1('.dv-prev');
+      elGrid=q1('.dv-grid'),elMsg=q1('.dv-msg'),elPrev=q1('.dv-prev'),elBar=q1('.dv-selbar');
   var mmFin=window.matchMedia?window.matchMedia('(hover: hover) and (pointer: fine)'):null;
   var mmCalme=window.matchMedia?window.matchMedia('(prefers-reduced-motion: reduce)'):null;
   /* colonnes de la mosaïque : 5 B-rolls / 3 refs, 2 sur mobile (même seuil que le CSS) */
@@ -578,9 +791,17 @@ function dvCreer(host,opts){
     root.querySelectorAll('[data-dv-sec]').forEach(function(b){var on=b.getAttribute('data-dv-sec')===D.section;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false');});
     root.querySelectorAll('[data-dv-n]').forEach(function(b){b.textContent=D.etat==='ok'?dvCompteSection(D.idx,b.getAttribute('data-dv-n'),D.statuts):'';});
     root.querySelectorAll('[data-dv-st]').forEach(function(b){var on=!!D.statuts[b.getAttribute('data-dv-st')];b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false');});
+    var mb=q1('[data-dv-mode]');if(mb){mb.classList.toggle('on',D.mode);mb.setAttribute('aria-pressed',D.mode?'true':'false');}
   }
-  function renderMain(){
+  function renderMain(){renderGrille();renderBar();}
+  var grilleIdx=null; /* index de la grille affichée (retrouver le média qui avait le focus) */
+  function renderGrille(){
     arreterSurvol();
+    /* focus clavier sur une tuile : rendu au même média (sinon au même rang) après la reconstruction */
+    var fa=document.activeElement,ft=fa&&elGrid.contains(fa)?fa.closest('.dv-tile'):null,foc=null;
+    if(ft){var fe=grilleIdx&&grilleIdx.entrees[Number(ft.getAttribute('data-i'))];
+      foc={rel:fe?fe.rel:null,info:fa.hasAttribute('data-dv-info'),rang:[].indexOf.call(elGrid.querySelectorAll('.dv-tile'),ft)};}
+    D.affiches=[];
     if(D.etat!=='ok'){
       elTree.innerHTML='';elChips.innerHTML='';elGrid.innerHTML='';
       elCrumb.innerHTML='<span class="dv-cp">'+dvEsc(DV_SECTIONS[D.section])+'</span>';
@@ -604,7 +825,8 @@ function dvCreer(host,opts){
       var a=r.getBoundingClientRect(),b=c.getBoundingClientRect();
       if(b.left<a.left)r.scrollLeft+=b.left-a.left-12;else if(b.right>a.right)r.scrollLeft+=b.right-a.right+12;
     });
-    var r=dvFiltrer(D.idx,st),ctx={base:D.base,qs:D.qs,ou:''};
+    var r=dvFiltrer(D.idx,st),ctx={base:D.base,qs:D.qs,ou:'',m:D.mode,s:false,v:''};
+    D.affiches=r.items.filter(function(e){return dvIdOk(e.id);}).map(function(e){return e.id;});
     elCrumb.innerHTML=dvCrumbHtml(D.idx,st,r.items.length,r.masques);
     /* mosaïque : chaque tuile va dans la colonne la moins haute (hauteur estimée d'après le ratio connu
        du média) — l'ordre de lecture reste ligne par ligne et rien n'attend le chargement des images */
@@ -613,11 +835,20 @@ function dvCreer(host,opts){
     for(c=0;c<n;c++){cols.push([]);hs.push(0);}
     r.items.forEach(function(e){
       ctx.ou=r.recherche||st.sel.produit==null?dvOu(D.idx,e,false):(st.sel.dossier==null?dvLabel(D.idx,e.dossier):'');
+      ctx.s=!!D.coche[e.id];ctx.v=D.vises[e.id]||'';
       var k=0;for(c=1;c<n;c++){if(hs[c]<hs[k]-1)k=c;}
       cols[k].push(dvTuileHtml(e,e._i,ctx));
       hs[k]+=cw/dvRatio(e)+42+(e.description?34:0)+(ctx.ou?17:0);
     });
     elGrid.innerHTML=r.items.length?cols.map(function(t){return '<div class="dv-col">'+t.join('')+'</div>';}).join(''):'';
+    grilleIdx=D.idx;
+    if(foc){
+      var ts=elGrid.querySelectorAll('.dv-tile'),cible=null;
+      [].some.call(ts,function(t){var e=D.idx.entrees[Number(t.getAttribute('data-i'))];if(e&&foc.rel!=null&&e.rel===foc.rel){cible=t;return true;}return false;});
+      if(!cible&&ts.length&&foc.rang>=0)cible=ts[Math.min(foc.rang,ts.length-1)];
+      var fb=cible&&cible.querySelector(foc.info?'[data-dv-info]':'[data-dv-pick]');
+      if(fb){try{fb.focus({preventScroll:true});}catch(x){}}
+    }
     if(r.items.length)msg('');
     else if(r.recherche)msg('<div class="t">Aucun résultat</div><div>Aucun média ne correspond à « '+dvEsc(D.q.trim())+' »'
       +(r.masques?' parmi les statuts affichés — '+dvPluriel(r.masques,'résultat')+' masqué'+(r.masques>1?'s':'')+' par les filtres.':'.')+'</div>');
@@ -639,9 +870,17 @@ function dvCreer(host,opts){
         return j;});})
       .then(function(j){
         D.base=String(j.base||'');D.qs=String(j.qs||'');D.charge=Date.now();
-        fermerApercu();
+        var ap=D.apercu>=0&&D.idx?D.idx.entrees[D.apercu]:null;
         var idx=dvPrep(j.index);
-        if(!idx){D.idx=null;D.etat='vide';}else{D.idx=idx;D.etat='ok';valider();}
+        if(!idx){D.idx=null;D.etat='vide';fermerApercu();}
+        else{
+          D.idx=idx;D.etat='ok';valider();
+          /* cochés sortis de l'index : oubliés ; aperçu ouvert : remis à jour (nouveau statut) ou refermé */
+          var carte=dvCarte(idx);
+          Object.keys(D.coche).forEach(function(id){if(!carte[id])delete D.coche[id];});
+          var e2=ap?carte[ap.id]:null;
+          if(e2)rafraichirApercu(e2._i);else fermerApercu();
+        }
       })
       .catch(function(e){
         if(avait){dvToast('Actualisation de la bibliothèque impossible');return;}
@@ -654,26 +893,84 @@ function dvCreer(host,opts){
   }
 
   /* ---- aperçu ---- */
+  function ctxApercu(e){return {base:D.base,qs:D.qs,ou:dvOu(D.idx,e,true),act:{v:D.vises[e.id]||'',z:D.zp}};}
+  function couperMedias(el){el.querySelectorAll('video,audio').forEach(function(m){try{m.pause();m.removeAttribute('src');m.load();}catch(x){}});}
   function ouvrirApercu(i){
     var e=D.idx&&D.idx.entrees[i];if(!e)return;
     arreterSurvol();
+    if(D.apercu!==i)D.zp=null;
     D.apercu=i;
-    elPrev.innerHTML=dvApercuHtml(e,i,{base:D.base,qs:D.qs,ou:dvOu(D.idx,e,true)});
+    elPrev.innerHTML=dvApercuHtml(e,i,ctxApercu(e));
+    elPrev.setAttribute('data-rel',e.rel);
     elPrev.hidden=false;
     var x=elPrev.querySelector('[data-dv-xprev]');if(x)x.focus({preventScroll:true});
   }
+  /* index relu : l'aperçu ouvert reprend les champs du média (statut, raison, validé par…) sans couper
+     la lecture — le lecteur reste en place tant que le fichier est le même ; saisie et focus conservés */
+  function rafraichirApercu(j){
+    var e=D.idx&&D.idx.entrees[j];
+    if(elPrev.hidden||!e)return;
+    D.apercu=j;
+    if(D.zp&&D.zp.statut===dvStatut(e))D.zp=null;
+    var g=garder(elPrev),pb=elPrev.querySelector('.dv-pb'),sc=pb?pb.scrollTop:0;
+    var tmp=document.createElement('div');tmp.innerHTML=dvApercuHtml(e,j,ctxApercu(e));
+    var pm=pb&&pb.querySelector('.dv-pm'),ph=elPrev.querySelector('.dv-ph'),
+        pb2=tmp.querySelector('.dv-pb'),pm2=pb2&&pb2.querySelector('.dv-pm'),ph2=tmp.querySelector('.dv-ph');
+    if(elPrev.getAttribute('data-rel')===e.rel&&pm&&pm2&&ph&&ph2){
+      elPrev.replaceChild(ph2,ph);
+      [].slice.call(pb.children).forEach(function(c){if(c!==pm)pb.removeChild(c);});
+      [].slice.call(pb2.children).forEach(function(c){if(c!==pm2)pb.appendChild(c);});
+    }else{
+      couperMedias(elPrev);
+      elPrev.innerHTML=tmp.innerHTML;pb=elPrev.querySelector('.dv-pb');
+    }
+    elPrev.setAttribute('data-rel',e.rel);
+    if(pb)pb.scrollTop=sc;
+    restaurer(elPrev,g,elPrev.querySelector('[data-dv-xprev]'));
+  }
   function fermerApercu(){
     if(elPrev.hidden)return false;
-    elPrev.querySelectorAll('video,audio').forEach(function(m){try{m.pause();m.removeAttribute('src');m.load();}catch(x){}});
+    couperMedias(elPrev);
     var dedans=elPrev.contains(document.activeElement);
-    elPrev.hidden=true;elPrev.innerHTML='';
-    var i=D.apercu;D.apercu=-1;
+    elPrev.hidden=true;elPrev.innerHTML='';elPrev.removeAttribute('data-rel');
+    var i=D.apercu;D.apercu=-1;D.zp=null;
     if(dedans){var b=root.querySelector('[data-dv-info="'+i+'"]');if(b)b.focus({preventScroll:true});}
     return true;
   }
+  /* actions de l'aperçu seules (statut en cours, formulaire), sans toucher au lecteur */
+  function majPact(){
+    var el=zoneEl('p'),e=D.idx&&D.idx.entrees[D.apercu];
+    if(!el||!e)return;
+    if(D.zp&&D.zp.statut===dvStatut(e))D.zp=null;
+    var g=garder(el);
+    el.innerHTML=dvActionsHtml(e,{v:D.vises[e.id]||'',z:D.zp});
+    restaurer(el,g,elPrev.querySelector('[data-dv-xprev]'));
+  }
+  /* re-rendu d'une zone : champs saisis et focus conservés (focus perdu → premier contrôle actif, sinon repli) */
+  function garder(el){
+    var o={v:{},dedans:false,f:null},a=document.activeElement;
+    [].forEach.call(el.querySelectorAll('[data-dv-f]'),function(x){o.v[x.getAttribute('data-dv-f')]=x.value;});
+    if(a&&a!==el&&el.contains(a)){
+      o.dedans=true;
+      if(a.getAttribute('data-dv-f'))o.f='[data-dv-f="'+a.getAttribute('data-dv-f')+'"]';
+      else if(a.getAttribute('data-dv-a'))o.f='[data-dv-a="'+a.getAttribute('data-dv-a')+'"]';
+      else if(a.hasAttribute('data-dv-xprev'))o.f='[data-dv-xprev]';
+      else if(a.hasAttribute('data-dv-copy'))o.f='[data-dv-copy]';
+    }
+    return o;
+  }
+  function restaurer(el,o,repli){
+    Object.keys(o.v).forEach(function(k){var x=el.querySelector('[data-dv-f="'+k+'"]');if(x)x.value=o.v[k];});
+    if(!o.dedans)return;
+    var a=document.activeElement;if(a&&a!==document.body&&el.contains(a))return; /* resté en place */
+    var f=o.f?el.querySelector(o.f):null;
+    if(!f||f.disabled)f=el.querySelector('[data-dv-f],[data-dv-a]:not([disabled])')||repli||null;
+    if(f){try{f.focus({preventScroll:true});}catch(x){}}
+  }
 
-  /* ---- clic sur un média : copie du chemin ---- */
+  /* ---- clic sur un média : copie du chemin (mode sélection : coche) ---- */
   function choisir(i){
+    if(D.mode){cocher(i);return;}
     var e=D.idx&&D.idx.entrees[i];if(!e)return;
     dvCopier(e.chemin).then(function(ok){
       if(ok)dvToast('Chemin copié');
@@ -681,6 +978,230 @@ function dvCreer(host,opts){
     });
     var t=root.querySelector('.dv-tile[data-i="'+i+'"]');
     if(t){t.classList.add('dv-done');setTimeout(function(){t.classList.remove('dv-done');},900);}
+  }
+
+  /* ---- mode sélection ---- */
+  function basculerMode(on){
+    D.mode=!!on;
+    if(!D.mode){D.coche=Object.create(null);D.zb=null;}
+    renderTop();renderMain();
+  }
+  function quitterMode(){basculerMode(false);var b=q1('[data-dv-mode]');if(b)b.focus({preventScroll:true});}
+  function cocher(i){
+    var e=D.idx&&D.idx.entrees[i];if(!e)return;
+    if(!dvIdOk(e.id)){dvToast('Identifiant de média non reconnu — statut non modifiable ici',{long:true});return;}
+    if(D.coche[e.id])delete D.coche[e.id];else D.coche[e.id]=true;
+    var on=!!D.coche[e.id],t=root.querySelector('.dv-tile[data-i="'+i+'"]');
+    if(t){t.classList.toggle('dv-sel',on);var b=t.querySelector('.dv-tb');if(b)b.setAttribute('aria-pressed',on?'true':'false');}
+    renderBar();
+  }
+  function toutCocher(){D.affiches.forEach(function(id){D.coche[id]=true;});renderMain();}
+  function renderBar(){
+    if(!elBar)return;
+    if(!D.mode){if(!elBar.hidden||elBar.innerHTML){elBar.hidden=true;elBar.innerHTML='';}return;}
+    var g=garder(elBar),ks=Object.keys(D.coche),n=ks.length,aff=Object.create(null);
+    D.affiches.forEach(function(id){aff[id]=1;});
+    var hors=ks.filter(function(id){return !aff[id];}).length;
+    if(!elBar.querySelector('.dv-sbn'))elBar.innerHTML='<span class="dv-sbn" aria-live="polite"></span><div class="dv-sbx"></div>';
+    elBar.querySelector('.dv-sbn').textContent=dvNbSel(n,hors);
+    if(D.zb)D.zb.n=n;
+    var tous=D.affiches.length>0&&D.affiches.every(function(id){return !!D.coche[id];});
+    elBar.querySelector('.dv-sbx').innerHTML=dvSelBarHtml({n:n,nAff:D.affiches.length,tous:tous,z:D.zb});
+    elBar.hidden=false;
+    restaurer(elBar,g,q1('[data-dv-mode]'));
+  }
+
+  /* ---- statuts : prénom, formulaires, envoi, suivi des actions ---- */
+  function prenomActuel(){
+    var v='';
+    try{v=opts.prenom?(opts.prenom()||''):'';}catch(x){}
+    if(!v){try{v=localStorage.getItem('crea_prenom')||'';}catch(x){}}
+    return v||D.prenomMem||'';
+  }
+  function prenomSauver(v){
+    D.prenomMem=v;
+    try{localStorage.setItem('crea_prenom',v);}catch(x){}
+    if(opts.surPrenom){try{opts.surPrenom(v);}catch(x){}}
+  }
+  /* zone 'p' = actions de l'aperçu (un média), 'b' = barre de sélection (les médias cochés) */
+  function zoneDe(el){var z=el&&el.closest?el.closest('[data-dv-zone]'):null;return z&&z.getAttribute('data-dv-zone')==='p'?'p':'b';}
+  function zoneEl(z){return z==='p'?(elPrev.hidden?null:elPrev.querySelector('.dv-pact')):elBar;}
+  function zoneForm(z){return z==='p'?D.zp:D.zb;}
+  function zoneSet(z,v){if(z==='p')D.zp=v;else D.zb=v;}
+  function zoneRender(z){if(z==='p')majPact();else renderBar();}
+  function zoneIds(z){
+    if(z==='p'){var e=D.idx&&D.idx.entrees[D.apercu];return e?[e.id]:[];}
+    return Object.keys(D.coche);
+  }
+  function ouvrirForm(z,statut){
+    var cur=zoneForm(z);
+    if(cur&&cur.statut===statut){fermerForm(z);return;}
+    var brut=prenomActuel(),p=dvPrenom(brut);
+    zoneSet(z,{statut:statut,raison:statut==='ecarte',prenom:!p.ok,pv:p.ok?'':brut,
+      err:!p.ok&&brut?'« '+brut+' » refusé — '+p.err:'',n:zoneIds(z).length});
+    zoneRender(z);
+    var el=zoneEl(z),f=el&&el.querySelector('[data-dv-f]');
+    if(f)f.focus();
+  }
+  function fermerForm(z){
+    var cur=zoneForm(z);if(!cur)return false;
+    zoneSet(z,null);zoneRender(z);
+    var el=zoneEl(z),b=el&&el.querySelector('[data-dv-a="'+(cur.statut==='ecarte'?'ecarter':'valider')+'"]');
+    if(b&&!b.disabled)b.focus({preventScroll:true});
+    return true;
+  }
+  /* Valider : envoi direct si le prénom est connu, sinon petite demande intégrée ; Écarter… : raison obligatoire */
+  function demander(z,statut){
+    if(statut==='ecarte'){ouvrirForm(z,'ecarte');return;}
+    var p=dvPrenom(prenomActuel());
+    if(!p.ok){ouvrirForm(z,statut);return;}
+    if(zoneForm(z)){zoneSet(z,null);zoneRender(z);}
+    lancer(z,statut,null,p.v);
+  }
+  function soumettre(z){
+    var cur=zoneForm(z),el=zoneEl(z);if(!cur||!el)return;
+    var err=el.querySelector('.dv-ferr'),raison=null;
+    function champ(k){return el.querySelector('[data-dv-f="'+k+'"]');}
+    function refus(k,m){if(err)err.textContent=m;var f=champ(k);if(f){f.setAttribute('aria-invalid','true');f.focus();}}
+    [].forEach.call(el.querySelectorAll('[data-dv-f]'),function(x){x.removeAttribute('aria-invalid');});
+    if(cur.raison){var r=dvRaison((champ('r')||{}).value);if(!r.ok)return refus('r',r.err);raison=r.v;}
+    var p=dvPrenom(cur.prenom?(champ('p')||{}).value:prenomActuel());
+    if(!p.ok){
+      if(cur.prenom)return refus('p',p.err);
+      /* prénom effacé ou changé ailleurs entre-temps : on le demande dans le même formulaire */
+      cur.prenom=true;cur.pv=prenomActuel();cur.err=p.err;zoneRender(z);
+      var f=champ('p');if(f)f.focus();
+      return;
+    }
+    if(cur.prenom)prenomSauver(p.v);
+    zoneSet(z,null);zoneRender(z);
+    lancer(z,cur.statut,raison,p.v);
+  }
+  function appel(path,o){
+    var P0=opts.auth?opts.auth():null;
+    if(!P0||!P0.key||!P0.worker)return Promise.reject(new Error('clé d’accès absente du build'));
+    o=o||{};o.headers=Object.assign({'Authorization':'Bearer '+P0.key},o.headers||{});o.cache='no-store';
+    return fetch(P0.worker+path,o).then(function(r){return r.text().then(function(t){
+      var j=null;try{j=JSON.parse(t);}catch(x){}
+      if(!r.ok)throw new Error((j&&j.error)||('HTTP '+r.status));
+      if(!j||typeof j!=='object')throw new Error('réponse illisible du serveur');
+      return j;});});
+  }
+  function motif(e){var m=String(e&&e.message||e);return /fetch|network|load failed/i.test(m)?'connexion au serveur impossible':m;}
+  /* envoi : un POST /biblio/statut par lot de 200 ids ; les tuiles passent « en cours » tout de suite
+     (verrou contre le double clic), et en sortent si l'envoi échoue */
+  function lancer(z,statut,raison,par){
+    if(D.etat!=='ok'){dvToast('Bibliothèque pas encore chargée — réessayez dans un instant');return;}
+    var sel=zoneIds(z),g=dvRegrouper(D.idx,sel,statut,D.vises);
+    if(!g.n){dvToast(dvLibEnvoi(g,statut),{long:true});return;}
+    g.lots.forEach(function(l){l.forEach(function(id){D.vises[id]=statut;});});
+    renderMain();majPact();
+    /* env : bilan de CET envoi (tous ses lots), annoncé en un seul message quand son dernier lot est fini */
+    var env={statut:statut,lots:0,fin:false,info:false,ok:0,retard:false,echec:0,motif:'',suspens:0,perdu:false},i=0,transmis=0;
+    function suivant(){
+      if(i>=g.lots.length){
+        /* la sélection de CET envoi (ids ignorés compris) sort de la barre ; coches et formulaire ouverts entre-temps restent */
+        if(z==='b'){sel.forEach(function(id){delete D.coche[id];});renderMain();}
+        dvToast(dvLibEnvoi(g,statut),{long:g.deja+g.occupes+g.invalides>0,ms:2600});
+        env.fin=true;bilan(env);
+        return null;
+      }
+      var lot=g.lots[i];
+      return appel('/biblio/statut',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({ids:lot,statut:statut,raison:statut==='ecarte'?raison:null,par:par})})
+        .then(function(j){
+          var a=j.action;if(!a||a.id==null)throw new Error('réponse inattendue du serveur');
+          var now=Date.now();
+          D.acts[String(a.id)]={ids:lot,statut:statut,t0:now,vu:now,env:env};
+          env.lots++;transmis+=lot.length;i++;
+          if(z==='b')lot.forEach(function(id){delete D.coche[id];});
+          planifier();
+          return suivant();
+        });
+    }
+    suivant().catch(function(e){
+      for(var k=i;k<g.lots.length;k++)g.lots[k].forEach(function(id){if(D.vises[id]===statut)delete D.vises[id];});
+      renderMain();majPact();
+      env.fin=true;
+      var m=motif(e),ze=zoneEl(z);
+      /* prénom refusé par le serveur : on le redemande (sinon chaque clic renverrait le même prénom) */
+      if(!transmis&&/prénom/i.test(m)&&ze&&(z==='b'||zoneIds('p')[0]===sel[0])){
+        zoneSet(z,{statut:statut,raison:statut==='ecarte',rv:raison||'',prenom:true,pv:par,err:'Refusé par le serveur : '+m,n:zoneIds(z).length});
+        zoneRender(z);
+        var f=zoneEl(z)&&zoneEl(z).querySelector('[data-dv-f="p"]');if(f){f.setAttribute('aria-invalid','true');f.focus();}
+        return;
+      }
+      dvToast('Envoi refusé : '+m+(transmis?' ('+dvPluriel(transmis,'média')+' déjà transmis)':''),{err:true});
+      bilan(env);
+    });
+  }
+  function bilan(env){
+    if(!env.fin||env.lots)return;
+    var b=dvLibBilan(env);if(b)dvToast(b.msg,{err:b.err,long:b.long,ms:3200});
+  }
+  /* sondage des actions en cours : toutes les 2 s (50 par requête) ; au-delà de 3 min, toutes les 10 s tant que le
+     serveur les dit en attente / en cours (15 min au plus) ; sans nouvelles du serveur pendant 3 min : on rend la main */
+  var sonde={t:0,vol:false};
+  function planifier(){
+    if(sonde.t||sonde.vol)return;
+    var ks=Object.keys(D.acts);if(!ks.length)return;
+    var now=Date.now(),vite=ks.some(function(k){return now-D.acts[k].t0<DV_SONDE_MAX_MS;});
+    sonde.t=setTimeout(sonder,vite?DV_SONDE_MS:DV_SONDE_LENT_MS);
+  }
+  function sonder(){
+    sonde.t=0;
+    var now=Date.now(),longs=[];
+    Object.keys(D.acts).forEach(function(k){
+      var a=D.acts[k];
+      if(now-a.vu>DV_SONDE_MAX_MS)finir(k,'perdu','');
+      else if(now-a.t0>DV_SONDE_FIN_MS)finir(k,'long','');
+      else if(now-a.t0>DV_SONDE_MAX_MS&&!a.env.info){a.env.info=true;longs.push(a.env);}
+    });
+    longs.forEach(function(env){
+      var n=0;Object.keys(D.acts).forEach(function(k){if(D.acts[k].env===env)n+=D.acts[k].ids.length;});
+      dvToast('Toujours en cours côté serveur ('+dvPluriel(n,'média')+') — le résultat s’affichera à la fin',{long:true});
+    });
+    var ks=Object.keys(D.acts);if(!ks.length)return;
+    var lots=[];for(var i=0;i<ks.length;i+=50)lots.push(ks.slice(i,i+50));
+    sonde.vol=true;
+    Promise.all(lots.map(function(l){
+      return appel('/biblio/actions?ids='+l.join(',')).then(function(j){
+        var t=Date.now();
+        (Array.isArray(j.actions)?j.actions:[]).forEach(function(a){
+          var k=String(a&&a.id);if(!dvA(D.acts,k))return;
+          D.acts[k].vu=t;
+          if(a.etat==='fait'||a.etat==='erreur')finir(k,a.etat,a.resultat);
+        });
+      },function(){/* réseau : on retentera au prochain passage */});
+    })).then(function(){sonde.vol=false;planifier();});
+  }
+  /* etat : 'fait' | 'erreur' | 'perdu' (sans nouvelles du serveur) | 'long' (toujours en file / en cours à 15 min) */
+  function finir(k,etat,resultat){
+    var a=D.acts[k];if(!a)return;
+    delete D.acts[k];
+    if(etat==='fait'){relire(a,0);return;}
+    liberer(a);
+    var env=a.env;
+    if(etat==='erreur'){env.echec+=a.ids.length;env.motif=dvCourt(resultat||'erreur inconnue du serveur',240);}
+    else{env.suspens+=a.ids.length;if(etat==='perdu')env.perdu=true;}
+    env.lots--;bilan(env);
+    recharger(); /* un écart multiple peut avoir réussi en partie */
+  }
+  function liberer(a){
+    a.ids.forEach(function(id){if(D.vises[id]===a.statut)delete D.vises[id];});
+    renderMain();majPact();
+  }
+  /* relit l'index après la fin d'un chargement déjà lancé (il a pu partir avant la fin de l'action) */
+  function recharger(){return (D.enCours||Promise.resolve()).then(function(){return charger();});}
+  /* action faite : l'index est relu jusqu'à ce qu'il montre le statut visé (3 essais espacés de 4 s) */
+  function relire(a,essai){
+    recharger().then(function(){
+      var ok=D.etat==='ok'&&dvReflete(D.idx,a.ids,a.statut);
+      if(!ok&&essai<2){setTimeout(function(){relire(a,essai+1);},DV_RELECTURE_MS);return;}
+      liberer(a);
+      a.env.ok+=a.ids.length;if(!ok)a.env.retard=true;
+      a.env.lots--;bilan(a.env);
+    });
   }
 
   /* ---- lecture muette au survol (pointeur fin, hors reduced-motion) ---- */
@@ -725,6 +1246,16 @@ function dvCreer(host,opts){
   /* ---- délégation des clics ---- */
   root.addEventListener('click',function(ev){
     var t=ev.target,b;
+    if((b=t.closest('[data-dv-a]'))){
+      var za=zoneDe(b),ac=b.getAttribute('data-dv-a');
+      if(ac==='valider')demander(za,'valide');
+      else if(ac==='ecarter')ouvrirForm(za,'ecarte');
+      else if(ac==='fannul')fermerForm(za);
+      else if(ac==='tout')toutCocher();
+      else if(ac==='quitter')quitterMode();
+      return;
+    }
+    if((b=t.closest('[data-dv-mode]'))){if(D.mode)basculerMode(false);else basculerMode(true);return;}
     if((b=t.closest('[data-dv-pick]'))){choisir(Number(b.getAttribute('data-dv-pick')));return;}
     if((b=t.closest('[data-dv-info]'))){ouvrirApercu(Number(b.getAttribute('data-dv-info')));return;}
     if((b=t.closest('[data-dv-copy]'))){
@@ -758,18 +1289,35 @@ function dvCreer(host,opts){
     }
   });
   elQ.addEventListener('input',function(){D.q=elQ.value;render();haut();});
+  /* formulaires raison / prénom : Entrée valide (Maj+Entrée = saut de ligne dans la raison) */
+  root.addEventListener('submit',function(ev){
+    var f=ev.target&&ev.target.closest?ev.target.closest('[data-dv-form]'):null;
+    if(!f)return;
+    ev.preventDefault();soumettre(zoneDe(f));
+  });
+  root.addEventListener('keydown',function(ev){
+    var t=ev.target;
+    if(!t||!t.getAttribute||t.getAttribute('data-dv-f')!=='r')return;
+    if(ev.key==='Enter'&&!ev.shiftKey&&!ev.isComposing){ev.preventDefault();soumettre(zoneDe(t));}
+  });
 
-  /* Échap : aperçu d'abord, puis recherche en cours ; false = rien à fermer ici */
+  /* Échap : formulaire de l'aperçu, aperçu, formulaire de la barre, recherche en cours, mode sélection ;
+     false = rien à fermer ici (la pop-up se ferme alors) */
   function echap(){
+    if(!elPrev.hidden&&D.zp&&fermerForm('p'))return true;
     if(fermerApercu())return true;
+    if(D.zb&&fermerForm('b'))return true;
     if(document.activeElement===elQ&&elQ.value){elQ.value='';D.q='';render();return true;}
+    if(D.mode){quitterMode();return true;}
     return false;
   }
   function ouvrir(o){
     o=o||{};
     if(o.section&&dvA(DV_SECTIONS,o.section))D.section=o.section;
-    /* arrivée : refs = tout ; B-rolls = produit de la session, sinon Coussin */
+    /* arrivée : refs = tout ; B-rolls = produit de la session, sinon Coussin ; hors mode sélection
+       (les changements de statut en cours continuent d'être suivis) */
     arrivee(o.produit&&o.produit!=='commun'?o.produit:null);
+    D.mode=false;D.coche=Object.create(null);D.zb=null;
     fermerApercu();
     if(D.q){D.q='';elQ.value='';}
     if(D.etat==='ok')valider();
