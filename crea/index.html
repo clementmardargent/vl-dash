@@ -177,7 +177,7 @@
   </div>
 </div>
 <script>
-const BLOB="{\"salt\":\"RaTqOOMWMdhnxt26yjngbw==\",\"iv\":\"S0LondiAysPAs1cO\",\"data\":\"1/SxRKVethPr9FmgBju3NwCnWH21PWq6eKEfzmBRcRkF/QzeI5b0claMwH83uclWHrPncyumaTHVSrvI+lLycQ0TRf4Gb+/Bkft2+F2uXJW7Xn8+vlzVS6PzwbURA2GCB1zzc89SnL5eBk8hU3pNrh+3tvzZIu2jivjWfHJxsHlmeJBbkIVJ06r4rHkJIQ==\"}";
+const BLOB="{\"salt\":\"G05ntvG+zfBTzhpt4Bpjaw==\",\"iv\":\"9ICRWIbEN1aXSgQX\",\"data\":\"LGpZkXKyBrDzLL0aG+AmuGi68HCCLSnbEd0yVfXPJw8FcXUugoO7GQ3i18VIgkRDFPaWk5ON8oKrw7849yXzP7SlUawrdTObbas6XhBk91Cbfz8vRjg2IXgUqZsFE8Y/8Tj4UcYlGN1lLRlJYWVARJIbDJAuHSK9dn3Rf/fGVgqmtq8KdTDEsH8Gn/tAsA==\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
@@ -227,16 +227,12 @@ var FILE_SVG='<svg viewBox="0 0 24 24" style="width:17px;height:17px;fill:none;s
 /* markdown léger dans les bulles : gras, italique, code, liens, titres, puces — tout est échappé d'abord */
 function mdInline(s){
   var h=esc(s);
-  h=h.replace(/**([^*
-]+)**/g,'<strong>$1</strong>');
-  h=h.replace(/(^|[s(])*([^*
-]+)*(?=[s.,;:!?)]|$)/g,'$1<em>$2</em>');
-  h=h.replace(/`([^`
-]+)`/g,'<code>$1</code>');
-  h=h.replace(/[([^]
-]+)]((https?://[^)s]+))/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
-  h=h.replace(/^#{1,4}s+(.+)$/gm,'<span class="mdh">$1</span>');
-  h=h.replace(/^[-*•]s+/gm,'<span class="mdd">—</span> ');
+  h=h.replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>');
+  h=h.replace(/(^|[\s(])\*([^*\n]+)\*(?=[\s.,;:!?)]|$)/g,'$1<em>$2</em>');
+  h=h.replace(/`([^`\n]+)`/g,'<code>$1</code>');
+  h=h.replace(/\[([^\]\n]+)\]\((https?:\/\/[^)\s]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+  h=h.replace(/^#{1,4}\s+(.+)$/gm,'<span class="mdh">$1</span>');
+  h=h.replace(/^[-*•]\s+/gm,'<span class="mdd">—</span> ');
   return h;
 }
 
