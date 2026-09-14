@@ -80,6 +80,7 @@
 .dv-td{display:flex;align-items:center;gap:8px;width:100%;padding:6px 8px 6px 28px;border:none;border-radius:8px;background:transparent;color:var(--mut);font-size:13px;font-weight:500;text-align:left;cursor:pointer}
 .dv-td:hover{background:var(--panel);color:var(--ink)}
 .dv-td.vide{opacity:.55}
+.dv-td.dv-all{margin-bottom:6px;padding-left:8px;color:var(--ink);font-size:13.5px;font-weight:700}
 .dv-td.on,.dv-td.on:hover{background:var(--grn-bg);color:var(--grn);font-weight:700;opacity:1}
 .dv-td.on .dv-tn{color:var(--grn)}
 .dv-chips{display:none}
@@ -92,7 +93,9 @@
 .dv-cp button:hover{color:var(--ink)}
 .dv-cn{flex:none;font-size:12px;font-variant-numeric:tabular-nums}
 /* -- grille de tuiles -- */
-.dv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:18px 14px;padding:16px 18px 28px}
+/* mosaïque : 5 colonnes pour les B-rolls, 3 pour les refs (2 sur mobile) ; chaque vignette garde son ratio */
+.dv-grid{display:flex;align-items:flex-start;gap:14px;padding:16px 18px 28px}
+.dv-col{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:18px}
 .dv-grid:empty{display:none}
 .dv-tile{position:relative;min-width:0}
 .dv-tb{display:flex;flex-direction:column;gap:3px;width:100%;padding:0;border:none;border-radius:10px;background:transparent;color:inherit;text-align:left;cursor:pointer}
@@ -192,7 +195,8 @@
 .dv-chip.on{background:var(--grn);border-color:var(--grn);color:var(--cream)}
 .dv-chip.on .dv-tn{color:var(--cream);opacity:.8}
 .dv-crumb{padding:10px 12px}
-.dv-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 10px;padding:12px 12px 24px}
+.dv-grid{gap:10px;padding:12px 12px 24px}
+.dv-col{gap:14px}
 .dv-prev{width:100%;border-left:none}
 .dv-pb{padding:14px 14px 20px}
 .dv-pop{padding:0}
@@ -222,7 +226,7 @@
 </main>
 </div>
 <script>
-const BLOB="{\"salt\":\"jwqg+k23q2oNQObtpFS38w==\",\"iv\":\"2TjFXFOFuUHNUCSz\",\"data\":\"YuVuB00lhy38BAnmBGVQcuFXoMkCsYqUD7zg6CRNBmCsaR1WsHn8Vt1WUwboa8mg6j/PzJNdrviEfZv0MHVMPT+g89K/LJV6DTBPATcSo3SlzyHPIjgqyvbpj0dXCk3+4RbtrERdE3B0k7kclxydr9zSat1TpgPjyguZilsU3U0hPjBKGGwDOE45mEerrg==\"}";
+const BLOB="{\"salt\":\"3i/T9dVl7ZGRuH0rqnDpfQ==\",\"iv\":\"GOACLfr1LwsVg9Dr\",\"data\":\"eIjFYun+nCQU8aOKnD4H5Aifq8HBn7z/THXvQh0riiGlwXgVHryKpLFswuK4fHlNzBYErNhrbCiN4aAa25w++FUy11LsUS+74rg6kN57q0hvznKrPp75DK3+S4Lj1WOyBPLxZhzjLDedSDCaFi7M/AnvnIRlvATk4OCWI/V6I5L0kz9loPDJ6GNajbXPdg==\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
@@ -299,6 +303,14 @@ function dvTaille(o){
   if(o<102400)return Math.max(1,Math.round(o/1024))+' ko';
   var mo=o/1048576;return (mo>=10?String(Math.round(mo)):mo.toFixed(1).replace('.',','))+' Mo';
 }
+/* ratio largeur/hauteur d'une vignette : celui du média (champ format « LxH »), 1:1 pour l'audio,
+   borné pour qu'une capture très haute ou très large ne déforme pas la grille */
+function dvRatio(e){
+  if(dvKind(e)==='audio')return 1;
+  var m=/^(\d+)\s*[x×]\s*(\d+)$/.exec(String(e&&e.format||'').trim());
+  var r=m&&Number(m[2])>0?Number(m[1])/Number(m[2]):0;
+  return r>0?Math.min(2.4,Math.max(0.42,r)):0.75;
+}
 /* URL signée d'un fichier : chaque segment de rel encodé, puis le jeton */
 function dvUrl(base,qs,rel){
   if(!rel)return '';
@@ -364,13 +376,13 @@ function dvComparateur(idx,section){
       ||String(a.fichier).localeCompare(String(b.fichier),'fr',{numeric:true});
   };
 }
-/* f = {section, sel:{produit,dossier|null}, statuts, q} ; en recherche : toute la section */
+/* f = {section, sel:{produit|null (= tout), dossier|null}, statuts, q} ; en recherche : toute la section */
 function dvFiltrer(idx,f){
   var toks=dvTokens(f.q),rech=toks.length>0,items=[],masques=0;
   dvEntrees(idx).forEach(function(e){
     if(e.section!==f.section)return;
     if(rech){if(!dvMatch(e,toks))return;}
-    else{if(e.produit!==f.sel.produit)return;if(f.sel.dossier!=null&&e.dossier!==f.sel.dossier)return;}
+    else if(f.sel.produit!=null){if(e.produit!==f.sel.produit)return;if(f.sel.dossier!=null&&e.dossier!==f.sel.dossier)return;}
     if(!dvPasse(e,f.statuts)){masques++;return;}
     items.push(e);
   });
@@ -386,7 +398,7 @@ function dvTuileHtml(e,i,ctx){
   var dur=(k==='video'||k==='audio')&&dvDuree(e.duree)?'<span class="dv-dur">'+dvDuree(e.duree)+'</span>':'';
   return '<div class="dv-tile'+(st==='ecarte'?' dv-ec':'')+'" data-i="'+i+'" data-k="'+k+'">'
     +'<button type="button" class="dv-tb" data-dv-pick="'+i+'" title="'+dvEsc(e.fichier+' — cliquer pour copier le chemin')+'">'
-    +'<span class="dv-th">'+vis+dur+'<span class="dv-pill dv-s-'+st+'" title="'+DV_STATUT_LABEL[st]+'" aria-hidden="true"></span>'
+    +'<span class="dv-th" style="aspect-ratio:'+dvRatio(e).toFixed(4)+'">'+vis+dur+'<span class="dv-pill dv-s-'+st+'" title="'+DV_STATUT_LABEL[st]+'" aria-hidden="true"></span>'
     +'<span class="dv-ok" aria-hidden="true">'+DV_SVG.ok+'</span></span>'
     +'<span class="dv-nm">'+dvEsc(nom)+'<span class="dv-sr"> — '+DV_STATUT_LABEL[st]+'</span></span>'
     +(e.description?'<span class="dv-ds">'+dvEsc(e.description)+'</span>':'')
@@ -402,7 +414,9 @@ function dvDosHtml(cls,p,code,label,n,on){
 }
 function dvArbreHtml(idx,st){
   var rech=dvTokens(st.q).length>0;
-  return dvArbre(idx,st.section,st.statuts).map(function(p){
+  /* « Tout » : toute la section, tous produits confondus (arrivée par défaut dans les refs) */
+  return dvDosHtml('dv-td dv-all','*',null,'Tout',dvCompteSection(idx,st.section,st.statuts),!rech&&st.sel.produit==null)
+    +dvArbre(idx,st.section,st.statuts).map(function(p){
     var ouvert=!!st.ouverts[p.produit];
     var h='<div class="dv-tp'+(ouvert?' open':'')+'"><button type="button" class="dv-tpb" data-dv-prod="'+dvEsc(p.produit)+'" aria-expanded="'+ouvert+'">'
       +DV_SVG.chev+'<span class="dv-tl">'+dvEsc(p.label)+'</span><span class="dv-tn">'+p.n+'</span></button>';
@@ -417,7 +431,8 @@ function dvArbreHtml(idx,st){
 /* mobile : rangée des produits + rangée des dossiers du produit courant */
 function dvChipsHtml(idx,st){
   var rech=dvTokens(st.q).length>0,a=dvArbre(idx,st.section,st.statuts),cur=null;
-  var r1=a.map(function(p){if(p.produit===st.sel.produit)cur=p;
+  var r1=dvDosHtml('dv-chip','*',null,'Tout',dvCompteSection(idx,st.section,st.statuts),!rech&&st.sel.produit==null)
+    +a.map(function(p){if(p.produit===st.sel.produit)cur=p;
     return dvDosHtml('dv-chip',p.produit,null,p.label,p.n,!rech&&st.sel.produit===p.produit);}).join('');
   var r2=cur?dvDosHtml('dv-chip',cur.produit,null,'Tout',cur.n,!rech&&st.sel.dossier==null)
     +cur.dossiers.map(function(d){return dvDosHtml('dv-chip',cur.produit,d.code,d.label,d.n,!rech&&st.sel.dossier===d.code);}).join(''):'';
@@ -426,6 +441,7 @@ function dvChipsHtml(idx,st){
 function dvCrumbHtml(idx,st,n,masques){
   var sep='<span class="sep">›</span>',h=dvEsc(DV_SECTIONS[st.section]);
   if(dvTokens(st.q).length)h+=sep+'<span class="here">Recherche « '+dvEsc(String(st.q).trim())+' »</span>';
+  else if(st.sel.produit==null)h+=sep+'<span class="here">Tout</span>';
   else if(st.sel.dossier==null)h+=sep+'<span class="here">'+dvEsc(dvProdLabel(st.sel.produit))+'</span>';
   else h+=sep+'<button type="button" data-dv-p="'+dvEsc(st.sel.produit)+'" data-dv-dos="*">'+dvEsc(dvProdLabel(st.sel.produit))+'</button>'
     +sep+'<span class="here">'+dvEsc(dvLabel(idx,st.sel.dossier))+'</span>';
@@ -497,20 +513,21 @@ function dvToast(msg){
    Même comportement partout : un clic sur un média copie son chemin. */
 function dvCreer(host,opts){
   opts=opts||{};
+  /* à chaque arrivée (page ou pop-up) : refs = tout, sans filtre de produit ; B-rolls = Coussin
+     (ou le produit de la session). Seule la dernière section consultée est mémorisée. */
   var D={etat:'init',idx:null,base:'',qs:'',charge:0,err:'',retry:true,enCours:null,q:'',apercu:-1,
-    section:'plans',sel:{plans:{produit:'coussin',dossier:null},references:{produit:'coussin',dossier:null}},
-    statuts:{valide:true,a_valider:true,ecarte:false},ouverts:{coussin:true}};
+    section:'plans',sel:{},statuts:{},ouverts:{}};
+  function arrivee(produit){
+    D.sel={plans:{produit:produit||'coussin',dossier:null},references:{produit:null,dossier:null}};
+    D.ouverts={plans:{},references:{}};D.ouverts.plans[D.sel.plans.produit]=true;
+    D.statuts={valide:true,a_valider:true,ecarte:false};
+  }
+  arrivee(null);
   try{
     var s0=JSON.parse(localStorage.getItem('dv_etat')||'null');
-    if(s0&&typeof s0==='object'){
-      if(dvA(DV_SECTIONS,s0.section))D.section=s0.section;
-      if(s0.statuts&&typeof s0.statuts==='object')Object.keys(DV_STATUT_LABEL).forEach(function(k){if(typeof s0.statuts[k]==='boolean')D.statuts[k]=s0.statuts[k];});
-      if(s0.sel&&typeof s0.sel==='object')Object.keys(DV_SECTIONS).forEach(function(k){
-        var v=s0.sel[k];if(v&&typeof v.produit==='string')D.sel[k]={produit:v.produit,dossier:typeof v.dossier==='string'?v.dossier:null};});
-      if(s0.ouverts&&typeof s0.ouverts==='object'){D.ouverts={};Object.keys(s0.ouverts).forEach(function(k){if(s0.ouverts[k]===true)D.ouverts[k]=true;});}
-    }
+    if(s0&&typeof s0==='object'&&dvA(DV_SECTIONS,s0.section))D.section=s0.section;
   }catch(e){}
-  function sauver(){try{localStorage.setItem('dv_etat',JSON.stringify({section:D.section,sel:D.sel,statuts:D.statuts,ouverts:D.ouverts}));}catch(e){}}
+  function sauver(){try{localStorage.setItem('dv_etat',JSON.stringify({section:D.section}));}catch(e){}}
   host.innerHTML='<div class="dv">'
     +'<div class="dv-top">'
     +'<div class="dv-seg" role="group" aria-label="Section">'
@@ -532,16 +549,22 @@ function dvCreer(host,opts){
       elGrid=q1('.dv-grid'),elMsg=q1('.dv-msg'),elPrev=q1('.dv-prev');
   var mmFin=window.matchMedia?window.matchMedia('(hover: hover) and (pointer: fine)'):null;
   var mmCalme=window.matchMedia?window.matchMedia('(prefers-reduced-motion: reduce)'):null;
+  /* colonnes de la mosaïque : 5 B-rolls / 3 refs, 2 sur mobile (même seuil que le CSS) */
+  var mmMobile=window.matchMedia?window.matchMedia('(max-width:720px)'):null;
+  function nbColonnes(){return mmMobile&&mmMobile.matches?2:(D.section==='references'?3:5);}
+  if(mmMobile){var auChangement=function(){if(D.etat==='ok')renderMain();};
+    if(mmMobile.addEventListener)mmMobile.addEventListener('change',auChangement);else if(mmMobile.addListener)mmMobile.addListener(auChangement);}
 
-  function etat(){return {section:D.section,sel:D.sel[D.section],statuts:D.statuts,ouverts:D.ouverts,q:D.q};}
+  function etat(){return {section:D.section,sel:D.sel[D.section],statuts:D.statuts,ouverts:D.ouverts[D.section],q:D.q};}
   /* sélection mémorisée → la ramener sur un produit / dossier qui existe dans l'index reçu */
   function valider(){
     Object.keys(DV_SECTIONS).forEach(function(sec){
       var s=D.sel[sec],ps=dvProduits(D.idx,sec);
+      if(s.produit==null){s.dossier=null;return;} /* « Tout » */
       if(ps.indexOf(s.produit)===-1)s.produit=ps[0];
       if(s.dossier!=null&&dvDossiers(D.idx,sec,s.produit).indexOf(s.dossier)===-1)s.dossier=null;
     });
-    D.ouverts[D.sel[D.section].produit]=true;
+    var p0=D.sel[D.section].produit;if(p0!=null)D.ouverts[D.section][p0]=true;
   }
   function msg(h){elMsg.innerHTML=h;elMsg.hidden=!h;}
   var chipsCle='';
@@ -583,10 +606,18 @@ function dvCreer(host,opts){
     });
     var r=dvFiltrer(D.idx,st),ctx={base:D.base,qs:D.qs,ou:''};
     elCrumb.innerHTML=dvCrumbHtml(D.idx,st,r.items.length,r.masques);
-    elGrid.innerHTML=r.items.map(function(e){
-      ctx.ou=r.recherche?dvOu(D.idx,e,false):(st.sel.dossier==null?dvLabel(D.idx,e.dossier):'');
-      return dvTuileHtml(e,e._i,ctx);
-    }).join('');
+    /* mosaïque : chaque tuile va dans la colonne la moins haute (hauteur estimée d'après le ratio connu
+       du média) — l'ordre de lecture reste ligne par ligne et rien n'attend le chargement des images */
+    var n=nbColonnes(),cols=[],hs=[],c;
+    var cw=((elGrid.clientWidth||960)-36-(n-1)*14)/n;if(!(cw>40))cw=170;
+    for(c=0;c<n;c++){cols.push([]);hs.push(0);}
+    r.items.forEach(function(e){
+      ctx.ou=r.recherche||st.sel.produit==null?dvOu(D.idx,e,false):(st.sel.dossier==null?dvLabel(D.idx,e.dossier):'');
+      var k=0;for(c=1;c<n;c++){if(hs[c]<hs[k]-1)k=c;}
+      cols[k].push(dvTuileHtml(e,e._i,ctx));
+      hs[k]+=cw/dvRatio(e)+42+(e.description?34:0)+(ctx.ou?17:0);
+    });
+    elGrid.innerHTML=r.items.length?cols.map(function(t){return '<div class="dv-col">'+t.join('')+'</div>';}).join(''):'';
     if(r.items.length)msg('');
     else if(r.recherche)msg('<div class="t">Aucun résultat</div><div>Aucun média ne correspond à « '+dvEsc(D.q.trim())+' »'
       +(r.masques?' parmi les statuts affichés — '+dvPluriel(r.masques,'résultat')+' masqué'+(r.masques>1?'s':'')+' par les filtres.':'.')+'</div>');
@@ -711,15 +742,16 @@ function dvCreer(host,opts){
     }
     if((b=t.closest('[data-dv-st]'))){var k=b.getAttribute('data-dv-st');D.statuts[k]=!D.statuts[k];sauver();render();return;}
     if((b=t.closest('[data-dv-prod]'))){
-      var p=b.getAttribute('data-dv-prod');
-      if(D.ouverts[p])delete D.ouverts[p];else D.ouverts[p]=true;
+      var p=b.getAttribute('data-dv-prod'),ov=D.ouverts[D.section];
+      if(ov[p])delete ov[p];else ov[p]=true;
       sauver();elTree.innerHTML=dvArbreHtml(D.idx,etat());
       var nb=elTree.querySelector('[data-dv-prod="'+p+'"]');if(nb)nb.focus({preventScroll:true});
       return;
     }
     if((b=t.closest('[data-dv-p]'))){
       var p2=b.getAttribute('data-dv-p'),d=b.getAttribute('data-dv-dos');
-      D.sel[D.section]={produit:p2,dossier:d==='*'?null:d};D.ouverts[p2]=true;
+      if(p2==='*')D.sel[D.section]={produit:null,dossier:null};
+      else{D.sel[D.section]={produit:p2,dossier:d==='*'?null:d};D.ouverts[D.section][p2]=true;}
       if(D.q){D.q='';elQ.value='';}
       fermerApercu();sauver();render();haut();
       return;
@@ -736,10 +768,8 @@ function dvCreer(host,opts){
   function ouvrir(o){
     o=o||{};
     if(o.section&&dvA(DV_SECTIONS,o.section))D.section=o.section;
-    if(o.produit){
-      if(D.sel[D.section].produit!==o.produit)D.sel[D.section]={produit:o.produit,dossier:null};
-      D.ouverts[o.produit]=true;D.ouverts.commun=true;
-    }
+    /* arrivée : refs = tout ; B-rolls = produit de la session, sinon Coussin */
+    arrivee(o.produit&&o.produit!=='commun'?o.produit:null);
     fermerApercu();
     if(D.q){D.q='';elQ.value='';}
     if(D.etat==='ok')valider();
