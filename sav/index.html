@@ -60,7 +60,7 @@ a.tile:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(20,53,45,.10
 <footer class="vl-footer"><span>Vivélan — espace interne</span><span>v2</span></footer>
 </div>
 <script>
-const BLOB="{\"salt\":\"vbjWPhUG09VXKq+lnFoIMQ==\",\"iv\":\"Ed1iCu/tmxvYvrsx\",\"data\":\"CWh6Jkn5au781BB706IhlkOtIbW5qmRb6xON7MZc1NBHAbsRaNLT66eTE+j38CMnA/PhihYvD9hHX7j3Gu3qhmYgAc0CDJinXlrXFB6BBAU1RzpfHQRe+m6EQwh8R3khtGj93UG8YeP8/6r47z9QcCBcfij9yieJikKchMa9xkjyhuVJEA8PeikmnMpRaecugWET/OVYxt/T3q8Cw+nTleXrcad3kNRG1LpjyU0z7efW1ozTL1iiQOE=\"}";
+const BLOB="{\"salt\":\"BZXMBigaMYnyjx7jsmGqIQ==\",\"iv\":\"ClFWi68XX8wOy6G1\",\"data\":\"jVjjY9rqt5fEErhlBBFwt05xBBvPw01r/qQwwsU1+wOIAIaNy7cGK1H6gIsAYi1R2DM58ApzptUsWQHx8NQEh4G03h3dW+7WQPWiOaAmdK4bCssuTwgJQuKydF5FhdNDpI14yBcKP6yAnU8biLx611L2V1+60Tasv+4lIBnx4lJlK+JrkOzLna1fJKHRw/oZy+51k1NNTv7RmO0QLhjyao3GXC7sEI4lQ0uRp7Pwgg4u2QN8mdq0W94=\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);

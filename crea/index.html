@@ -171,7 +171,7 @@
   </div>
 </div>
 <script>
-const BLOB="{\"salt\":\"/C0anscjgV5ahT/lqbV6bA==\",\"iv\":\"HhWdAl2M+/qj+4W7\",\"data\":\"Q4HXbYOtWxfWUtjkFajiJX4WHQgC419LzKik\"}";
+const BLOB="{\"salt\":\"SiicLwV4OZ2pG0nNab7+uQ==\",\"iv\":\"/jdHhqumgSp+P9lE\",\"data\":\"KcdBC8Mz48bi5ep20uKClBIhG6XK/oCRKkde\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
