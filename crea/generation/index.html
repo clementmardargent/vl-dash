@@ -186,6 +186,11 @@
       </div>
       <div id="errBanner" class="err-banner" hidden></div>
       <div class="composer">
+        <div id="prodChoice" hidden style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <span style="font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--faint)">Produit</span>
+          <button type="button" class="chip sm on" data-prod="coussin">Coussin</button>
+          <button type="button" class="chip sm" data-prod="chaussettes">Chaussettes</button>
+        </div>
         <div id="chips" hidden></div>
         <form id="composeForm">
           <button type="button" id="attachBtn" class="btn-attach" title="Joindre un fichier"><svg viewBox="0 0 24 24" style="width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M21 12l-8.5 8.5a5 5 0 01-7-7L14 5a3.3 3.3 0 014.7 4.7L10 18.4a1.7 1.7 0 01-2.4-2.4L16 7.5"></path></svg></button>
@@ -217,7 +222,7 @@
   </div>
 </div>
 <script>
-const BLOB="{\"salt\":\"xSWc0cwtFYeWD2GdoMPowA==\",\"iv\":\"rxf11XNLnjeFgOYS\",\"data\":\"dG0k8Jyw3B8bUxZQEpZJK1T/Rd5D9q7u66KZUxJnu4gaCkUqEXDqGGDxyZkyCkZurqxj2B13RT7uCcIOUa23QSLjvtbNb/XbvNkJWmke5rlnNG+Qi/tZmF1d5SNNtwADWlcg67VBgrO3d5+O96xWE75AMdFIsCq7AR1w/08clVMbaSgkH2fPmTVisGqDfA==\"}";
+const BLOB="{\"salt\":\"avdJyam5jRsY97ylxtnX8g==\",\"iv\":\"L8y4730rl0sYSWvt\",\"data\":\"cg3PDVVwqDPYN6W4PqCy8P9JjqxBsgHz1Byg29kCLUBgn2d+j1+eC4V+KHWxzRicRjF1Xdh/z6qs/+6Rx9O+KVxyPe1Wq/WtLhRE6J/0s7bXeRIwMZhUSVPGxTeEUkmHUxEv1PphBRVlpMSJTDiep0acmTNFF/4weSNO7BlKdkNs+pWUryo78P6jZ6d/lw==\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
@@ -234,7 +239,7 @@ try{localStorage.setItem('vivelan-theme',d?'dark':'light')}catch(e){}icon();});}
 
 'use strict';
 var P=null; /* {key, worker} — depuis le blob chiffré */
-var state={sessions:[],sel:null,lastId:0,attachments:[],mdName:null,mdText:'',sending:false};
+var state={sessions:[],sel:null,lastId:0,attachments:[],mdName:null,mdText:'',sending:false,produit:'coussin'};
 var TIMER=null;
 
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
@@ -336,6 +341,10 @@ function renderHead(){
     document.getElementById('badgeAsk').hidden=sel.status!=='besoin_humain';
   }
   document.getElementById('msgInput').placeholder=sel?'Répondre à l\'agent…':'Décrivez la vidéo à produire…';
+  document.getElementById('prodChoice').hidden=!!sel; /* le produit ne se choisit qu'à la création */
+  if(sel){
+    document.getElementById('selWhen').textContent='Agent créas · '+frDay(sel.created_at)+(sel.produit?' · '+sel.produit:'');
+  }
   majBulle();
   var chips=document.getElementById('chips');
   chips.hidden=state.attachments.length===0;
@@ -435,6 +444,14 @@ document.addEventListener('click',function(e){
   var rm=e.target.closest('[data-rm]');
   if(rm){state.attachments.splice(Number(rm.getAttribute('data-rm')),1);renderHead();return;}
 });
+/* choix du produit (création de session uniquement) */
+document.getElementById('prodChoice').addEventListener('click',function(e){
+  var b=e.target.closest('[data-prod]');
+  if(!b)return;
+  state.produit=b.getAttribute('data-prod');
+  this.querySelectorAll('.chip').forEach(function(c){c.classList.toggle('on',c.getAttribute('data-prod')===state.produit);});
+});
+
 /* recherche par nom de session */
 document.getElementById('sessSearch').addEventListener('input',function(){
   state.q=this.value;renderSide();
@@ -500,7 +517,7 @@ document.getElementById('composeForm').addEventListener('submit',function(e){
   state.sending=true;
   document.getElementById('sendBtn').disabled=true;
   var start=state.sel!==null?Promise.resolve({id:state.sel})
-    :api('/sessions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({auteur:PRENOM||''})});
+    :api('/sessions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({auteur:PRENOM||'',produit:state.produit})});
   start.then(function(s){
     var sid=s.id;
     var chain=Promise.resolve();
