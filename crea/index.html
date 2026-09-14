@@ -30,6 +30,15 @@
 .sess .sb.ask{color:var(--gold)}
 .spin{flex:none;width:16px;height:16px;border-radius:50%;border:2px solid var(--grn-bg-hov);border-top-color:var(--grn);animation:spin .9s linear infinite;box-sizing:border-box}
 .dot-unread{flex:none;width:10px;height:10px;border-radius:50%;background:var(--gold)}
+.who-dot{flex:none;width:19px;height:19px;border-radius:50%;background:var(--amb-bg);color:var(--amb);font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;text-transform:uppercase}
+/* -- pop-up prénom (première visite) : impossible à fermer sans répondre -- */
+.name-overlay{display:none;position:fixed;inset:0;background:rgba(10,20,17,.82);align-items:center;justify-content:center;padding:24px;z-index:100}
+.name-overlay.open{display:flex}
+.name-box{width:100%;max-width:380px;background:var(--card);border-radius:16px;padding:28px;box-sizing:border-box;display:flex;flex-direction:column;gap:14px;box-shadow:0 24px 60px rgba(0,0,0,.4)}
+.name-box h2{font-family:'Lora',serif;font-weight:600;font-size:22px;margin:0;color:var(--ink)}
+.name-box p{margin:0;font-size:13.5px;color:var(--mut)}
+#nameInput{padding:12px 14px;font-size:15px;font-family:'Figtree',sans-serif;border:1px solid var(--bd-strong);border-radius:10px;background:var(--input);color:var(--tx);outline:none}
+#nameInput:focus{border-color:var(--grn);box-shadow:0 0 0 3px var(--bd)}
 .side-empty{padding:22px 16px;font-size:13px;color:var(--faint);text-align:center}
 /* -- zone chat -- */
 .crea-chat{flex:1;min-width:0;display:flex;flex-direction:column;min-height:0;position:relative}
@@ -166,6 +175,14 @@
   </div>
 </main>
 </div>
+<div id="nameOverlay" class="name-overlay">
+  <form id="nameForm" class="name-box">
+    <h2>Bienvenue 👋</h2>
+    <p>Première visite de l'espace Créas sur ce navigateur — dites-nous qui vous êtes, pour savoir qui lance quoi.</p>
+    <input id="nameInput" type="text" placeholder="Votre prénom" autocomplete="given-name" maxlength="40">
+    <button type="submit" class="btn-send" style="width:100%">C'est parti</button>
+  </form>
+</div>
 <div id="mdOverlay" class="md-overlay">
   <div class="md-box">
     <div class="md-head">
@@ -177,7 +194,7 @@
   </div>
 </div>
 <script>
-const BLOB="{\"salt\":\"G05ntvG+zfBTzhpt4Bpjaw==\",\"iv\":\"9ICRWIbEN1aXSgQX\",\"data\":\"LGpZkXKyBrDzLL0aG+AmuGi68HCCLSnbEd0yVfXPJw8FcXUugoO7GQ3i18VIgkRDFPaWk5ON8oKrw7849yXzP7SlUawrdTObbas6XhBk91Cbfz8vRjg2IXgUqZsFE8Y/8Tj4UcYlGN1lLRlJYWVARJIbDJAuHSK9dn3Rf/fGVgqmtq8KdTDEsH8Gn/tAsA==\"}";
+const BLOB="{\"salt\":\"P/ARlITpm5zUDKf4pKlG/Q==\",\"iv\":\"WwnbONs0Y1wCwRga\",\"data\":\"QX1ZUvYS3EIdiECr0F2wYzwxXdEXoH1Z7hONtveUqyoQHoRxoPLZa0YMqfoDDIBthzdBgkpKpbtzI9wNs+dWWYB54vqcaHDPIZWIVUlG2GdxIsrxJdTszf9AE1kPHg8yj4JHsBUai9WLAfQJSvzR6hiEizAxLcQyd48bCamd6lnHVXWfX1Zv5keJwnsVMQ==\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
@@ -236,11 +253,16 @@ function mdInline(s){
   return h;
 }
 
+function whoDot(s){
+  if(!s.auteur)return '';
+  return '<span class="who-dot" title="Lancée par '+esc(s.auteur)+'">'+esc(s.auteur.charAt(0))+'</span>';
+}
 function sessRow(s){
   var sub=subOf(s);
   return '<button type="button" class="sess'+(state.sel===s.id?' on':'')+'" data-sess="'+s.id+'">'
     +'<div style="flex:1;min-width:0"><div class="nm">'+esc(s.name)+'</div>'
     +'<div class="sb '+sub.cls+'">'+esc(sub.t)+'</div></div>'
+    +whoDot(s)
     +(sub.spin?'<span class="spin" title="L\'agent travaille"></span>':'')
     +(!sub.spin&&s.unread?'<span class="dot-unread" title="Travail à consulter"></span>':'')
     +'</button>';
@@ -248,7 +270,7 @@ function sessRow(s){
 function mobileChip(s){
   var sub=subOf(s);
   return '<button type="button" class="mchip'+(state.sel===s.id?' on':'')+'" data-sess="'+s.id+'">'
-    +esc(s.name)+(sub.spin?'<span class="spin"></span>':(s.unread?'<span class="dot-unread"></span>':''))+'</button>';
+    +esc(s.name)+whoDot(s)+(sub.spin?'<span class="spin"></span>':(s.unread?'<span class="dot-unread"></span>':''))+'</button>';
 }
 function msgHtml(m){
   var me=m.role!=='agent';
@@ -399,7 +421,7 @@ document.getElementById('composeForm').addEventListener('submit',function(e){
   state.sending=true;
   document.getElementById('sendBtn').disabled=true;
   var start=state.sel!==null?Promise.resolve({id:state.sel})
-    :api('/sessions',{method:'POST'});
+    :api('/sessions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({auteur:PRENOM||''})});
   start.then(function(s){
     var sid=s.id;
     var chain=Promise.resolve();
@@ -421,12 +443,32 @@ document.getElementById('msgInput').addEventListener('keydown',function(e){
   if((e.key==='Enter'||e.keyCode===13)&&!e.shiftKey){e.preventDefault();document.getElementById('composeForm').requestSubmit();}
 });
 
+/* ---- prénom (première visite de l'espace Créa) ---- */
+var PRENOM=null;
+try{PRENOM=localStorage.getItem('crea_prenom')||null;}catch(e){}
+function demarrer(){
+  loadSessions().catch(function(e){showErr('Worker injoignable : '+e.message);});
+  TIMER=setInterval(tick,4000);
+}
+document.getElementById('nameForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  var v=document.getElementById('nameInput').value.trim();
+  if(!v)return;
+  PRENOM=v.charAt(0).toUpperCase()+v.slice(1);
+  try{localStorage.setItem('crea_prenom',PRENOM);}catch(e2){}
+  document.getElementById('nameOverlay').classList.remove('open');
+  demarrer();
+});
 function boot(payload){
   P=payload;
   if(!P.key){showErr('Clé d\'accès absente du build — page en lecture seule.');
     document.getElementById('msgInput').disabled=true;return;}
-  loadSessions().catch(function(e){showErr('Worker injoignable : '+e.message);});
-  TIMER=setInterval(tick,4000);
+  if(!PRENOM){
+    document.getElementById('nameOverlay').classList.add('open');
+    document.getElementById('nameInput').focus();
+    return; /* rien ne charge tant que le prénom n'est pas donné */
+  }
+  demarrer();
 }
 
 (async()=>{let p=null;
