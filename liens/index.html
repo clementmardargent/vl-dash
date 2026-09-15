@@ -36,7 +36,7 @@
 .lk-cancel:hover{background:var(--grn-bg-hov)}
 .lk-submit{padding:11px 20px;font-size:13.5px;font-weight:700;font-family:'Figtree',sans-serif;color:var(--cream);background:var(--grn);border:none;border-radius:10px;cursor:pointer}
 .lk-submit:hover{background:var(--grn-dk)}
-/* catégories : À classer · Tutos · À regarder (+ sous-liste Déjà vues) · Contacts */
+/* catégories : Tutos · À regarder (+ sous-liste Déjà vues) · Contacts */
 .lk-sec{display:flex;align-items:baseline;gap:8px;margin-bottom:10px;font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--amb)}
 .lk-sec .n{font-size:11px;font-weight:600;letter-spacing:0;color:var(--faint);font-variant-numeric:tabular-nums}
 .lk-list{border-radius:14px;overflow:hidden;margin-bottom:28px}
@@ -123,10 +123,9 @@
       <div id="lk-cat-wrap" style="display:flex;flex-direction:column;gap:8px">
         <span id="lk-cat-label" style="font-size:13px;font-weight:600;color:var(--ink)">Catégorie</span>
         <div id="lk-cat" role="group" aria-labelledby="lk-cat-label" style="display:flex;flex-wrap:wrap;gap:8px">
-          <button type="button" class="chip sm on" data-cat="">À classer</button>
           <button type="button" class="chip sm" data-cat="tuto">Tuto</button>
-          <button type="button" class="chip sm" data-cat="regarder">À regarder</button>
-          <button type="button" class="chip sm" data-cat="vu">Déjà vue</button>
+          <button type="button" class="chip sm on" data-cat="regarder">À regarder</button>
+          <button type="button" class="chip sm" data-cat="vu" id="lk-cat-vu">Déjà vue</button>
         </div>
       </div>
       <div style="display:flex;gap:10px;justify-content:flex-end">
@@ -137,7 +136,7 @@
   </div>
 </div>
 <script>
-const BLOB="{\"salt\":\"vA2J2oSbOCjX00DvKTGmLQ==\",\"iv\":\"zUSMYZBf2w7dAgGV\",\"data\":\"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\"}";
+const BLOB="{\"salt\":\"BwKCVf8jVCko6u5Gmz3EHQ==\",\"iv\":\"5KhPg+Gb/OIP7YKF\",\"data\":\"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\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
@@ -203,10 +202,9 @@ var editIdx = -1, delIdx = -1, delTimer = null;
 var vuOpen = true; /* sous-liste « Déjà vues » dépliée : préférence d'affichage locale, jamais poussée */
 var dragLi = null, overBucket = null, overVi = null;
 var CATS = ['tuto', 'regarder', 'vu'];
-/* sections dans l'ordre d'affichage ; '' = liens pas encore classés (section masquée quand vide).
-   Les contacts se rangent tout seuls (type contact) et ne se glissent pas. */
+/* sections dans l'ordre d'affichage. Un lien sans catégorie est « À regarder » (défaut, décision de
+   Clément du 15/09 : pas de « À classer ») ; les contacts se rangent tout seuls et ne se glissent pas. */
 var SECTIONS = [
-  { b: '', label: 'À classer', empty: '', dnd: '' },
   { b: 'tuto', label: 'Tutos', empty: 'Aucun tuto pour l’instant.', dnd: 'Glisse-en un ici.' },
   { b: 'regarder', label: 'À regarder', empty: 'Aucune vidéo à regarder.', dnd: 'Glisse-en une ici.' },
   { b: 'contact', label: 'Contacts', empty: 'Aucun contact pour l’instant.', dnd: '' }
@@ -223,12 +221,12 @@ function normLinks(obj){
       /* type deviné pour les entrées sans champ type (jamais re-poussé automatiquement) */
       var type = (l.type === 'link' || l.type === 'contact') ? l.type : (isPhone(l.raw) ? 'contact' : 'link');
       var o = { title: String(l.title), raw: String(l.raw), type: type };
-      if (type === 'link' && CATS.indexOf(l.cat) !== -1) o.cat = l.cat;
+      if (type === 'link') o.cat = CATS.indexOf(l.cat) !== -1 ? l.cat : 'regarder'; /* sans catégorie → À regarder */
       return o;
     });
 }
 function serialize(){
-  /* cat omis pour les liens pas encore classés : data/liens.json reste identique pour eux */
+  /* cat écrit pour chaque lien (jamais pour un contact) */
   return JSON.stringify({ links: links.map(function(l){
     var o = { title: l.title, raw: l.raw, type: l.type };
     if (l.type === 'link' && l.cat) o.cat = l.cat;
@@ -236,7 +234,7 @@ function serialize(){
   }) }, null, 2) + '\n';
 }
 function save(){ SYNC.change(); }
-function bucketOf(l){ return l.type === 'contact' ? 'contact' : (CATS.indexOf(l.cat) !== -1 ? l.cat : ''); }
+function bucketOf(l){ return l.type === 'contact' ? 'contact' : (CATS.indexOf(l.cat) !== -1 ? l.cat : 'regarder'); }
 
 function meta(l){
   var v = l.raw.trim();
@@ -272,7 +270,8 @@ var urlLabel = document.getElementById('lk-url-label');
 var typeEl = document.getElementById('lk-type');
 var catWrap = document.getElementById('lk-cat-wrap');
 var catEl = document.getElementById('lk-cat');
-var fType = 'link', typeTouched = false, fCat = '';
+var catVu = document.getElementById('lk-cat-vu');
+var fType = 'link', typeTouched = false, fCat = 'regarder';
 
 function setType(t){
   fType = t;
@@ -347,8 +346,8 @@ function listHtml(b, gis, hint, cls){
 function render(){
   if (dragLi !== null) resetDrag(); /* un render pendant un drag détache la ligne source : même garde que la to-do */
   var qq = qNorm(), total = 0, html = '';
-  var vis = { '': [], tuto: [], regarder: [], vu: [], contact: [] };
-  var all = { '': 0, tuto: 0, regarder: 0, vu: 0, contact: 0 };
+  var vis = { tuto: [], regarder: [], vu: [], contact: [] };
+  var all = { tuto: 0, regarder: 0, vu: 0, contact: 0 };
   links.forEach(function(l, gi){ var b = bucketOf(l); all[b]++; if (matches(l, qq)) vis[b].push(gi); });
   var gv = vis.vu;
   var vuHint = SYNC.ro ? esc('Aucune vidéo vue pour l’instant.')
@@ -356,9 +355,9 @@ function render(){
   SECTIONS.forEach(function(s){
     var g = vis[s.b], reg = s.b === 'regarder';
     total += g.length + (reg ? gv.length : 0);
-    /* hors recherche : toutes les catégories (À classer seulement s'il en reste) ;
+    /* hors recherche : toutes les catégories ;
        en recherche : celles qui ont un résultat — À regarder aussi quand seules ses « Déjà vues » en ont */
-    var montrer = qq ? (g.length > 0 || (reg && gv.length > 0)) : (s.b !== '' || all[''] > 0);
+    var montrer = qq ? (g.length > 0 || (reg && gv.length > 0)) : true;
     var sousVu = reg && (!qq || gv.length > 0); /* sous-liste « Déjà vues » rendue */
     if (montrer) {
       /* compteur : total hors recherche, nombre de résultats en recherche */
@@ -514,7 +513,7 @@ function doDrop(){
   var ref = overVi < vis.length ? links[vis[overVi]] : null;
   var avant = serialize();
   var item = { title: dragged.title, raw: dragged.raw, type: dragged.type };
-  if(b) item.cat = b; /* le dépôt dans une liste fixe la catégorie ('' = À classer) */
+  item.cat = b; /* le dépôt dans une liste fixe la catégorie */
   var arr = links.filter(function(x){ return x !== dragged; });
   var insertAt;
   if(ref){ /* jamais dragged : son propre emplacement est traité plus haut, et il n'est pas dans vis d'une autre liste */
@@ -548,7 +547,11 @@ function openModal(idx){
   fUrl.value = editing ? links[editIdx].raw : '';
   typeTouched = editing; /* en modification, pas de détection auto */
   setType(editing ? links[editIdx].type : 'link');
-  setCat(editing ? (links[editIdx].cat || '') : '');
+  /* nouveau lien : À regarder par défaut, jamais « Déjà vue » (une vidéo devient vue par ✓ ou glisser) ;
+     « Déjà vue » n'apparaît qu'en modifiant une vidéo déjà vue, pour garder son état */
+  var catActuelle = editing && links[editIdx].cat ? links[editIdx].cat : 'regarder';
+  catVu.style.display = catActuelle === 'vu' ? '' : 'none';
+  setCat(catActuelle);
   modalTitle.textContent = editing ? 'Modifier le lien' : 'Ajouter un lien';
   submitBtn.textContent = editing ? 'Enregistrer' : 'Ajouter';
   setErr(false);
@@ -593,7 +596,7 @@ formEl.addEventListener('submit', function(e){
   var t = fTitle.value.trim(), u = fUrl.value.trim();
   if(!t || !u){ setErr(true); return; }
   var item = { title: t, raw: u, type: fType };
-  if(fType === 'link' && fCat) item.cat = fCat;
+  if(fType === 'link') item.cat = (editIdx === -1 && fCat === 'vu') || !fCat ? 'regarder' : fCat; /* un ajout n'entre jamais en « Déjà vue » */
   /* un autre appareil a poussé pendant que la fenêtre était ouverte : on repart de son état (sinon notre
      envoi, fait avec son sha, l'écraserait sans conflit) et on retrouve la ligne par son contenu d'origine */
   if(pendingRemote){
