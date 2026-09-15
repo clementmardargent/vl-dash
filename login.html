@@ -42,7 +42,7 @@
   </main>
 </div>
 <script>
-const BLOB="{\"salt\":\"L7PzSN4sj1ZLle0EK0Yk7g==\",\"iv\":\"2IckbLm3YMTKTHIw\",\"data\":\"k+oS+yywyGGjRg+vhjLS2NqBLfoWsomp3LVp\"}";
+const BLOB="{\"salt\":\"aEcfSCLYJP+INKDMCYh5ow==\",\"iv\":\"TlMAJtfa9p4xRg7/\",\"data\":\"5/9f1glo6ugPHehd7QTDVg9qb+fvTeWmVhTj\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);

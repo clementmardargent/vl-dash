@@ -13,7 +13,7 @@
 <style>
 .lk-search{width:100%;box-sizing:border-box;padding:13px 16px;font-size:14.5px;font-family:'Figtree',sans-serif;border:1px solid var(--bd-strong);border-radius:12px;background:var(--card);color:var(--tx);outline:none;margin-bottom:22px}
 .lk-search:focus{border-color:var(--grn);box-shadow:0 0 0 3px var(--bd)}
-.lk-row{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid var(--bd-soft)}
+.lk-row{position:relative;display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid var(--bd-soft)}
 .lk-row:hover{background:var(--bg)}
 .lk-badge{flex:none;width:74px;text-align:center;font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:4px 0;border-radius:6px}
 .lk-badge.grn{color:var(--grn);background:var(--grn-bg)}
@@ -36,8 +36,37 @@
 .lk-cancel:hover{background:var(--grn-bg-hov)}
 .lk-submit{padding:11px 20px;font-size:13.5px;font-weight:700;font-family:'Figtree',sans-serif;color:var(--cream);background:var(--grn);border:none;border-radius:10px;cursor:pointer}
 .lk-submit:hover{background:var(--grn-dk)}
+/* catégories : À classer · Tutos · À regarder (+ sous-liste Déjà vues) · Contacts */
+.lk-sec{display:flex;align-items:baseline;gap:8px;margin-bottom:10px;font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--amb)}
+.lk-sec .n{font-size:11px;font-weight:600;letter-spacing:0;color:var(--faint);font-variant-numeric:tabular-nums}
+.lk-list{border-radius:14px;overflow:hidden;margin-bottom:28px}
+.lk-list.lk-avu{margin-bottom:10px}
+.lk-list.lk-vu{margin-left:20px}
+.lk-list.lk-vu .lk-row{opacity:.72}
+.lk-list.lk-vu .lk-row:hover{opacity:1}
+.lk-empty{text-align:center;padding:24px 20px;font-size:13.5px;color:var(--faint)}
+/* glisser-déposer : même patron que la to-do */
+.lk-grip{flex:none;cursor:grab;color:var(--faint2);font-size:13px;letter-spacing:1px;user-select:none}
+.lk-row.dragging{opacity:.35}
+.lk-ins{position:absolute;left:10px;right:10px;height:3px;border-radius:999px;background:var(--grn);z-index:5;pointer-events:none}
+.lk-ins.top{top:-2px}
+.lk-ins.bottom{bottom:-2px}
+/* .lk-list rogne ses bords (overflow:hidden pour les coins arrondis) : lignes d'insertion rentrées en tête et en fin de liste */
+.lk-list .lk-row:first-child .lk-ins.top{top:0}
+.lk-list .lk-row:last-child .lk-ins.bottom{bottom:0}
+.vl-card.dropzone{outline:2px dashed var(--grn);outline-offset:-2px}
+.lk-seen{flex:none;width:22px;height:22px;display:flex;align-items:center;justify-content:center;padding:0;border-radius:50%;border:2px solid var(--bd-hov);background:transparent;color:transparent;font-size:12px;line-height:1;cursor:pointer}
+.lk-seen:hover{border-color:var(--grn);background:var(--grn-bg);color:var(--grn)}
+.lk-seen.on{border-color:var(--grn);background:var(--grn);color:var(--cream)}
+.lk-toggle{display:flex;align-items:center;gap:8px;margin:0 0 10px 20px;padding:4px 6px;border:none;border-radius:8px;background:transparent;cursor:pointer;font-family:'Figtree',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--faint)}
+.lk-toggle:hover{color:var(--mut)}
+.lk-toggle.ferme{margin-bottom:28px}
+.lk-toggle.dropzone{outline:2px dashed var(--grn);outline-offset:2px}
+.lk-toggle.fixe,.lk-toggle.fixe:hover{cursor:default;color:var(--faint)} /* en recherche : libellé seul, la sous-liste reste ouverte */
 /* mobile : lignes plus compactes — aucune règle desktop modifiée */
 @media (max-width:720px){
+.lk-grip,.lk-dnd{display:none} /* pas de glisser au doigt : la catégorie se change dans « Modifier » */
+.lk-list.lk-vu,.lk-toggle{margin-left:10px}
 .lk-row{gap:10px;padding:12px 12px}
 .lk-badge{width:60px;font-size:10px}
 .lk-copy{padding:7px 10px;font-size:12px}
@@ -64,7 +93,7 @@
 
     <input type="text" id="lk-q" class="lk-search" placeholder="Rechercher un lien, un tuto, un contact…" autocomplete="off">
 
-    <div id="lk-list" class="vl-card" style="border-radius:14px;overflow:hidden"></div>
+    <div id="lk-sections"></div>
 
     <div id="lk-nores" hidden style="text-align:center;padding:48px 0;font-size:14px;color:var(--faint)">Aucun lien ne correspond à «&nbsp;<span id="lk-nores-q"></span>&nbsp;».</div>
   </main>
@@ -80,8 +109,8 @@
         <input id="lk-title" type="text" class="lk-input" placeholder="Ex. Tuto paiement fournisseur" autocomplete="off">
       </div>
       <div style="display:flex;flex-direction:column;gap:8px">
-        <span style="font-size:13px;font-weight:600;color:var(--ink)">Type</span>
-        <div id="lk-type" style="display:flex;gap:8px">
+        <span id="lk-type-label" style="font-size:13px;font-weight:600;color:var(--ink)">Type</span>
+        <div id="lk-type" role="group" aria-labelledby="lk-type-label" style="display:flex;gap:8px">
           <button type="button" class="chip sm on" data-type="link">Lien</button>
           <button type="button" class="chip sm" data-type="contact">Contact</button>
         </div>
@@ -89,7 +118,16 @@
       <div style="display:flex;flex-direction:column;gap:8px">
         <label for="lk-url" id="lk-url-label" style="font-size:13px;font-weight:600;color:var(--ink)">Lien</label>
         <input id="lk-url" type="text" class="lk-input" placeholder="https://…" autocomplete="off">
-        <span id="lk-err" hidden style="font-size:12.5px;font-weight:600;color:var(--red)">Renseignez un titre et un lien (URL ou numéro).</span>
+        <span id="lk-err" hidden style="font-size:12.5px;font-weight:600;color:var(--red)">Renseigne un titre et un lien (URL ou numéro).</span>
+      </div>
+      <div id="lk-cat-wrap" style="display:flex;flex-direction:column;gap:8px">
+        <span id="lk-cat-label" style="font-size:13px;font-weight:600;color:var(--ink)">Catégorie</span>
+        <div id="lk-cat" role="group" aria-labelledby="lk-cat-label" style="display:flex;flex-wrap:wrap;gap:8px">
+          <button type="button" class="chip sm on" data-cat="">À classer</button>
+          <button type="button" class="chip sm" data-cat="tuto">Tuto</button>
+          <button type="button" class="chip sm" data-cat="regarder">À regarder</button>
+          <button type="button" class="chip sm" data-cat="vu">Déjà vue</button>
+        </div>
       </div>
       <div style="display:flex;gap:10px;justify-content:flex-end">
         <button type="button" id="lk-cancel" class="lk-cancel">Annuler</button>
@@ -99,7 +137,7 @@
   </div>
 </div>
 <script>
-const BLOB="{\"salt\":\"AwIzKtCwuUN17rbP05fnFw==\",\"iv\":\"Km/K2bzPQx/yLrn3\",\"data\":\"blRlfO0w+PMsMP1CzIQKJYjUz7QLE9xi5x+YGz0vFcXaV0Lty4az+SZ3Iel0xUix3U7wuKRI/z8hJpWc2rbR7KxJH8+8txXTBgRShJAWvvcY4x2pRJuE+ENlY+Kqdv8rrT0IeUD8fW7uXcieuGFShVDziKhGrs6Jt35SAL8CAXDmgvCrkIidIW7UvH7L6tygWPuEcnE8PRIfPXNbDOSS/jtU1J5Bn4UExtYLnuOktRoy0HT52WMXxjcBLiaxeQNj5VhcMFWcCKfodmM5sAvo4/iGOiKsbj/mvZLh33Ucqb3M7cBY/zEyen7mZ+K3B2lFs14Mts8psfrzxujlYf/J/sEwVeCAJ/dgfz2S/10MQfy4F+vqhYnouNS292ojQSVxrVHu9SUdfYyJnKbXTZlc0dthzsbi0aSOPinF1UA3q2TBDPx8iE56qz66rkVn6vMy+q0DnpDtuXLNdLxyaRKQerDsZHhVoF+TgCZrl7ozp8Z7RQj5wtUKID0hA6lES9R3gJnPGlxJNGVZdu/ubB2KtQ6WsaHCVmrFKGcnXOrVHV6LIWb0I1DrA+dU+Y0/duMOcR8Ga0RUgm7c4W5lzFLqk4Cy9KV8j0gW7gOP/zUJQcCQgxtVBtDODlnbEWUBwKrvA2akmfFghdXL4tUTZrIx4WWVrISQ94y1xsVwENsiq+kZ29TD8sHEm+bIpcnSjzIWg/QUNTGiJlFiK30hULsFUmh4DehKMwNlERQg+VCD6jKwFZnxkV3kM8i0vxivgMO/rKu7tnzFblfuiC+uNQcS0ysHNfmMjQ+MHQYkOsnwSiTe1cITiUzOXkvosV97o2pKnxpKH1Bd7LY1NgwgRzkBghbroE0U3Qj0D8KiVyn4dZTZhtP6KBfgFsctJu8OwMLuFPCu6kcpngDSVgnWRcIQQiaCb4FGQjFxF+o0OXZWAZ+qVsJ4+cX8dDqQ3/cZUwBjB0ebU/nw5YcUqiKdAqTGgTonU7hdGvZNmKtsS/8k2k/EYCjNkQmCdlDF+l8cXyakEyoCQeMBKES2c9uADDnzDrN2gvj1nqbEs8rtR04l010KA0QpAxgePROvQKeL9hlB4cfdSechRZsPyPbcbrV9R8OnH8OTKrY+5i928UHAorR8u3l0C8fDc2WH9zfofBOEA7J944xPDgXZDw6WP15VB3+JOTa0qeYT5V1xlI9PVn5AbXEoju8hlLANoUbj6AZIrvLFOxKsGE2EwqyG6Q58BXAbSjleFbLcBFxajRaR1JD7v4PNCQxtcrA7Nk3ytwx609JjotCjmrUGLIAHcIwv/eorGYbEa0KSJDJ4+V5zwE/IVT3ZdKtuhD96/T7ct8e6k7YR1rFyWhiO3Pq64xxwWmyhDO3FtPTGD/U/LOKr2t0jNyMdlKhCcFcVQNH6oBNI8kK//9L1ZA0dswsKyVAjs04q6ysmdkX2BaPZxuyBV2yNdWJm6nqjy02WIhyWIdpuHxkSHiScDEw8V+VJkjCHebRhhevGNcFfQMKyc27/zXYON5SMCA7UWtsPhaBUAEEYXPYWArGg4EeR6vnmtEK53d7uS/9H4sBHgwuq5qpjY4d33vHu3nK8Fe0DJA/aFVBo4sOP8oxR2JQIb/FhlG38sd3C5R9I2AHLp6Afua/rAbPZJJmBPaNojpNjjLhYB3GL1Kn7/uafMfbvyc8JNhxLKBTGzEb2gdMH5ETVFQ3ObTkkWl+QklY5wEycxKgYQ/MDVhzU9l+C93u9ZgsOdTDeMQ//KqCZmnc/35mh1SCTZjuVbTSAFHPBz1ipW2rvNdeNTUA4G9MPRZ5ogTGI02y3nphlPGIWoX8LlLVJ67NaHLmg7g1OpGnEtlw+1sZjQQt36w/nTohe7UMSssqt9b7vySaqztHYTLbwHinqgLAZK+xoSk7xJYIWo4XRnJ2BRVzkuLW4MG7WAjC9jIEz5BUGYSqB4d8uOutldDVgCbh/LQblISN2EyRVUCzDf69gFtTBg+Osf+8MrsnI\"}";
+const BLOB="{\"salt\":\"sPr6bZB2mnPc2o+fiISvTA==\",\"iv\":\"KjQKjbr+iYIY0iLs\",\"data\":\"qEmnwoB4aFOdArP+7tK8wj3y/TI6Os+S7c2Gj1HB+ynScqe9uyGElqcmd6GeOXIo/QbueJxSMQeFO/E5mQmjtzYEFJUwDU1fMZFRT4FZhobmCdlfRJIslS+gY6prmcB9UewKTiABPch3p/c9FAxos2YjMdvr1wXYS+RwhAcwQg9sXpoSWoNNd3PespxT1zGOWCeqTuZBAWY4pAeO6cah6XsmTWF5Hsf8hNJVSSUTrP1CWVtljxZ6YzYNq1JC1ubMzj8/DyN1NM8fGKWzhSoZSZkvJ+7SC+UftAgEn4/PCxBLeOD7STRxxImpVRJIxEQB4VtsAkr6c0pxfJAKxLZqPN85cGLFdDwWqWviMmWVGkeSN7OUDOQHZG+v2Hnmy9fgEo3UWqjufoqqk9oR7uyexgctSINJtJmwMF06UUhNjKvAQZSkJPCx+QKUFXQSmP5u7QJ74r+ztjHAvWX7XLfq4adJAbsf3hkdWXALk13qyLcP+S0u7E2BhfN6ClOlCNqvdr2xQdbYRwEWFE7c6YWr9E+UKs1bS/JjP8feBpA2NGMGq12cL2kCywRS2hwaRy6en5q35CX+AdA2MFwZ1CZ30jAlbF509u1MEWfOHYkGB6SLoOmVWQHUSUZJc257fNH9giQ5arWUeyUa8bKJbRtRzkqYdKbLY33jjpXU9RQiWgR876/HFX81gjouQpT4tgcchnPIf8qdR3+rWCZMuTGJihNL5Nk14wWAhE7I2ngFTPD//oZUHP67BbhjAN1SKMRvxpxw5TZFF3WV9P6+EDsaCcFIKtzHISFs5ZyAMxQDwIiK6lrx73fXZgQoeFBX/coZc3/jbvH6Zrexa+hTFyrrlF9o29/cI6PGlQi765y4R1x0Q7NpSxClE4kVrl7fnmWT8NM66MerIWXw+JUr5RQP6TsMFNnLVrEzE0Q4JBrRBh7eCvMjmPuJUh7gdIB4GJwAKteQRgVhyFdI1AGG4LXHakg4jBhcsJW92T7WjIm69Lj+V6sSFjFwVCpnjmN17krorlp1vD7r2+z7UUAyy0jw4Gj2y9MYbYBtY1QnpXM+qfBi+6/nkJg54Yc/fFCfRvcRjVcn/VOdwlZ3c7PerPcI4sLff0h3aImuLpjR3bqJgib4vN4p9W4BRfN8FnrXY2ow1oyjVurVHklikIbOyThNWvfSFZqidA5vmXvu5nwJELRLTcXya5CYwn80mQZuQr4xDmijedvs+Y53Ax6JFDSlecGEqDPWIqJYucwReMbH1oGDpXlBE2rxNLd+XU7OjLhSpO/aG3zQy6RA/1KklSrKHRSzkbLuDetZg+4YutrGmYqoMus4emCAFKoGWPqLmm74SOolkMGdUakxVKnAlFZTWxoCGJk8+VZbNRGPNmeJkdPK+wn/DNl1R/+7ibu8VDIEBfO+m1QF8B+UagrO/aQ+cCOLrjvut55BftgxSgtNiCJWPgR6kWa8M36dMB3NiBjtspUduylMdS88CsmIF2EgFHpGJ7ynxbVyyQwcKn2VfRBmppDY4UfWmGqsd76OYEDFoOHcYkcEIdc2t8vbgW3iYRTybK5AuefBVp4fKIuExZ8w6LnWKqLPdmZEMZ+AZ1c+quEiAkIkXSqzcIQohzkrOeOS+Z0yH7+hy10sy7D/U7XIVnIXp9iNbdBAMAyCANuaU/zC7Ot2hukKFgrxFBFZGqkgCP/6kwfng1LMZJSddRBkjDUe5frexl0RVEoxEVH4Qb4FYu9UUtZzJbH6muYrDE8ymvs16BkRzzgmCwAOq1CuKglVY7kCtHLuMVCr54YJlOC0QYyhUKHH5A1jD5Fshxxc3HG2M8k/MPNI5NRe4dXZyGTPY5+k8q/bv8l8Z4f9l1IM4qZwEVuKltaqFye4yVarQdOEt8dsQbdWxBArN7iPNJbO2PYALE/Xyyc/AtxlrGj+rGNYAkzoOKyANHFxahzblfR+WzalohCsCyEQY8jaTxrRMlguueoLUs/8ISBGs4JQYdKno8Uc\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
@@ -162,6 +200,19 @@ try{localStorage.setItem('vivelan-theme',d?'dark':'light')}catch(e){}icon();});}
 var links = [];
 var q = '', copied = '', copyTimer = null;
 var editIdx = -1, delIdx = -1, delTimer = null;
+var vuOpen = true; /* sous-liste « Déjà vues » dépliée : préférence d'affichage locale, jamais poussée */
+var dragLi = null, overBucket = null, overVi = null;
+var CATS = ['tuto', 'regarder', 'vu'];
+/* sections dans l'ordre d'affichage ; '' = liens pas encore classés (section masquée quand vide).
+   Les contacts se rangent tout seuls (type contact) et ne se glissent pas. */
+var SECTIONS = [
+  { b: '', label: 'À classer', empty: '', dnd: '' },
+  { b: 'tuto', label: 'Tutos', empty: 'Aucun tuto pour l’instant.', dnd: 'Glisse-en un ici.' },
+  { b: 'regarder', label: 'À regarder', empty: 'Aucune vidéo à regarder.', dnd: 'Glisse-en une ici.' },
+  { b: 'contact', label: 'Contacts', empty: 'Aucun contact pour l’instant.', dnd: '' }
+];
+var pendingRemote = null; /* distant reçu pendant que la fenêtre Ajouter/Modifier est ouverte : appliqué à la fermeture, jamais perdu */
+var editOrig = null; /* { title, raw } de la ligne modifiée, pour la retrouver si le tableau a changé entre-temps */
 
 var isPhone = function(v){ return /^\+?[\d\s().-]{6,}$/.test(v.trim()); };
 
@@ -170,11 +221,22 @@ function normLinks(obj){
     .filter(function(l){ return l && typeof l.title === 'string' && typeof l.raw === 'string'; })
     .map(function(l){
       /* type deviné pour les entrées sans champ type (jamais re-poussé automatiquement) */
-      return { title: String(l.title), raw: String(l.raw), type: (l.type === 'link' || l.type === 'contact') ? l.type : (isPhone(l.raw) ? 'contact' : 'link') };
+      var type = (l.type === 'link' || l.type === 'contact') ? l.type : (isPhone(l.raw) ? 'contact' : 'link');
+      var o = { title: String(l.title), raw: String(l.raw), type: type };
+      if (type === 'link' && CATS.indexOf(l.cat) !== -1) o.cat = l.cat;
+      return o;
     });
 }
-function serialize(){ return JSON.stringify({ links: links }, null, 2) + '\n'; }
+function serialize(){
+  /* cat omis pour les liens pas encore classés : data/liens.json reste identique pour eux */
+  return JSON.stringify({ links: links.map(function(l){
+    var o = { title: l.title, raw: l.raw, type: l.type };
+    if (l.type === 'link' && l.cat) o.cat = l.cat;
+    return o;
+  }) }, null, 2) + '\n';
+}
 function save(){ SYNC.change(); }
+function bucketOf(l){ return l.type === 'contact' ? 'contact' : (CATS.indexOf(l.cat) !== -1 ? l.cat : ''); }
 
 function meta(l){
   var v = l.raw.trim();
@@ -195,7 +257,7 @@ function esc(s){
   });
 }
 
-var listEl = document.getElementById('lk-list');
+var sectionsEl = document.getElementById('lk-sections');
 var noresEl = document.getElementById('lk-nores');
 var noresQ = document.getElementById('lk-nores-q');
 var qEl = document.getElementById('lk-q');
@@ -208,55 +270,113 @@ var modalTitle = document.getElementById('lk-modal-title');
 var submitBtn = document.getElementById('lk-submit');
 var urlLabel = document.getElementById('lk-url-label');
 var typeEl = document.getElementById('lk-type');
-var fType = 'link', typeTouched = false;
+var catWrap = document.getElementById('lk-cat-wrap');
+var catEl = document.getElementById('lk-cat');
+var fType = 'link', typeTouched = false, fCat = '';
 
 function setType(t){
   fType = t;
   var chips = typeEl.querySelectorAll('.chip');
   for(var i = 0; i < chips.length; i++){
-    chips[i].classList.toggle('on', chips[i].getAttribute('data-type') === t);
+    var on = chips[i].getAttribute('data-type') === t;
+    chips[i].classList.toggle('on', on);
+    chips[i].setAttribute('aria-pressed', on ? 'true' : 'false');
   }
   var contact = t === 'contact';
   urlLabel.textContent = contact ? 'Numéro ou coordonnée' : 'Lien';
   fUrl.placeholder = contact ? '+33 6 12 34 56 78' : 'https://…';
+  /* un contact se range tout seul dans Contacts ; style.display car le display:flex inline l'emporterait sur [hidden] */
+  catWrap.style.display = contact ? 'none' : 'flex';
+}
+function setCat(c){
+  fCat = c;
+  var chips = catEl.querySelectorAll('.chip');
+  for(var i = 0; i < chips.length; i++){
+    var on = chips[i].getAttribute('data-cat') === c;
+    chips[i].classList.toggle('on', on);
+    chips[i].setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+}
+
+function qNorm(){ return q.trim().toLowerCase(); }
+function matches(l, qq){ return !qq || (l.title + ' ' + meta(l).sub).toLowerCase().indexOf(qq) !== -1; }
+
+/* gi = rang dans links (identité de la ligne), vi = rang parmi les lignes affichées de la catégorie b */
+function rowHtml(l, gi, vi, b){
+  var m = meta(l), isContact = l.type === 'contact', drag = !SYNC.ro && !isContact, vu = b === 'vu';
+  var bodyStyle = 'flex:1;min-width:0;display:flex;flex-direction:column;gap:2px';
+  var body = '<span style="font-size:15px;font-weight:600;color:var(--ink)">' + esc(l.title) + '</span>'
+    + '<span style="font-size:12.5px;color:var(--faint);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(m.sub) + '</span>';
+  var seenLbl = vu ? 'Remettre à regarder' : 'Marquer comme vue';
+  return '<div class="lk-row"' + (drag ? ' draggable="true"' : '') + ' data-li="' + gi + '" data-vi="' + vi + '">'
+    + (drag ? '<div class="lk-ins top" hidden></div><div class="lk-ins bottom" hidden></div>'
+      + '<span class="lk-grip" title="Glisser pour classer ou réordonner">⋮⋮</span>' : '')
+    + ((b === 'regarder' || vu) && !SYNC.ro
+      ? '<button type="button" class="lk-seen' + (vu ? ' on' : '') + '" data-seen="' + gi + '" title="' + seenLbl + '" aria-label="' + seenLbl + '">✓</button>'
+      : '')
+    + '<span class="lk-badge ' + (isContact ? 'amb' : 'grn') + '">' + esc(m.badge) + '</span>'
+    + (isContact
+      ? '<div style="' + bodyStyle + '">' + body + '</div>'
+      : '<a href="' + esc(m.url) + '" target="_blank" rel="noopener" draggable="false" style="' + bodyStyle + '">' + body + '</a>')
+    + (m.copy
+      ? '<button type="button" class="lk-copy" data-copy="' + esc(m.copy) + '" data-title="' + esc(l.title) + '">'
+        + (copied === l.title ? 'Copié ✓' : 'Copier') + '</button>'
+      : '')
+    + (isContact
+      ? ''
+      : '<a href="' + esc(m.url) + '" target="_blank" rel="noopener" draggable="false" style="flex:none;color:var(--grn);font-size:16px">↗</a>')
+    + (SYNC.ro ? '' :
+      '<button type="button" class="lk-act edit" data-edit="' + gi + '" aria-label="Modifier">✎</button>'
+      + (delIdx === gi
+        ? '<button type="button" class="lk-act del confirm" data-del="' + gi + '">Supprimer&nbsp;?</button>'
+        : '<button type="button" class="lk-act del" data-del="' + gi + '" aria-label="Supprimer">✕</button>'))
+    + '</div>';
+}
+/* texte de liste vide : la partie « glisse » n'existe qu'en écriture, et .lk-dnd est masquée sur mobile (pas de glisser) */
+function hintHtml(empty, dnd){
+  return esc(empty) + (dnd && !SYNC.ro ? '<span class="lk-dnd"> ' + esc(dnd) + '</span>' : '');
+}
+function listHtml(b, gis, hint, cls){
+  return '<div class="vl-card lk-list' + (cls ? ' ' + cls : '') + '" data-bucket="' + b + '">'
+    + (gis.length
+      ? gis.map(function(gi, vi){ return rowHtml(links[gi], gi, vi, b); }).join('')
+      : '<div class="lk-empty">' + hint + '</div>')
+    + '</div>';
 }
 
 function render(){
-  var qq = q.trim().toLowerCase();
-  var rows = links.map(function(l, i){
-    var m = meta(l);
-    return { idx: i, title: l.title, url: m.url, sub: m.sub, badge: m.badge, copy: m.copy };
-  }).filter(function(r){
-    return !qq || (r.title + ' ' + r.sub).toLowerCase().indexOf(qq) !== -1;
+  if (dragLi !== null) resetDrag(); /* un render pendant un drag détache la ligne source : même garde que la to-do */
+  var qq = qNorm(), total = 0, html = '';
+  var vis = { '': [], tuto: [], regarder: [], vu: [], contact: [] };
+  var all = { '': 0, tuto: 0, regarder: 0, vu: 0, contact: 0 };
+  links.forEach(function(l, gi){ var b = bucketOf(l); all[b]++; if (matches(l, qq)) vis[b].push(gi); });
+  var gv = vis.vu;
+  var vuHint = SYNC.ro ? esc('Aucune vidéo vue pour l’instant.')
+    : 'Coche une vidéo dans « À regarder »<span class="lk-dnd"> ou glisse-la ici</span>.';
+  SECTIONS.forEach(function(s){
+    var g = vis[s.b], reg = s.b === 'regarder';
+    total += g.length + (reg ? gv.length : 0);
+    /* hors recherche : toutes les catégories (À classer seulement s'il en reste) ;
+       en recherche : celles qui ont un résultat — À regarder aussi quand seules ses « Déjà vues » en ont */
+    var montrer = qq ? (g.length > 0 || (reg && gv.length > 0)) : (s.b !== '' || all[''] > 0);
+    var sousVu = reg && (!qq || gv.length > 0); /* sous-liste « Déjà vues » rendue */
+    if (montrer) {
+      /* compteur : total hors recherche, nombre de résultats en recherche */
+      html += '<div class="lk-sec">' + esc(s.label) + ' <span class="n">' + (qq ? g.length : all[s.b]) + '</span></div>';
+      if (!qq || g.length) html += listHtml(s.b, g, hintHtml(s.empty, s.dnd), sousVu ? 'lk-avu' : '');
+    }
+    if (sousVu) {
+      /* sous-catégorie « Déjà vues » : dépliable, et cible de dépôt même repliée ;
+         en recherche, toujours ouverte → simple libellé (un bouton n'aurait aucun effet visible) */
+      html += qq
+        ? '<div class="lk-toggle fixe" data-bucket="vu">Déjà vues (' + gv.length + ')</div>' + listHtml('vu', gv, vuHint, 'lk-vu')
+        : '<button type="button" class="lk-toggle' + (vuOpen ? '' : ' ferme') + '" data-bucket="vu" data-vutoggle="1" aria-expanded="' + vuOpen + '">'
+          + 'Déjà vues (' + all.vu + ') <span aria-hidden="true">' + (vuOpen ? '▾' : '▸') + '</span></button>'
+          + (vuOpen ? listHtml('vu', gv, vuHint, 'lk-vu') : '');
+    }
   });
-
-  listEl.innerHTML = rows.map(function(r){
-    var isContact = r.badge === 'Contact';
-    var bodyStyle = 'flex:1;min-width:0;display:flex;flex-direction:column;gap:2px';
-    var body = '<span style="font-size:15px;font-weight:600;color:var(--ink)">' + esc(r.title) + '</span>'
-      + '<span style="font-size:12.5px;color:var(--faint);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(r.sub) + '</span>';
-    return '<div class="lk-row">'
-      + '<span class="lk-badge ' + (isContact ? 'amb' : 'grn') + '">' + esc(r.badge) + '</span>'
-      + (isContact
-        ? '<div style="' + bodyStyle + '">' + body + '</div>'
-        : '<a href="' + esc(r.url) + '" target="_blank" rel="noopener" style="' + bodyStyle + '">' + body + '</a>')
-      + (r.copy
-        ? '<button type="button" class="lk-copy" data-copy="' + esc(r.copy) + '" data-title="' + esc(r.title) + '">'
-          + (copied === r.title ? 'Copié ✓' : 'Copier') + '</button>'
-        : '')
-      + (isContact
-        ? ''
-        : '<a href="' + esc(r.url) + '" target="_blank" rel="noopener" style="flex:none;color:var(--grn);font-size:16px">↗</a>')
-      + (SYNC.ro ? '' :
-        '<button type="button" class="lk-act edit" data-edit="' + r.idx + '" aria-label="Modifier">✎</button>'
-        + (delIdx === r.idx
-          ? '<button type="button" class="lk-act del confirm" data-del="' + r.idx + '">Supprimer&nbsp;?</button>'
-          : '<button type="button" class="lk-act del" data-del="' + r.idx + '" aria-label="Supprimer">✕</button>'))
-      + '</div>';
-  }).join('');
-
-  listEl.style.display = rows.length ? '' : 'none';
-  noresEl.hidden = rows.length > 0;
+  sectionsEl.innerHTML = html;
+  noresEl.hidden = !(qq && total === 0);
   noresQ.textContent = q.trim();
 }
 
@@ -281,7 +401,20 @@ function copyText(t){
     fallbackCopy(t);
   }
 }
-listEl.addEventListener('click', function(e){
+sectionsEl.addEventListener('click', function(e){
+  if(e.target.closest('[data-vutoggle]')){ vuOpen = !vuOpen; render(); return; } /* affichage local, pas de push */
+  var sn = e.target.closest('[data-seen]');
+  if(sn){
+    e.preventDefault();
+    if(SYNC.ro) return;
+    var si = parseInt(sn.getAttribute('data-seen'), 10), ls = links[si];
+    if(!ls) return;
+    links[si] = { title: ls.title, raw: ls.raw, type: ls.type, cat: ls.cat === 'vu' ? 'regarder' : 'vu' };
+    if(delIdx !== -1){ delIdx = -1; clearTimeout(delTimer); }
+    save();
+    render();
+    return;
+  }
   var ed = e.target.closest('[data-edit]');
   if(ed){
     e.preventDefault();
@@ -301,7 +434,8 @@ listEl.addEventListener('click', function(e){
       save();
     }else{
       delIdx = i;
-      delTimer = setTimeout(function(){ delIdx = -1; render(); }, 3000);
+      /* pendant un glisser, pas de render (il annulerait le glisser) : dragend/drop rafraîchissent */
+      delTimer = setTimeout(function(){ delIdx = -1; if(dragLi === null) render(); }, 3000);
     }
     render();
     return;
@@ -312,9 +446,94 @@ listEl.addEventListener('click', function(e){
   copyText(b.getAttribute('data-copy'));
   copied = b.getAttribute('data-title');
   clearTimeout(copyTimer);
-  copyTimer = setTimeout(function(){ copied = ''; render(); }, 1600);
+  copyTimer = setTimeout(function(){ copied = ''; if(dragLi === null) render(); }, 1600);
   render();
 });
+
+/* ---- glisser-déposer (même patron que la to-do : réordonner ET changer de catégorie) ---- */
+function clearIns(){
+  var ins = sectionsEl.querySelectorAll('.lk-ins');
+  for(var i = 0; i < ins.length; i++) ins[i].hidden = true;
+  var dz = sectionsEl.querySelectorAll('.dropzone');
+  for(var j = 0; j < dz.length; j++) dz[j].classList.remove('dropzone');
+}
+function showIns(cont, vi){
+  clearIns();
+  var rows = cont.classList.contains('lk-list') ? cont.querySelectorAll('.lk-row[draggable]') : [];
+  if(!rows.length){ cont.classList.add('dropzone'); return; }
+  if(vi < rows.length) rows[vi].querySelector('.lk-ins.top').hidden = false;
+  else rows[rows.length - 1].querySelector('.lk-ins.bottom').hidden = false;
+}
+function resetDrag(){
+  dragLi = null; overBucket = null; overVi = null; clearIns();
+  var d = sectionsEl.querySelector('.lk-row.dragging'); if(d) d.classList.remove('dragging');
+}
+function visibleIn(b){
+  var qq = qNorm(), out = [];
+  links.forEach(function(l, gi){ if(bucketOf(l) === b && matches(l, qq)) out.push(gi); });
+  return out;
+}
+/* écouteurs posés UNE FOIS sur le conteneur (délégation) : les sections sont recréées à chaque render */
+sectionsEl.addEventListener('dragstart', function(e){
+  var row = e.target.closest && e.target.closest('.lk-row[draggable]');
+  if(!row || SYNC.ro) return;
+  e.dataTransfer.effectAllowed = 'move';
+  try{ e.dataTransfer.setData('text/plain', row.getAttribute('data-li')); }catch(err){}
+  dragLi = Number(row.getAttribute('data-li'));
+  if(delIdx !== -1){ delIdx = -1; clearTimeout(delTimer); } /* comme la to-do ferme son menu : le « Supprimer ? » est désarmé */
+  setTimeout(function(){ row.classList.add('dragging'); }, 0);
+});
+sectionsEl.addEventListener('dragover', function(e){
+  if(dragLi === null) return;
+  var cont = e.target.closest('[data-bucket]');
+  if(!cont) return;
+  var b = cont.getAttribute('data-bucket');
+  if(b === 'contact') return; /* les contacts se rangent tout seuls */
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  var row = cont.classList.contains('lk-list') ? e.target.closest('.lk-row[draggable]') : null;
+  var target;
+  if(row){
+    var vi = Number(row.getAttribute('data-vi')), r = row.getBoundingClientRect();
+    target = e.clientY < r.top + r.height / 2 ? vi : vi + 1;
+  }else{
+    target = visibleIn(b).length; /* liste vide, bord du conteneur ou « Déjà vues » repliée → fin de liste */
+  }
+  if(overBucket !== b || overVi !== target){ overBucket = b; overVi = target; showIns(cont, target); }
+});
+sectionsEl.addEventListener('drop', function(e){ if(dragLi === null) return; e.preventDefault(); doDrop(); });
+/* glisser annulé (Échap, lâché hors cible) : on rend l'état différé (« Copié ✓ », « Supprimer ? ») */
+sectionsEl.addEventListener('dragend', function(){ if(dragLi === null) return; resetDrag(); render(); });
+function doDrop(){
+  if(dragLi === null || overBucket === null || overVi === null){ resetDrag(); return; }
+  var b = overBucket, dragged = links[dragLi];
+  if(!dragged || dragged.type === 'contact'){ resetDrag(); return; }
+  var vis = visibleIn(b);
+  /* déposé juste avant ou juste après soi-même dans sa propre liste : rien ne bouge (lignes masquées par la recherche comprises) */
+  if(bucketOf(dragged) === b && (vis[overVi] === dragLi || vis[overVi - 1] === dragLi)){ resetDrag(); render(); return; }
+  var ref = overVi < vis.length ? links[vis[overVi]] : null;
+  var avant = serialize();
+  var item = { title: dragged.title, raw: dragged.raw, type: dragged.type };
+  if(b) item.cat = b; /* le dépôt dans une liste fixe la catégorie ('' = À classer) */
+  var arr = links.filter(function(x){ return x !== dragged; });
+  var insertAt;
+  if(ref){ /* jamais dragged : son propre emplacement est traité plus haut, et il n'est pas dans vis d'une autre liste */
+    insertAt = arr.indexOf(ref);
+    if(insertAt < 0) insertAt = arr.length;
+  }else{
+    var qq = qNorm(), lastVis = -1, lastB = -1;
+    for(var i = 0; i < arr.length; i++){
+      if(bucketOf(arr[i]) === b){ lastB = i; if(matches(arr[i], qq)) lastVis = i; }
+    }
+    insertAt = lastVis >= 0 ? lastVis + 1 : (lastB >= 0 ? lastB + 1 : arr.length);
+  }
+  arr.splice(insertAt, 0, item);
+  links = arr;
+  if(delIdx !== -1){ delIdx = -1; clearTimeout(delTimer); }
+  resetDrag();
+  if(serialize() !== avant) save(); /* rien n'a bougé → pas de commit */
+  render();
+}
 
 /* modal */
 function setErr(on){
@@ -324,17 +543,27 @@ function setErr(on){
 function openModal(idx){
   editIdx = (typeof idx === 'number' && idx >= 0) ? idx : -1;
   var editing = editIdx !== -1;
+  editOrig = editing ? { title: links[editIdx].title, raw: links[editIdx].raw } : null;
   fTitle.value = editing ? links[editIdx].title : '';
   fUrl.value = editing ? links[editIdx].raw : '';
   typeTouched = editing; /* en modification, pas de détection auto */
   setType(editing ? links[editIdx].type : 'link');
+  setCat(editing ? (links[editIdx].cat || '') : '');
   modalTitle.textContent = editing ? 'Modifier le lien' : 'Ajouter un lien';
   submitBtn.textContent = editing ? 'Enregistrer' : 'Ajouter';
   setErr(false);
   overlay.classList.add('open');
   fTitle.focus();
 }
-function closeModal(){ overlay.classList.remove('open'); }
+function applyRemote(remote){
+  links = normLinks(remote);
+  if(delIdx !== -1){ delIdx = -1; clearTimeout(delTimer); }
+  render();
+}
+function closeModal(){
+  overlay.classList.remove('open');
+  if(pendingRemote){ var r = pendingRemote; pendingRemote = null; applyRemote(r); }
+}
 
 document.getElementById('lk-open').addEventListener('click', function(){ if(!SYNC.ro) openModal(); });
 document.getElementById('lk-close').addEventListener('click', closeModal);
@@ -352,16 +581,38 @@ typeEl.addEventListener('click', function(e){
   typeTouched = true;
   setType(c.getAttribute('data-type'));
 });
+catEl.addEventListener('click', function(e){
+  var c = e.target.closest('.chip');
+  if(!c) return;
+  setCat(c.getAttribute('data-cat'));
+});
 
 formEl.addEventListener('submit', function(e){
   e.preventDefault();
   if(SYNC.ro) return;
   var t = fTitle.value.trim(), u = fUrl.value.trim();
   if(!t || !u){ setErr(true); return; }
+  var item = { title: t, raw: u, type: fType };
+  if(fType === 'link' && fCat) item.cat = fCat;
+  /* un autre appareil a poussé pendant que la fenêtre était ouverte : on repart de son état (sinon notre
+     envoi, fait avec son sha, l'écraserait sans conflit) et on retrouve la ligne par son contenu d'origine */
+  if(pendingRemote){
+    var wasEditing = editIdx !== -1;
+    links = normLinks(pendingRemote);
+    pendingRemote = null;
+    editIdx = -1;
+    if(wasEditing){
+      for(var k = 0; k < links.length; k++){
+        if(links[k].title === editOrig.title && links[k].raw === editOrig.raw){ editIdx = k; break; }
+      }
+      /* introuvable (supprimé ou modifié ailleurs) : ajouté en fin plutôt que perdu */
+    }
+    if(delIdx !== -1){ delIdx = -1; clearTimeout(delTimer); }
+  }
   if(editIdx !== -1){
-    links[editIdx] = { title: t, raw: u, type: fType };
+    links[editIdx] = item;
   }else{
-    links.push({ title: t, raw: u, type: fType });
+    links.push(item);
   }
   save();
   closeModal();
@@ -370,10 +621,9 @@ formEl.addEventListener('submit', function(e){
 
 function boot(payload){
   SYNC.init(payload, 'liens : maj depuis le dashboard', serialize, function(remote){
-    if(overlay.classList.contains('open')) return; /* ne pas écraser une édition en cours */
-    links = normLinks(remote);
-    if(delIdx !== -1){ delIdx = -1; clearTimeout(delTimer); }
-    render();
+    if(overlay.classList.contains('open')){ pendingRemote = remote; return; } /* fenêtre ouverte : mis en attente, appliqué à la fermeture */
+    pendingRemote = null;
+    applyRemote(remote);
   });
   links = normLinks(payload.seed);
   if(SYNC.ro) document.getElementById('lk-open').hidden = true;
