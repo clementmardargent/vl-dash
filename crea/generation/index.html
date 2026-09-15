@@ -462,7 +462,7 @@
   <div class="dv-popbox" tabindex="-1"><div id="dvPopHost" class="dv-host"></div></div>
 </div>
 <script>
-const BLOB="{\"salt\":\"qrgguFWpafGoRQlpJ/4iDg==\",\"iv\":\"0mHR5GSVKj/abxy0\",\"data\":\"LItG0wiwxykbDkrH46O1ERShhhTc4aqkkmRSWLfJmTzrnl99yhLMyfish2rkzeSfFIJ6pEIKO2sEbFypYxKV0RhLKY8ZQ3bfVFPyQ2Pp0zE7EE30qvCHo1umwqMAEqFLSyMr1wNlLlD0s9+zS9ah6LMaQK0WdsZ3hytCpxC8sRv2v4ugAP+9cN1aZgUG9A==\"}";
+const BLOB="{\"salt\":\"exbs9lAyzBYwM4VCwPqPWg==\",\"iv\":\"eXi8pNHUqBZyHelS\",\"data\":\"qV9FeUNnwmzyAEJE9iYOSSlqutDxy7hPcKZ06qYQ43CxhMhgq8gJzMnWUcSo03RCGbHUCL3ZGWOLXkucKo0QR/1UqhZHYGWECWgUhIrIcwoEB7d2D/FV23JC2QYMFGX9b1IuMedFXTp2WqcYaDle9ykguheW2+KX2YSTw26tkgoPxdnDfE3yy9uA4ItzZg==\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
