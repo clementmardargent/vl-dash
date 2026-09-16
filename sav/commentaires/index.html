@@ -93,7 +93,7 @@
 <footer class="vl-footer"><span>Vivélan — espace interne</span><span>v2</span></footer>
 </div>
 <script>
-const BLOB="{\"salt\":\"AxViqDLjI1cKHPXlIoNbJw==\",\"iv\":\"j4ruuaAT9ab/hJb5\",\"data\":\"VgiSLJfHtzArkQLTn7aZYuzyfA32HEoXj0Ucl/P2B9Wj2mp7oqmdHvipSam3o/WKIutG5SLDezGuFcGZpzV52+6y3GCHK3ZBNoVLLC25lzt4A8WgxW3xGx523lWNoOdIDpLl71LQ+YXJ3P3d088H410ZaUtq8pQEmRJEMZ8PbDrmZOu4hgw1oBgtZ5hH2QAlOnTP8cduPjMf8E/uTKqe5OSbWZPSNqZawwtehc2aZ3Pu2Yh6YbAc4yM=\"}";
+const BLOB="{\"salt\":\"BDqs7RwWlc2G+y2tfvzwkw==\",\"iv\":\"mQwDc2hdbFon+h4z\",\"data\":\"USDsVyQuYeV8dn5BJP2mJQWvC+j3SA7NXd5ZmMgimWw7msMZKqzGCHXknoGCI8eYFCp/8/F+n0SOB4olhoBsR2aq3OwD0+vdQZKUrMqJcESnkh7UEod406evzUsLjBcqDKZwJz+wdt1BZgAAPZtLYSawtp2vpfDcbnVpyxqtU3GXP7XxpAlWHNvQTmwJQUo7L1XBtIVWGR6NfWbmIf6j/isP9zYjWuEiT+cw7G+8gRsRVsQaxaMuz+s=\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
@@ -128,7 +128,7 @@ return '<div class="th"><div class="v">'+(img?'<img src="'+esc(c.media_url)+'" a
 '<span class="pf">'+(c.platform==='instagram'?'Insta':'Facebook')+'</span></div>';}
 function card(c){var done=c.status==='done';var rec=c.claude_action;
 var h='<div class="cm'+(done?' arch':'')+'" id="c-'+esc(c.id)+'"><div class="row">'+thumb(c)+'<div class="body"><div class="meta"><span class="w">'+esc(frDate(c.created_time))+(c.like_count?' · '+c.like_count+' j’aime':'')+'</span>'+
-(c.is_hidden&&!done?'<span class="hidden-now">Masqué</span>':'')+(done?'<span class="dec '+esc(c.human_action)+'">'+(DONE[c.human_action]||c.human_action)+'</span>':'')+'</div>'+
+(c.is_hidden&&!done?'<span class="hidden-now">Masqué</span>':'')+(done?'<span class="dec '+esc(c.human_action)+'">'+(DONE[c.human_action]||c.human_action)+(c.decided_by==='agent'?' (IA)':'')+'</span>':'')+'</div>'+
 '<p class="txt">'+esc(c.text||'(sans texte)')+'</p></div>';
 if(!done)h+='<div class="acts">'+['keep','hide','reply'].map(function(a){return '<button class="'+a+(rec===a?' rec':'')+'" title="'+(rec===a?'Recommandé par Claude'+(c.claude_reason?' : '+esc(c.claude_reason):''):LABEL[a])+'" onclick="'+(a==='reply'?'toggleReply(\''+esc(c.id)+'\',true)':'decide(\''+esc(c.id)+'\',\''+a+'\')')+'">'+LABEL[a]+'</button>';}).join('')+'</div>';
 h+='</div>';
