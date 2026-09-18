@@ -25,8 +25,7 @@
 @media (max-width:720px){
 .crea-main{padding:14px 10px 16px}
 /* mobile : c'est la page entière qui défile (en-tête, sous-nav, recherche et filtres s'effacent),
-   seules les puces produit / dossier restent collées en haut. Préfixe #dvHost : cette page seulement
-   (la pop-up de Génération, déjà plein écran, n'est pas concernée) et priorité sur driveCss. */
+   seules les puces produit / dossier restent collées en haut. Préfixe #dvHost : priorité sur driveCss. */
 .vl-shell{height:auto!important}
 .crea-box{flex:none;overflow:visible}
 #dvHost .dv{border-radius:15px}
@@ -66,7 +65,6 @@
 .dv-s-ecarte{background:var(--red)}
 .dv-x{flex:none;width:32px;height:32px;border:none;border-radius:8px;background:var(--panel);color:var(--mut);font-size:15px;line-height:1;cursor:pointer}
 .dv-x:hover{background:var(--track);color:var(--ink)}
-.dv-close{margin-left:auto}
 /* -- corps : arbre + zone principale -- */
 .dv-body{flex:1;min-height:0;display:flex}
 .dv-tree{flex:none;width:236px;overflow-y:auto;padding:10px 8px 16px;border-right:1px solid var(--bd);box-sizing:border-box}
@@ -216,16 +214,6 @@
 .dv-toast.on{opacity:1;transform:none}
 .dv-toast.dv-long{white-space:normal;max-width:min(560px,100%);border-radius:14px;line-height:1.45;text-align:center}
 .dv-toast.dv-err{background:var(--red);color:var(--card)}
-/* -- pop-up (page Génération) -- */
-.dv-pop{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(20,53,45,.45)}
-.dv-popbox{width:92vw;max-width:1200px;height:86vh;display:flex;flex-direction:column;background:var(--card);border-radius:18px;overflow:hidden;box-shadow:0 24px 60px rgba(20,53,45,.3)}
-.dv-popbox:focus{outline:none}
-/* -- boutons Refs / B-rolls de la sous-nav (même gabarit que les liens) -- */
-.dv-navr{margin-left:auto;display:flex;gap:4px}
-.dv-navbtn{display:flex;align-items:center;gap:7px;padding:7px 14px;border:none;border-radius:8px;background:transparent;color:var(--mut);font-family:'Figtree',sans-serif;font-size:13px;font-weight:600;line-height:normal;cursor:pointer}
-.dv-navbtn:hover{background:var(--panel);color:var(--ink)}
-.dv-navbtn:focus-visible{outline:2px solid var(--grn);outline-offset:2px}
-.dv-navbtn svg{flex:none;width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 @media (prefers-reduced-motion:reduce){
 .dv-toast,.dv-th,.dv-hv,.dv-ok,.dv-tpb svg,.dv-info{transition:none}
 .dv-spin{animation-duration:2.4s}
@@ -235,7 +223,6 @@
 @media (max-width:720px){
 .dv-top{gap:8px;padding:10px 12px}
 .dv-seg{order:1}
-.dv-close{order:2}
 .dv-search{order:3;flex-basis:100%;min-width:0}
 .dv-q{font-size:16px} /* sous 16 px, Safari iOS zoome au focus */
 .dv-stf{order:4;width:100%;overflow-x:auto;scrollbar-width:none}
@@ -254,13 +241,9 @@
 .dv-col{gap:14px}
 .dv-prev{width:100%;border-left:none}
 .dv-pb{padding:14px 14px 20px}
-.dv-pop{padding:0}
-.dv-popbox{width:100%;height:100%;max-width:none;border-radius:0}
-.dv-navbtn{padding:7px 10px}
 .dv-toasts{bottom:18px}
-/* 1re ligne : sections … Sélectionner ✕ (même order 2 : l'ordre du DOM s'applique) */
+/* 1re ligne : sections … Sélectionner */
 .dv-selbtn{order:2;margin-left:auto}
-.dv-close{margin-left:0}
 .dv-fin{font-size:16px} /* sous 16 px, Safari iOS zoome au focus */
 /* barre de sélection pleine largeur, boutons répartis sur toute la ligne */
 .dv-selbar{margin:0;padding:10px 12px calc(10px + env(safe-area-inset-bottom));border-radius:0;border-left:none;border-right:none;border-bottom:none}
@@ -279,9 +262,9 @@
   <div class="vl-hright"><button id="themeToggle" class="theme-btn" title="Basculer clair/sombre">☾</button><div class="vl-avatar">V</div></div>
 </header>
 <nav class="crea-nav">
-  <a href="../../crea/generation/">Génération</a>
-  <span>Batch<span class="soon-pill">Bientôt</span></span>
   <a href="../../crea/contenu/" class="on">Contenu</a>
+  <span>Génération<span class="soon-pill">Bientôt</span></span>
+  <span>Batch<span class="soon-pill">Bientôt</span></span>
 </nav>
 <main class="crea-main">
   <div class="vl-crumb" style="flex:none;margin-bottom:16px"><a href="../../index.html">Tableau de bord</a> <span class="sep">/</span> <a href="../">Créas</a> <span class="sep">/</span> <span class="here">Contenu</span></div>
@@ -289,7 +272,7 @@
 </main>
 </div>
 <script>
-const BLOB="{\"salt\":\"JpHtTB9fg9ZqDUlxUkKvKQ==\",\"iv\":\"6GlwgcIoBNTZf0Pp\",\"data\":\"nWYe+o3eDx325GrNr6TL0wd6ycc/RODx0bbY4WskhbVp4okjB151qU0V/hfbJ5gY8P6zbtRYGGJbn2ktOou/aaBJWBx6VhDXj4ddi4jF25jCBip7Hz846iBLuv9wlRklMx/p4llpKN8NgfRIGxIXFzoUY0/iq0j5Y4xAIkEvKjqR6bybJ/MTBBkzHPNXyQ==\"}";
+const BLOB="{\"salt\":\"A/ok4E9O1dC28qoGIEUfJw==\",\"iv\":\"gjLJE1XwN2yGNYQg\",\"data\":\"aP1WAD1M4NWzV5pIoI6KvPILCPA9zwZaqBJPhVxApp36JWOyg7dsYYV5RGY01s4z6qNMFem/3HQSIqM3LVifif6yz6UU2oGLosDjZ3+U7hKvW7re5LBznKwfZKNIn52ypoE+lLZOjf7g8QeYzcyd/t1TSbGX3DteR85g1bXtkvfpqz6WVnHAdAIYF44FMA==\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
@@ -714,15 +697,13 @@ function dvToast(msg,o){
     o.err?9000:(o.long?6500:(o.ms||1800)));
 }
 
-/* dvCreer(hôte, opts) — opts : auth() → {key, worker} ; fermer() (pop-up : affiche ✕) ;
-   prenom() / surPrenom(v) : prénom de la page hôte (sinon localStorage 'crea_prenom', partagé avec Génération).
-   Même comportement partout : un clic sur un média copie son chemin — sauf en mode sélection, où il le coche.
+/* dvCreer(hôte, opts) — opts : auth() → {key, worker}. Prénom de l'auteur des statuts : localStorage 'crea_prenom'.
+   Un clic sur un média copie son chemin — sauf en mode sélection, où il le coche.
    Statuts : Valider / Écarter… (aperçu ou barre de sélection) → POST /biblio/statut, puis sondage de
    GET /biblio/actions jusqu'à 'fait' / 'erreur', et relecture de l'index (GET /biblio). */
 function dvCreer(host,opts){
   opts=opts||{};
-  /* à chaque arrivée (page ou pop-up) : refs = tout, sans filtre de produit ; B-rolls = Coussin
-     (ou le produit de la session). Seule la dernière section consultée est mémorisée.
+  /* à chaque arrivée : refs = tout, sans filtre de produit ; B-rolls = Coussin. Seule la dernière section consultée est mémorisée.
      mode/coche : mode sélection et médias cochés (par id) ; vises : {id: statut visé} des changements en cours ;
      acts : {n° d'action: {ids, statut, t0}} à sonder ; zp / zb : formulaire ouvert dans l'aperçu / la barre. */
   var D={etat:'init',idx:null,base:'',qs:'',charge:0,err:'',retry:true,enCours:null,q:'',apercu:-1,
@@ -749,7 +730,6 @@ function dvCreer(host,opts){
     +Object.keys(DV_STATUT_FILTRE).map(function(k){return '<button type="button" class="dv-st" data-dv-st="'+k+'"><i class="dv-dot dv-s-'+k+'"></i>'+DV_STATUT_FILTRE[k]+'</button>';}).join('')
     +'</div>'
     +'<button type="button" class="dv-selbtn" data-dv-mode aria-pressed="false" title="Cocher plusieurs médias pour les valider ou les écarter">'+DV_SVG.coche+'Sélectionner</button>'
-    +(opts.fermer?'<button type="button" class="dv-x dv-close" data-dv-close title="Fermer (Échap)" aria-label="Fermer la bibliothèque">✕</button>':'')
     +'</div>'
     +'<div class="dv-body"><nav class="dv-tree" aria-label="Dossiers"></nav><div class="dv-chips"></div>'
     +'<div class="dv-main"><div class="dv-crumb"></div><div class="dv-grid"></div><div class="dv-msg" hidden></div>'
@@ -781,7 +761,7 @@ function dvCreer(host,opts){
   }
   function msg(h){elMsg.innerHTML=h;elMsg.hidden=!h;}
   var chipsCle='';
-  /* retour en haut de la grille : dv-main défile lui-même (desktop, pop-up) ; si c'est la page
+  /* retour en haut de la grille : dv-main défile lui-même (desktop) ; si c'est la page
      entière qui défile (page Contenu sur mobile), on ramène le haut du corps dans la vue */
   function haut(){
     elMain.scrollTop=0;
@@ -1014,14 +994,12 @@ function dvCreer(host,opts){
   /* ---- statuts : prénom, formulaires, envoi, suivi des actions ---- */
   function prenomActuel(){
     var v='';
-    try{v=opts.prenom?(opts.prenom()||''):'';}catch(x){}
-    if(!v){try{v=localStorage.getItem('crea_prenom')||'';}catch(x){}}
+    try{v=localStorage.getItem('crea_prenom')||'';}catch(x){}
     return v||D.prenomMem||'';
   }
   function prenomSauver(v){
     D.prenomMem=v;
     try{localStorage.setItem('crea_prenom',v);}catch(x){}
-    if(opts.surPrenom){try{opts.surPrenom(v);}catch(x){}}
   }
   /* zone 'p' = actions de l'aperçu (un média), 'b' = barre de sélection (les médias cochés) */
   function zoneDe(el){var z=el&&el.closest?el.closest('[data-dv-zone]'):null;return z&&z.getAttribute('data-dv-zone')==='p'?'p':'b';}
@@ -1264,7 +1242,6 @@ function dvCreer(host,opts){
       return;
     }
     if((b=t.closest('[data-dv-xprev]'))){fermerApercu();return;}
-    if((b=t.closest('[data-dv-close]'))){if(opts.fermer)opts.fermer();return;}
     if((b=t.closest('[data-dv-retry]'))){charger();return;}
     if((b=t.closest('[data-dv-sec]'))){
       var sec=b.getAttribute('data-dv-sec');
@@ -1302,7 +1279,7 @@ function dvCreer(host,opts){
   });
 
   /* Échap : formulaire de l'aperçu, aperçu, formulaire de la barre, recherche en cours, mode sélection ;
-     false = rien à fermer ici (la pop-up se ferme alors) */
+     false = rien à fermer ici */
   function echap(){
     if(!elPrev.hidden&&D.zp&&fermerForm('p'))return true;
     if(fermerApercu())return true;
@@ -1314,7 +1291,7 @@ function dvCreer(host,opts){
   function ouvrir(o){
     o=o||{};
     if(o.section&&dvA(DV_SECTIONS,o.section))D.section=o.section;
-    /* arrivée : refs = tout ; B-rolls = produit de la session, sinon Coussin ; hors mode sélection
+    /* arrivée : refs = tout ; B-rolls = Coussin (ou o.produit) ; hors mode sélection
        (les changements de statut en cours continuent d'être suivis) */
     arrivee(o.produit&&o.produit!=='commun'?o.produit:null);
     D.mode=false;D.coche=Object.create(null);D.zb=null;

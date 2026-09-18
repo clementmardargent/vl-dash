@@ -39,24 +39,24 @@ a.tile:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(20,53,45,.10
       <p style="margin:0;font-size:15px;color:var(--mut)">La production créa, pilotée par les agents.</p>
     </div>
     <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px" class="crea-grid">
-      <a class="tile" href="generation/">
-        <div class="ico"><svg viewBox="0 0 24 24" style="width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M12 3l1.8 4.7L18 9.5l-4.2 1.8L12 16l-1.8-4.7L6 9.5l4.2-1.8z M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z"/></svg></div>
-        <div><div class="t">Génération</div><div class="d">Les sessions de production&nbsp;: brief, génération des médias, itérations, livraison dans le chat.</div></div>
+      <a class="tile" href="contenu/">
+        <div class="ico"><svg viewBox="0 0 24 24" style="width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M3 4h18v16H3z"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg></div>
+        <div><div class="t">Contenu</div><div class="d">Les B-rolls et les refs de la bibliothèque. Un clic copie le chemin du fichier.</div></div>
       </a>
+      <div class="tile off">
+        <div class="ico"><svg viewBox="0 0 24 24" style="width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M12 3l1.8 4.7L18 9.5l-4.2 1.8L12 16l-1.8-4.7L6 9.5l4.2-1.8z M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z"/></svg></div>
+        <div><div class="t">Génération <span class="soon">Arrive bientôt</span></div><div class="d">La production des créas avec les agents IA.</div></div>
+      </div>
       <div class="tile off">
         <div class="ico"><svg viewBox="0 0 24 24" style="width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M3 6h6l2 2h10v11H3z"/></svg></div>
         <div><div class="t">Batch <span class="soon">Arrive bientôt</span></div><div class="d">Le pilotage des lots de production.</div></div>
       </div>
-      <a class="tile" href="contenu/">
-        <div class="ico"><svg viewBox="0 0 24 24" style="width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M3 4h18v16H3z"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg></div>
-        <div><div class="t">Contenu</div><div class="d">Les B-rolls et les refs de la bibliothèque. Un clic copie le chemin, à coller dans une session.</div></div>
-      </a>
     </div>
   </main>
 <footer class="vl-footer"><span>Vivélan — espace interne</span><span>v2</span></footer>
 </div>
 <script>
-const BLOB="{\"salt\":\"JpHtTB9fg9ZqDUlxUkKvKQ==\",\"iv\":\"6GlwgcIoBNTZf0Pp\",\"data\":\"nWYe+o3eDx325GrNr6TL0wd6ycc/RODx0bbY4WskhbVp4okjB151qU0V/hfbJ5gY8P6zbtRYGGJbn2ktOou/aaBJWBx6VhDXj4ddi4jF25jCBip7Hz846iBLuv9wlRklMx/p4llpKN8NgfRIGxIXFzoUY0/iq0j5Y4xAIkEvKjqR6bybJ/MTBBkzHPNXyQ==\"}";
+const BLOB="{\"salt\":\"A/ok4E9O1dC28qoGIEUfJw==\",\"iv\":\"gjLJE1XwN2yGNYQg\",\"data\":\"aP1WAD1M4NWzV5pIoI6KvPILCPA9zwZaqBJPhVxApp36JWOyg7dsYYV5RGY01s4z6qNMFem/3HQSIqM3LVifif6yz6UU2oGLosDjZ3+U7hKvW7re5LBznKwfZKNIn52ypoE+lLZOjf7g8QeYzcyd/t1TSbGX3DteR85g1bXtkvfpqz6WVnHAdAIYF44FMA==\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
