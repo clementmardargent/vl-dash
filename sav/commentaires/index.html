@@ -44,6 +44,7 @@
 .dec.keep{color:var(--grn);background:var(--grn-bg)}.dec.hide{color:var(--red);background:var(--red-bg)}.dec.reply{color:var(--amb);background:var(--amb-bg)}.dec.archived{color:var(--mut);background:var(--panel)}
 .txt{margin:0;font-size:14.5px;line-height:1.55;color:var(--tx);text-wrap:pretty;white-space:pre-wrap;word-break:break-word}
 .hidden-now{font-size:10.5px;font-weight:700;color:var(--red);letter-spacing:.4px;text-transform:uppercase;background:var(--red-bg);padding:3px 8px;border-radius:999px}
+.doubt{margin:8px 0 0;font-size:13px;line-height:1.45;color:var(--mut)}.doubt b{color:var(--amb);font-weight:700}
 .acts{flex:none;display:flex;gap:10px;align-items:flex-start}
 .acts button{width:104px;padding:10px 0;font-size:13px;font-weight:700;font-family:'Figtree',sans-serif;color:#fff;border:2px solid transparent;border-radius:10px;cursor:pointer;opacity:.5;transform:scale(.92);transition:opacity .15s,transform .15s}
 .acts button.keep{background:var(--grn);border-color:var(--grn)}
@@ -93,7 +94,7 @@
 <footer class="vl-footer"><span>Vivélan — espace interne</span><span>v2</span></footer>
 </div>
 <script>
-const BLOB="{\"salt\":\"u3I3iCoOKMo074heC2CTTg==\",\"iv\":\"KnLnXyMR2cTuJL7A\",\"data\":\"5/SoEXbNnp0kXu4pqoodg28b1URb4dph74tdRPqEDMM3cbvb+iq6Pvxg1h1TRz6ct3yDQFy2ZP+dHtVqwWggeTjjGHsO09xrVARWBB8xwGvAxMXz2brirTULhQ1u+3Q7qKwjTF0CYzAtra8M1vldMCV7WcNb1j5D4HG03djSLhRMYMKrfru+hpqor5ScWE6y9D8KdRCfGVQw+bv++38/cbYAwkZ07hTrJFgl6rOAf+TN0eUkWS+jDpA=\"}";
+const BLOB="{\"salt\":\"Hazh3GkuyF72AfddusuIsg==\",\"iv\":\"JjOuRZcMTJajkoCt\",\"data\":\"4Mi31YZuqIddb6Kd8SfPGKhO91JDpTowcYSOWQej8H62mlNJoNbg0ruNiYF1KJLPEgk63eGOG/ePDf2PaTQS1K8lFlpoKPcogsjJ9XR726j3PTig3MpwuDZmrJDY1O7WHrE7Le2BIXeMSkl1tJvK6e0IKQ8cDofH7M/s92d8AkwBrsydZRhkTIHipUdzWsBPzgoMJCCg1O6nEB7TyigpePEbirj1AKBkZ7yLE7MJEFdB6thCc0TDj90=\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
@@ -119,7 +120,7 @@ var q=STATE.view==='all'?[api('/comments?status=pending&limit=500'),api('/commen
 Promise.all(q).then(function(rs){STATE.data=[].concat.apply([],rs.map(function(d){return d.comments;}));STATE.counts=rs[0].counts||{};
 STATE.data.sort(function(a,b){return (b.created_time||'')<(a.created_time||'')?-1:1;});render();})
 .catch(function(e){document.getElementById('list').innerHTML='<div id="empty">Impossible de joindre le Worker ('+esc(e.message)+').</div>';});}
-function render(){document.getElementById('cnt').textContent=(STATE.counts.pending||0)+' en attente';
+function render(){var n=STATE.counts.pending||0;document.getElementById('cnt').textContent=n+(n>1?' doutes en attente':' doute en attente');
 var list=document.getElementById('list');if(!STATE.data.length){list.innerHTML='<div id="empty">Aucun commentaire dans cette vue.</div>';return;}
 list.innerHTML=STATE.data.map(card).join('');fit();}
 function fit(){document.querySelectorAll('.rp textarea').forEach(function(t){t.style.height='auto';t.style.height=Math.max(64,t.scrollHeight+2)+'px';});}
@@ -129,7 +130,7 @@ return '<div class="th"><div class="v">'+(img?'<img src="'+esc(c.media_url)+'" a
 function card(c){var done=c.status==='done';var rec=c.claude_action;
 var h='<div class="cm'+(done?' arch':'')+'" id="c-'+esc(c.id)+'"><div class="row">'+thumb(c)+'<div class="body"><div class="meta"><span class="w">'+esc(frDate(c.created_time))+(c.like_count?' · '+c.like_count+' j’aime':'')+'</span>'+
 (c.is_hidden&&!done?'<span class="hidden-now">Masqué</span>':'')+(done?'<span class="dec '+esc(c.human_action)+'">'+(DONE[c.human_action]||c.human_action)+(c.decided_by==='agent'?' (IA)':'')+'</span>':'')+'</div>'+
-'<p class="txt">'+esc(c.text||'(sans texte)')+'</p></div>';
+'<p class="txt">'+esc(c.text||'(sans texte)')+'</p>'+(!done&&c.claude_reason?'<p class="doubt"><b>'+(c.claude_doubt?'Claude hésite':'Claude propose')+(rec?' ('+esc(LABEL[rec]||rec)+')':'')+'</b> : '+esc(c.claude_reason)+'</p>':'')+'</div>';
 if(!done)h+='<div class="acts">'+['keep','hide','reply'].map(function(a){return '<button class="'+a+(rec===a?' rec':'')+'" title="'+(rec===a?'Recommandé par Claude'+(c.claude_reason?' : '+esc(c.claude_reason):''):LABEL[a])+'" onclick="'+(a==='reply'?'toggleReply(\''+esc(c.id)+'\',true)':'decide(\''+esc(c.id)+'\',\''+a+'\')')+'">'+LABEL[a]+'</button>';}).join('')+'</div>';
 h+='</div>';
 if(done&&c.human_action==='reply'&&c.human_reply)h+='<div class="rp"><div class="l">Réponse publiée</div><p class="pub">'+esc(c.human_reply)+'</p></div>';

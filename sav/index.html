@@ -53,14 +53,14 @@ a.tile:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(20,53,45,.10
     <div class="crumb"><a href="../index.html">Tableau de bord</a> <span class="sep">/</span> <span class="here">SAV</span></div>
     <div class="intro"><h1>SAV</h1><p>Tous les canaux client, triés et pilotés par Claude.</p></div>
     <div class="grid">
-      <a class="tile" href="commentaires/"><div class="ico svg-ico"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-8 8H4l2-3a8 8 0 1115-5z M8 10h8 M8 14h5"/></svg></div><div><div class="t">Commentaires</div><div class="d">Les commentaires sous les ads : garder, supprimer ou répondre, avec l'avis de Claude.</div></div></a>
+      <a class="tile" href="commentaires/"><div class="ico svg-ico"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-8 8H4l2-3a8 8 0 1115-5z M8 10h8 M8 14h5"/></svg></div><div><div class="t">Commentaires</div><div class="d">Les commentaires sous les ads : Claude garde, supprime et répond seul ; ses doutes vous attendent ici.</div></div></a>
       <div class="tile off"><div class="ico svg-ico"><span class="bars"><span style="height:10px;opacity:.45"></span><span style="height:18px;opacity:.7"></span><span style="height:14px"></span></span></div><div><div class="t">Analyse <span class="soon">Bientôt</span></div><div class="d">Ce que les clients disent : motifs de contact, retours produit, tendances semaine après semaine.</div></div></div>
     </div>
   </main>
 <footer class="vl-footer"><span>Vivélan — espace interne</span><span>v2</span></footer>
 </div>
 <script>
-const BLOB="{\"salt\":\"u3I3iCoOKMo074heC2CTTg==\",\"iv\":\"KnLnXyMR2cTuJL7A\",\"data\":\"5/SoEXbNnp0kXu4pqoodg28b1URb4dph74tdRPqEDMM3cbvb+iq6Pvxg1h1TRz6ct3yDQFy2ZP+dHtVqwWggeTjjGHsO09xrVARWBB8xwGvAxMXz2brirTULhQ1u+3Q7qKwjTF0CYzAtra8M1vldMCV7WcNb1j5D4HG03djSLhRMYMKrfru+hpqor5ScWE6y9D8KdRCfGVQw+bv++38/cbYAwkZ07hTrJFgl6rOAf+TN0eUkWS+jDpA=\"}";
+const BLOB="{\"salt\":\"Hazh3GkuyF72AfddusuIsg==\",\"iv\":\"JjOuRZcMTJajkoCt\",\"data\":\"4Mi31YZuqIddb6Kd8SfPGKhO91JDpTowcYSOWQej8H62mlNJoNbg0ruNiYF1KJLPEgk63eGOG/ePDf2PaTQS1K8lFlpoKPcogsjJ9XR726j3PTig3MpwuDZmrJDY1O7WHrE7Le2BIXeMSkl1tJvK6e0IKQ8cDofH7M/s92d8AkwBrsydZRhkTIHipUdzWsBPzgoMJCCg1O6nEB7TyigpePEbirj1AKBkZ7yLE7MJEFdB6thCc0TDj90=\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
