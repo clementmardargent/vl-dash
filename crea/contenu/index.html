@@ -272,7 +272,7 @@
 </main>
 </div>
 <script>
-const BLOB="{\"salt\":\"UfSJSd1wHE2qDQ4A/fKSKA==\",\"iv\":\"FddN7MWFqIfR1Aq3\",\"data\":\"wr38qGYKOVCoIhZanrJFDVgpldauJ/UpzshKbUkwDzmbfa7tt7aAa9rIC9hnYKqNAFnpDaLNVTJ8A4XCKUFH6ftRQ1H02B2ITqEcG8u2G80OOHymhjUoJy9gEdFJc0cDYRq73vzQiW0DimOYRYN48LEEDG+e9d0ezV+2o8oG7BDcssvMipxYe3TKWZhFNg==\"}";
+const BLOB="{\"salt\":\"35mwOLHA5/GBHeuqQmtmYQ==\",\"iv\":\"fZqopEW1r75jjWu9\",\"data\":\"63NfpjJbDAozEWKn8RZAO+l4rljBuazaXab4UtpWScPq0w8VuIm/2d5xSaLOCIDSkcRc/hRnJa5qCJObzE+4KGzrL1X1hgRkLlzz51X05KNcXVjWzOhQcsVbubpN3jmA+t/ACcVEPSRCgWuPzpE2LJ1BNyc2baqCN9vRkzWeUBVgs4AJnjfSOxdctgp57Q==\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
