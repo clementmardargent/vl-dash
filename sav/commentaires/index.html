@@ -79,6 +79,7 @@
 </header>
 <nav class="sav-nav">
   <a href="../../sav/commentaires/" class="on">Commentaires</a>
+  <a href="../../sav/reponses/" class="">Réponses clients</a>
   <span>Analyse</span>
 </nav>
   <main class="vl-main" style="max-width:880px;padding-top:40px">
@@ -94,7 +95,7 @@
 <footer class="vl-footer"><span>Vivélan — espace interne</span><span>v2</span></footer>
 </div>
 <script>
-const BLOB="{\"salt\":\"mWxk+UtIsMgvuQ9XgTzm5Q==\",\"iv\":\"unTMPa3eFR+2LK6C\",\"data\":\"/GCJvL9YMhgUOIshl5Uw8V6YRoy0fuJ3BKRJLjsYI4oK3nT0T7lORjSfSUNWsOoT0778x8zRHWNo+Tqp5RAm/0j4n3674aS6XpeEydTLXHNPWuxV0GpvclXnTSrYtiDZAQ4CWNtWtmTFbBllzbqvouK15h23KS6drIQh9P3IzZbRq0iXi7cR3nAiGw0du51tnm/z9VeOC2SV6mE1Fhu9YfoK/kCoYvmeAiMHC0Xy7tMYBDMTMyjn4F4=\"}";
+const BLOB="{\"salt\":\"68kciupko8w97p/f0U1MLw==\",\"iv\":\"xDCjUij02NY5wLhs\",\"data\":\"gdTGdgYT0/cifTSbIbyyZ6DCnrS4svF/cXwF0XPskdqIw+AyrUzMEEY7jTT5S0xKFJK2tq4Dk8ttL8h9SAbF5+VxoolOgLYJVCAbYY8Lpe0ZldFYlyoesm+4axAXoboVdpLwNNWB8ilVaBD4UnNEoJSfSBeq/CJgQOl6jv8I1ej+yLek4T7+qslL/yqx1Tu51ikhqjFJoNTDYaIwCCCc0TLGhmDG/HTXWcBjtNi+hmiGpJLuwSVAerU=\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
