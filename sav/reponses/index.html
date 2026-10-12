@@ -56,6 +56,11 @@
 .more{align-self:flex-start;font:inherit;font-size:13px;color:var(--grn);background:none;border:none;cursor:pointer;text-decoration:underline;padding:0}
 .ft{font-size:12px;color:var(--faint);border-top:1px solid var(--bd);padding-top:10px;display:flex;gap:12px;flex-wrap:wrap}
 .nada{font-size:13.5px;color:var(--faint)}
+.hdr{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.dl{font:inherit;font-size:13px;font-weight:600;color:var(--grn);background:var(--card);border:1px solid var(--bd-strong);border-radius:999px;padding:7px 14px;cursor:pointer}
+.dl:hover{border-color:var(--grn)}
+.dl:disabled{opacity:.6;cursor:wait}
+.dl:focus-visible{outline:2px solid var(--grn);outline-offset:2px}
 #empty{text-align:center;padding:56px 0;font-size:15px;color:var(--faint);grid-column:1 / -1}
 .warn{background:var(--amb-bg);color:var(--amb);border-radius:10px;padding:10px 14px;font-size:13px;margin-bottom:16px}
 #views{display:flex;gap:4px;flex-wrap:wrap;border-bottom:1px solid var(--bd);margin:6px 0 16px}
@@ -94,7 +99,7 @@
 </nav>
   <main class="vl-main" style="max-width:1120px;padding-top:40px">
     <div class="crumb"><a href="../../index.html">Tableau de bord</a> <span class="sep">/</span> <a href="../">SAV</a> <span class="sep">/</span> <span class="here">Réponses clients</span></div>
-    <div class="hd"><h1>Réponses clients</h1><span class="n" id="cnt"></span></div>
+    <div class="hd"><h1>Réponses clients</h1><span class="hdr"><span class="n" id="cnt"></span><button class="dl" id="dl" type="button" title="Toutes les réponses, tous les onglets, depuis le début : base verbatim pour un agent">Télécharger (JSON)</button></span></div>
     <div id="views"></div>
     <p class="sub" id="sub"></p>
     <div class="bar1" id="period">
@@ -113,7 +118,7 @@
 <footer class="vl-footer"><span>Vivélan — espace interne</span><span>v2</span></footer>
 </div>
 <script>
-const BLOB="{\"salt\":\"oZfyOF+RlCgrDyqYhvp4Vw==\",\"iv\":\"O9xGu59qaAc8xYMk\",\"data\":\"7kedkEyuEzPKiijUBBlleDNbZ54CigMHlq+uKGbOdyxTu0TxAvVxXItEHbkHRE3sBb51Jmh7cI2Nop9SQd+c+DkBXzpZ7/NDvWZb5p3zrehJbmmNqPWFWNzLn6JRN1qfxVE+ML3fLT/z0YN05kwz3DAtFNZk/8+U1iUbiRhJKHHNBVSj7QUTcMZNCJVAybhStgYZydRodI/PExLu4uI99e97XQ42DpoknW4e11HCVOktfoESbg9GZ9g=\"}";
+const BLOB="{\"salt\":\"kzynLAaHltIGqirMK6JCTA==\",\"iv\":\"nN39/2BWpuzy7WBb\",\"data\":\"Cz9vPUnUeh43a92j6jteM6qQrkiK8vg9DF4FEVwVPvCEesPi3y2wpHK77KNgXJiA+BSsouopLAayGICmUMcM5Q4gpVWLqy58vDyTK6ipbsza9uWnl3Hbau/RUwA4wyO/wtLi5f2ow0uYCcH/xeeB7sIcJs5bo+NEYtqwO1MHkwlMw1QQVKTjTJFmMdFMicBJwwq1VRaemjRB7CLyxuIGy/5KDPfAPRKGc7yIppwqu2aa+8AaNixldoQ=\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
@@ -219,6 +224,30 @@ document.getElementById('period').addEventListener('click',function(e){var b=e.t
 document.getElementById('groups').addEventListener('click',function(e){var b=e.target.closest('button[data-g],button[data-pr]');if(!b)return;
   if(b.dataset.pr){S.prod=b.dataset.pr;load();return;}S.group=b.dataset.g;render();});
 document.getElementById('list').addEventListener('click',function(e){var b=e.target.closest('button[data-more]');if(!b)return;S.open[b.dataset.more]=!S.open[b.dataset.more];render();});
+/* Export JSON : toutes les réponses depuis le début, chaque onglet (e-mails, puis chaque questionnaire par produit),
+   avec libellés, décomptes et tous les textes libres. Jamais de profil Klaviyo (le relais ne le renvoie pas). */
+function get(qs){return fetch(P.worker+'/reponses'+(qs?'?'+qs:''),{headers:{'Authorization':'Bearer '+P.savKey}}).then(function(x){return x.json().then(function(j){if(!x.ok)throw new Error(j.error||('HTTP '+x.status));return j;});});}
+function slim(q,extra){var d=q.detail||{},o={q:q.q,question:q.libelle||pretty(q.q),type:d.type||q.type,personnes:d.personnes||0};
+  for(var k in extra)o[k]=extra[k];
+  if(d.reponses&&d.reponses.length)o.reponses=d.reponses.map(function(r){return {reponse:r.libelle||r.label||pretty(r.r),id:r.r,personnes:r.personnes};});
+  if(d.avis)o.avis={note_moyenne:d.avis.note_moyenne,repartition:d.avis.repartition};
+  var L=(d.textes&&d.textes.liste)||[];if(L.length)o.verbatim=L.map(function(t){var v={texte:t.texte,date:t.modifie_le};if(t.note)v.note=t.note;if(t.r)v.reponse=t.r;if(t.src)v.origine=t.src;return v;});
+  if(q.ordre)o.ordre=q.ordre;return o;}
+function exportJson(){var b=document.getElementById('dl');b.disabled=true;b.textContent='Préparation…';
+  get('').then(function(em){var names=(em.questionnaires||[]).map(function(x){return x.nom;});
+    var jobs=[];names.forEach(function(n){PRODS.filter(function(p){return p[0]!=='all';}).forEach(function(p){jobs.push(get('questionnaire='+encodeURIComponent(n)+'&produit='+p[0]).then(function(j){return {nom:n,produit:p[0],j:j};}));});});
+    return Promise.all(jobs).then(function(res){
+      var out={exporte_le:new Date().toISOString(),periode:'depuis le début',
+        lecture:'Une personne = une voix (sa dernière réponse). « verbatim » = textes libres écrits par les clients, mot pour mot, les plus récents d’abord. « reponses » = décompte des réponses à choix.',
+        emails:(em.questions||[]).map(function(q){var p=prefix(q.q);return slim(q,AUD[p]?{audience:AUD[p]}:{});}),questionnaires:[]};
+      names.forEach(function(n){var parts=res.filter(function(r){return r.nom===n;});
+        out.questionnaires.push({nom:qnName(n),id:n,produits:parts.map(function(r){var qs=r.j.questions||[],end=qs.filter(isEnd)[0];
+          return {produit:r.produit,termines:end&&end.detail?end.detail.personnes:0,questions:qs.filter(function(q){return !isEnd(q);}).map(function(q){return slim(q,{});})};})});});
+      var blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'}),a=document.createElement('a');
+      a.href=URL.createObjectURL(blob);a.download='reponses-clients-vivelan-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();
+      setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1000);});
+  }).catch(function(e){alert('Export impossible : '+e.message);}).then(function(){b.disabled=false;b.textContent='Télécharger (JSON)';});}
+document.getElementById('dl').addEventListener('click',exportJson);
 function boot(payload){P=payload;var h=decodeURIComponent(location.hash.slice(1));if(/^[a-z0-9_-]{1,64}$/.test(h))S.view=h;views();
   if(!P.savKey){document.getElementById('list').innerHTML='<div id="empty">Clé d’accès absente du build.</div>';return;}load();}
 
