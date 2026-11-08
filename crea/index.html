@@ -56,7 +56,7 @@ a.tile:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(20,53,45,.10
 <footer class="vl-footer"><span>Vivélan — espace interne</span><span>v2</span></footer>
 </div>
 <script>
-const BLOB="{\"salt\":\"o1smrcfD8WR5Q5MtgQk1pw==\",\"iv\":\"v2YdpvyLUKlWUY3f\",\"data\":\"hgqQFXHm8czm5dNSsU781D3ZbaPh2S4M9yIbxd7yys2cysNe440vKv0JssQtvnZum1b/IacOnKdCTZTT3DX+gyu77RYn/bG0SCozin7UjoXraC9qvaW+8+/4FdB1kASE3bMJm0XQCgCBNUe0FaYir13XFtTqV37ZIB4VdOeVBM7BUO3l/c/30+SA9Inp0Q==\"}";
+const BLOB="{\"salt\":\"7lxMEmJ9KMp8qoUOTW9Q6A==\",\"iv\":\"mi5KSY70if6X4oX7\",\"data\":\"Q7wvwrOrjuRoM80kHBENc5CDogNzpwrvMAya2HkyVNOlVg3+HQeB6ii67mcdVyc7KvweE+jVdcXuDDmE6lCuSwDo79gkH+JbzDIA7N6P04kqFONX9nqnkZvyUAjyFVm8R3RC79caEuoB/sTreCImnKjt2kG8sti/olHxqtj3tVRtEqgsONWR1kKa8bJ/tA==\"}";
 
 const b2u=(b)=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
